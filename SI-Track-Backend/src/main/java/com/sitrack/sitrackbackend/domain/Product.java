@@ -14,6 +14,7 @@ public class Product extends AuditingFields{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "product_id")
     private Long id;
 
     // TODO: 카테고리 아이디, 납품 회사 코드, 상품 이미지 추후 추가
@@ -31,7 +32,7 @@ public class Product extends AuditingFields{
     private Long productPrice; // 상품 판매 가격
 
     @Setter
-    @Column(length = 65535)
+    @Column(length = 1000)
     private String productDetail;
 
     @Setter
@@ -53,7 +54,7 @@ public class Product extends AuditingFields{
 
     protected Product() {}
 
-    public Product of(String productName, Long productCost, Long productPrice, String productDetail, Long productStockQuantity, Long productSalesQuantity){
+    public static Product of(String productName, Long productCost, Long productPrice, String productDetail, Long productStockQuantity, Long productSalesQuantity){
         return new Product(productName, productCost, productPrice, productDetail, productStockQuantity, productSalesQuantity);
     }
 

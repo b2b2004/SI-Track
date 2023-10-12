@@ -14,21 +14,22 @@ import java.util.Objects;
 @Getter
 @ToString(callSuper = true)
 @Entity
-public class Order extends AuditingFields{
+public class Purchase extends AuditingFields{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "purchase_id")
     private Long id;
 
     @Setter
-    @JoinColumn(name = "userId")
-    @ManyToOne
+    @JoinColumn(name = "user_Id")
+    @ManyToOne(optional = false)
     private UserAccount userAccount;
 
     @Setter
-    @JoinColumn(name = "id")
-    @ManyToOne
-    private Product productId;
+    @JoinColumn(name = "product_id")
+    @ManyToOne(optional = false)
+    private Product product;
 
     @Setter
     @Column(nullable = false)
@@ -37,33 +38,37 @@ public class Order extends AuditingFields{
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @CreatedDate
     @Column(nullable = false, updatable = false)
-    private LocalDateTime orderDate; // 주문 일자
+    private LocalDateTime purchaseDate; // 주문 일자
 
     @Setter
     @Column(nullable = false)
-    private String orderAddress; // 주문배송 주소
+    private String purchaseAddress; // 주문배송 주소
 
     @Setter
     @Column(nullable = false)
-    private String orderState; // 주문 현황
+    private String purchaseState; // 주문 현황
 
     @Setter
     @Column(nullable = true)
-    private String orderRequest; // 요청 사항
+    private String purchaseRequest; // 요청 사항
 
-    public Order(Long id, UserAccount userAccount, Product productId, Long totalAmount, LocalDateTime orderDate, String orderAddress, String orderState, String orderRequest) {
+    public Purchase(Long id, UserAccount userAccount, Product product, Long totalAmount, LocalDateTime purchaseDate, String purchaseAddress, String purchaseState, String purchaseRequest) {
         this.id = id;
         this.userAccount = userAccount;
-        this.productId = productId;
+        this.product = product;
         this.totalAmount = totalAmount;
-        this.orderDate = orderDate;
-        this.orderAddress = orderAddress;
-        this.orderState = orderState;
-        this.orderRequest = orderRequest;
+        this.purchaseDate = purchaseDate;
+        this.purchaseAddress = purchaseAddress;
+        this.purchaseState = purchaseState;
+        this.purchaseRequest = purchaseRequest;
     }
 
-    public Order of(Long id, UserAccount userAccount, Product productId, Long totalAmount, LocalDateTime orderDate, String orderAddress, String orderState, String orderRequest){
-        return new Order(id,userAccount,productId,totalAmount, orderDate, orderAddress, orderState, orderRequest);
+    protected Purchase() {
+
+    }
+
+    public static Purchase of(Long id, UserAccount userAccount, Product product, Long totalAmount, LocalDateTime purchaseDate, String purchaseAddress, String purchaseState, String purchaseRequest){
+        return new Purchase(id, userAccount, product, totalAmount, purchaseDate, purchaseAddress, purchaseState, purchaseRequest);
     }
 
     @Override

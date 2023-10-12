@@ -68,7 +68,7 @@ public class EnterAccount extends AuditingFields {
         this.enterAuthKey = enterAuthKey;
     }
 
-    public EnterAccount of(String enterAccountId, String enterAccountPassword, String enterAccountName, String enterAccountEmail, String enterAccountPhoneNumber, String enterName, String enterNumber, String enterAddress, String enterCeo, Long enterAuthKey){
+    public static EnterAccount of(String enterAccountId, String enterAccountPassword, String enterAccountName, String enterAccountEmail, String enterAccountPhoneNumber, String enterName, String enterNumber, String enterAddress, String enterCeo, Long enterAuthKey){
         return new EnterAccount(enterAccountId, enterAccountPassword, enterAccountName, enterAccountEmail, enterAccountPhoneNumber, enterName, enterNumber, enterAddress, enterCeo, enterAuthKey);
     }
 
