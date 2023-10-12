@@ -1,6 +1,5 @@
 package com.sitrack.sitrackbackend.domain;
 
-import com.sitrack.sitrackbackend.domain.account.UserAccount;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,6 +20,11 @@ public class OrderDetail {
     private Product productId;
 
     @Setter
+    @JoinColumn(name = "id")
+    @ManyToOne
+    private Order orderId;
+
+    @Setter
     @Column(nullable = false)
     private Long orderDetailQuantity; // 주문 상품 수량
 
@@ -28,16 +32,17 @@ public class OrderDetail {
     @Column(nullable = false)
     private Long orderDetailPrice; // 주문 상품 가격
 
-    public OrderDetail(Product productId, Long orderDetailQuantity, Long orderDetailPrice) {
+    public OrderDetail(Product productId, Order orderId, Long orderDetailQuantity, Long orderDetailPrice) {
         this.productId = productId;
+        this.orderId = orderId;
         this.orderDetailQuantity = orderDetailQuantity;
         this.orderDetailPrice = orderDetailPrice;
     }
 
     protected OrderDetail() {}
 
-    public OrderDetail of(Product productId, Long orderDetailQuantity, Long orderDetailPrice){
-        return new OrderDetail(productId, orderDetailQuantity, orderDetailPrice);
+    public OrderDetail of(Product productId, Order orderId, Long orderDetailQuantity, Long orderDetailPrice){
+        return new OrderDetail(productId, orderId, orderDetailQuantity, orderDetailPrice);
     }
 
     @Override
