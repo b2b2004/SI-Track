@@ -2,11 +2,14 @@ package com.sitrack.sitrackbackend.domain.account;
 
 
 import com.sitrack.sitrackbackend.domain.AuditingFields;
+import com.sitrack.sitrackbackend.domain.Cart;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -15,7 +18,7 @@ import java.util.Objects;
 public class UserAccount extends AuditingFields {
 
     @Id
-    @Column(length = 100, nullable = false)
+    @Column(length = 100, nullable = false, name = "user_id")
     private String userId;
 
     @Setter
