@@ -47,8 +47,8 @@ public class UserAccount extends AuditingFields {
         this.userPhoneNumber = userPhoneNumber;
     }
 
-    public static UserAccount of(String userAccountId, String userPassword, String userName, String userEmail, String userPhoneNumber){
-        return new UserAccount(userAccountId, userPassword, userName, userEmail, userPhoneNumber);
+    public static UserAccount of(String userId, String userPassword, String userName, String userEmail, String userPhoneNumber){
+        return new UserAccount(userId, userPassword, userName, userEmail, userPhoneNumber);
     }
 
     @Override
