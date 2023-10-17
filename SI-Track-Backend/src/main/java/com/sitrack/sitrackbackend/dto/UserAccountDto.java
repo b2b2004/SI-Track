@@ -16,11 +16,11 @@ public record UserAccountDto(
     String modifiedBy
 ) {
 
-    public UserAccountDto of(String userId, String userPassword, String userName, String userEmail, String userPhoneNumber) {
+    public static UserAccountDto of(String userId, String userPassword, String userName, String userEmail, String userPhoneNumber) {
         return new UserAccountDto(userId, userPassword, userName, userEmail, userPhoneNumber, null, null, null, null);
     }
 
-    public UserAccountDto of(String userId, String userPassword, String userName, String userEmail, String userPhoneNumber, LocalDateTime createdAt, String createdBy, LocalDateTime modifiedAt, String modifiedBy) {
+    public static UserAccountDto of(String userId, String userPassword, String userName, String userEmail, String userPhoneNumber, LocalDateTime createdAt, String createdBy, LocalDateTime modifiedAt, String modifiedBy) {
         return new UserAccountDto(userId, userPassword, userName, userEmail, userPhoneNumber, createdAt, createdBy, modifiedAt, modifiedBy);
     }
 
