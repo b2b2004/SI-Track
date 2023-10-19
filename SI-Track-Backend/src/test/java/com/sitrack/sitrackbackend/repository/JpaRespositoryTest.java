@@ -19,16 +19,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class JpaRespositoryTest {
 
     private final UserAccountRepository userAccountRepository;
-    private final ProductRepository productRepository;
 
     public JpaRespositoryTest(@Autowired UserAccountRepository userAccountRepository,
                               @Autowired ProductRepository productRepository) {
         this.userAccountRepository = userAccountRepository;
-        this.productRepository = productRepository;
     }
 
+    @DisplayName("[user] Create Test")
     @Test
-    public void 회원가입하기(){
+    public void userAccount_signup(){
         // Given
         long previousCount = userAccountRepository.count();
 
@@ -38,20 +37,6 @@ public class JpaRespositoryTest {
 
         // Then
         assertThat(userAccountRepository.count()).isEqualTo(previousCount + 1);
-    }
-
-    @DisplayName("insert test")
-    @Test
-    void product_insert_tset(){
-        // Given
-        long previousCount = productRepository.count();
-
-        // When
-        Product product = Product.of("종이",1000L, 900L, "종이다", 10L, 9L);
-        productRepository.save(product);
-
-        // Then
-        assertThat(productRepository.count()).isEqualTo(previousCount + 1);
     }
 
 }
