@@ -34,7 +34,7 @@ public class Cart extends AuditingFields{
 
     @Setter
     @Column(nullable = false)
-    private Long CartQuantity; // 상품 수량
+    private Long cartQuantity; // 상품 수량
 
     @Setter
     @Column
@@ -46,7 +46,7 @@ public class Cart extends AuditingFields{
         this.id = id;
         this.userAccount = userAccount;
         this.product = product;
-        CartQuantity = cartQuantity;
+        this.cartQuantity = cartQuantity;
         this.isPaid = isPaid;
     }
 
