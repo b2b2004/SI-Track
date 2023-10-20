@@ -1,0 +1,92 @@
+.detailcontainer{
+    padding-top: 50px;
+    width: 800px;
+    margin: 0 auto;
+    /* display: flex;
+    flex-wrap: wrap; */
+    justify-content: center;
+    margin-bottom: 50px;
+    font-family: 'Montserrat', sans-serif;
+    font-family: 'Nanum Gothic', sans-serif;
+}
+.detailcontainer>figure{
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    margin-bottom: 50px;
+}
+.detailcontainer>figure>img{
+    width: 30%;
+}
+.detailcontainer>figure>dl{
+    width: 60%;
+}
+.detailcontainer>figure>dl>dt{
+    margin-bottom: 10px;
+}
+.detailcontainer>figure>dl>dd{
+    color: red;
+    margin-bottom: 10px;
+}
+.detailcontainer>figure>dl>form{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+
+}
+.detailcontainer>figure>dl>form>label{
+    width: 100%;
+    margin-bottom: 10px;
+}
+.detailcontainer>figure>dl>form>label:last-of-type{
+    margin-top: 30px;
+    border-top: 1px solid;
+    padding-top: 15px;
+    margin-left: 15px;
+}
+.detailcontainer>figure>dl>form>label>input{
+    margin-left: 30px
+}
+.detailcontainer>figure>dl>button{
+    width: 150px;
+    height: 50px;
+    margin-right: 10px;
+    border: 1px solid #666;
+    border-radius: 5px;
+}
+.detailcontainer>figure>dl>button:hover{
+    background-color: rgba(0,0,0,0.4);
+}
+.detailcontainer>div{
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: center;
+}
+.detailcontainer>div>button{
+    width: 25%;
+    height: 30px;
+    border: none;
+    border-right: 1px solid;   
+}
+.detailcontainer>div>button:last-of-type{
+    border: none;
+}
+.detailcontainer>div>section{
+    width: 100%;    
+}
+.detailcontainer>div>section>figure{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.detailcontainer>div>section>figure>img{
+    width: 100%;
+}
+a{
+    text-decoration: none;
+    color: black;
+}
+a:hover{
+ color: #1ed760;;
+}
