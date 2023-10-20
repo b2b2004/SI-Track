@@ -1,0 +1,62 @@
+
+.login-container{
+    width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 50px;
+    font-family: 'Montserrat', sans-serif;
+    font-family: 'Nanum Gothic', sans-serif;
+}
+.login-container>h1{
+    text-align: center;
+    margin-bottom: 25px;
+    margin: 30px 300px;
+    width: 100%;
+}
+.login-container>h1 p{
+    font-weight: bold;
+    font-size: 30px;
+}
+.login-container>form{
+    width: 600px;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 70px 0;
+    border: 1px solid rgba(0,0,0,.12);
+    justify-content: center;
+}
+.login-container>form>input{
+    width: 60%;
+    height: 50px;
+    margin-bottom: 30px;
+    border: none;
+    border-bottom: 1px solid;
+}
+.login-container>form>input:nth-of-type(3){
+    border: none;
+    background-color: #3D65F1;
+    font-weight: bold;
+    color: #fff;
+}
+.login-container>form>input:nth-of-type(4){
+    border: none;
+    font-weight: bold;
+    background-color: #FCF43B;
+}
+.login-container>form>input:nth-of-type(5){
+    border: none;
+    font-weight: bold;
+    background-color: #2ED234;
+    color: #fff;
+}
+.findcont{
+    width: 60%;
+    display: flex;
+    justify-content: space-between;
+}
+.findcont>a{
+    font-size: 10px;
+    color: #191919;
+}
