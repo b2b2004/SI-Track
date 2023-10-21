@@ -4,6 +4,7 @@ import com.sitrack.sitrackbackend.domain.Product;
 import com.sitrack.sitrackbackend.domain.account.UserAccount;
 import com.sitrack.sitrackbackend.dto.ProductDto;
 import com.sitrack.sitrackbackend.dto.UserAccountDto;
+import com.sitrack.sitrackbackend.dto.response.ProductResponse;
 import com.sitrack.sitrackbackend.repository.ProductRepository;
 import com.sitrack.sitrackbackend.repository.UserAccountRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -116,13 +117,16 @@ public class ProductServiceTest {
         // Given
         Long productId = 1L;
         Product product = createProduct();
+        ProductResponse productResponse = createProductResponse();
         given(productRepository.findById(productId)).willReturn(Optional.of(product));
 
         // When
-        sut.findbyId_product_one(productId);
+        ProductResponse productResponse1 = sut.findbyId_product_one(productId);
 
         // Then
+        assertThat(productResponse).isEqualTo(productResponse1);
         then(productRepository).should().findById(any());
+
     }
 
     @DisplayName("[ProductS] Find_All Test")
@@ -131,17 +135,20 @@ public class ProductServiceTest {
         // Given
         Long productId = 1L;
         List<Product> products = new ArrayList<>();
-        for(int i=0; i<2; i++)
+        List<ProductResponse> productResponses = new ArrayList<>();
+        for(int i=0; i<2; i++){
             products.add(createProduct());
+            productResponses.add(createProductResponse());
+        }
 
         Product product = createProduct();
         given(productRepository.findAll()).willReturn(products);
 
         // When
-        List<Product> products1 = sut.findbyId_product_all();
+        List<ProductResponse> products1 = sut.findbyId_product_all();
 
         // Then
-        assertThat(products).isEqualTo(products1);
+        assertThat(productResponses).isEqualTo(products1);
         then(productRepository).should().findAll();
     }
 
@@ -198,6 +205,15 @@ public class ProductServiceTest {
                 "볼펜이다",
                 1000L,
                 100L
+        );
+    }
+
+    private ProductResponse createProductResponse(){
+        return ProductResponse.of(
+                "A12",
+                "볼펜",
+                100L,
+                "볼펜이다"
         );
     }
 }
