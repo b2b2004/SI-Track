@@ -4,6 +4,7 @@ import com.sitrack.sitrackbackend.domain.Product;
 import com.sitrack.sitrackbackend.domain.account.UserAccount;
 
 import java.time.LocalDateTime;
+import java.util.stream.Collectors;
 
 public record ProductDto(
         Long productId,
@@ -29,6 +30,30 @@ public record ProductDto(
         return new ProductDto(null, userAccountdto, categoryId, supplierCode, productName, productCost, productPrice, productDetail, productStockQuantity, productSalesQuantity, null, null, null, null);
     }
 
+    public static ProductDto of(UserAccountDto userAccountDto, Long categoryId, String supplierCode, String productName, String productDetail) {
+        return new ProductDto(null, userAccountDto, categoryId,  supplierCode, productName, null, null, productDetail, null, null, null, null, null, null);
+    }
+
+    public static ProductDto from(Product entity) {
+        return new ProductDto(
+                entity.getId(),
+                UserAccountDto.from(entity.getUserAccount()),
+                entity.getCategoryId(),
+                entity.getSupplierCode(),
+                entity.getProductName(),
+                entity.getProductCost(),
+                entity.getProductPrice(),
+                entity.getProductDetail(),
+                entity.getProductStockQuantity(),
+                entity.getProductSalesQuantity(),
+                entity.getCreatedAt(),
+                entity.getCreatedBy(),
+                entity.getModifiedAt(),
+                entity.getModifiedBy()
+        );
+    }
+
+
     public Product toEntity(UserAccount userAccount){
         return Product.of(
                 userAccount,
@@ -42,5 +67,7 @@ public record ProductDto(
                 productSalesQuantity
         );
     }
+
+
 
 }
