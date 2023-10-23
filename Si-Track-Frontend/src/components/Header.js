@@ -15,6 +15,7 @@ export default function Header(){
                     <ul>
                         <li><Link to="/login">로그인</Link></li>
                         <li><Link to="/signup">회원가입</Link></li>
+                        <li><Link to="/mypage">내정보</Link></li>
                     </ul>
                     <ul>
                     <li><Link to="/category1">Category1</Link></li>
