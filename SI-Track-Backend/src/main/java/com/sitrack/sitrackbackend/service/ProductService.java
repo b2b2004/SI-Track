@@ -3,6 +3,7 @@ package com.sitrack.sitrackbackend.service;
 import com.sitrack.sitrackbackend.domain.Product;
 import com.sitrack.sitrackbackend.domain.account.UserAccount;
 import com.sitrack.sitrackbackend.dto.ProductDto;
+import com.sitrack.sitrackbackend.dto.ProductImageDto;
 import com.sitrack.sitrackbackend.dto.response.ProductResponse;
 import com.sitrack.sitrackbackend.repository.ProductRepository;
 import com.sitrack.sitrackbackend.repository.UserAccountRepository;
@@ -10,8 +11,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -24,12 +27,19 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final UserAccountRepository userAccountRepository;
+    private final ImageService imageService;
 
-    public String register_product(ProductDto productDto){
-        System.out.println(productDto);
+    public String register_product(ProductDto productDto, List<MultipartFile> images){
         UserAccount userAccount = userAccountRepository.findByUserId(productDto.userAccountdto().userId());
         Product product = productDto.toEntity(userAccount);
         productRepository.save(product);
+        List<ProductImageDto> productImageDtos = new ArrayList<>();
+        try {
+            productImageDtos = imageService.parseImageFile(images);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        imageService.save(product, productImageDtos);
         return "상품 등록 완료";
     }
 

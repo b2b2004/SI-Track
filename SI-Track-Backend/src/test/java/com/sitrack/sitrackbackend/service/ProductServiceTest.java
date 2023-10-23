@@ -3,6 +3,7 @@ package com.sitrack.sitrackbackend.service;
 import com.sitrack.sitrackbackend.domain.Product;
 import com.sitrack.sitrackbackend.domain.account.UserAccount;
 import com.sitrack.sitrackbackend.dto.ProductDto;
+import com.sitrack.sitrackbackend.dto.ProductImageDto;
 import com.sitrack.sitrackbackend.dto.UserAccountDto;
 import com.sitrack.sitrackbackend.dto.response.ProductResponse;
 import com.sitrack.sitrackbackend.repository.ProductRepository;
@@ -13,17 +14,20 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.sitrack.sitrackbackend.domain.constant.ProductImageType.Thumbnail;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.InstanceOfAssertFactories.OPTIONAL;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
+import static org.mockito.BDDMockito.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -34,6 +38,9 @@ public class ProductServiceTest {
     private ProductService sut;
 
     @Mock
+    private ImageService imageService;
+
+    @Mock
     private ProductRepository productRepository;
 
     @Mock
@@ -41,15 +48,33 @@ public class ProductServiceTest {
 
     @DisplayName("[ProductS] 상품 등록 성공")
     @Test
-    public void register_product(){
+    public void register_product() throws IOException {
         // Given
         UserAccount userAccount = createUserAccount();
         ProductDto productdto = createProductDto();
         String userId = productdto.userAccountdto().userId();
+        final String fileName = "testImage1"; //파일명
+        final String contentType = "png"; //파일타입
+        final String filePath = "src/test/resources/testImage/"+fileName+"."+contentType; //
+        FileInputStream fileInputStream = new FileInputStream(filePath);
+
+        List<MultipartFile> multipartFiles = new ArrayList<>();
+        MockMultipartFile image1 = new MockMultipartFile(
+                "images", //name
+                fileName + "." + contentType, //originalFilename
+                contentType,
+                fileInputStream
+        );
+        multipartFiles.add(image1);
+        List<ProductImageDto> productImageDtos = new ArrayList<>();
+        ProductImageDto productImageDto = createProductImageDto();
+        productImageDtos.add(productImageDto);
+
         given(userAccountRepository.findByUserId(userId)).willReturn(userAccount);
+        given(imageService.parseImageFile(multipartFiles)).willReturn(productImageDtos);
 
         // When
-        String result = sut.register_product(productdto);
+        String result = sut.register_product(productdto, multipartFiles);
 
         // Then
         then(productRepository).should().save(any());
@@ -176,6 +201,16 @@ public class ProductServiceTest {
                 "010-1111-2222"
         );
     }
+
+    private ProductImageDto createProductImageDto(){
+        return ProductImageDto.of(
+                "testImage1.png",
+                "asdasd.png",
+                "/",
+                Thumbnail
+        );
+    }
+
     private UserAccount createUserAccount() {
         return createUserAccount("user1");
     }

@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -18,12 +19,14 @@ public class Product extends AuditingFields{
     @Column(name = "product_id")
     private Long id;
 
-    // TODO: 카테고리 아이디, 납품 회사 코드, 상품 이미지 추후 추가
-
     @Setter
     @JoinColumn(name = "user_id")
     @ManyToOne(optional = false)
     private UserAccount userAccount; // 유저 정보 (ID)
+
+    @Setter
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<ProductImage> productImages;
 
     @Setter
     @Column(nullable = false)

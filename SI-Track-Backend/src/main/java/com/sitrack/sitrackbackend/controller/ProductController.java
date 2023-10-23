@@ -25,7 +25,7 @@ public class ProductController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register_product(@RequestBody ProductRequest productRequest, @AuthenticationPrincipal PrincipalDetails principalDetails){
-        String msg = productService.register_product(productRequest.toDto(principalDetails.todto()));
+        String msg = productService.register_product(productRequest.toDto(principalDetails.todto()), productRequest.productImages());
         return new ResponseEntity<>(msg, HttpStatus.OK);
     }
 
