@@ -9,6 +9,8 @@ import com.sitrack.sitrackbackend.repository.ProductRepository;
 import com.sitrack.sitrackbackend.repository.UserAccountRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,10 +46,6 @@ public class ProductService {
     }
 
     public String update_product(Long productId, ProductDto dto){
-        // productId --> 기존 데이터베이스 코드
-        // dto --> 업데이트 dto
-        // 오류 메시지가 있으면 Response로 보내주고 싶음
-        // 메시지를 쌓아서 만들면 되지 않을까? 어떻게 쌓아 줄까
         try {
             Product product = productRepository.getReferenceById(productId);
             String userIdCk = product.getUserAccount().getUserId();
@@ -100,15 +98,13 @@ public class ProductService {
         return ProductResponse.from(productDto);
     }
 
-    public List<ProductResponse> findbyId_product_all(){
-        List<Product> products = productRepository.findAll();
-        List<ProductResponse> productResponses = new ArrayList<>();
-
-        for(Product product : products){
-            ProductResponse productResponse = ProductResponse.from(ProductDto.from(product));
-            productResponses.add(productResponse);
+    public Page<ProductDto> findbyId_product_all_and_search(Pageable pageable, String searchValue){
+        // 검색어가 없을때 처리
+        if(searchValue == null || searchValue.isBlank()){
+            return productRepository.findAll(pageable).map(ProductDto::from);
         }
 
-        return productResponses;
+        // 검색어가 있을 경우
+        return productRepository.findByproductNameContaining(searchValue, pageable).map(ProductDto::from);
     }
 }
