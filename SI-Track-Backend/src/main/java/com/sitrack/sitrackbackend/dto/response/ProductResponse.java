@@ -1,18 +1,21 @@
 package com.sitrack.sitrackbackend.dto.response;
 
 import com.sitrack.sitrackbackend.dto.ProductDto;
+import com.sitrack.sitrackbackend.dto.ProductImageDto;
 import org.springframework.security.core.parameters.P;
+
+import java.util.List;
 
 public record ProductResponse(
         String supplierCode,
         String productName,
         Long productCost,
-        String productDetail
-        // 이미지 추가 예정
+        String productDetail,
+        List<ProductImageDto> productImageDtos
 ) {
 
-    public static ProductResponse of(String supplierCode, String productName, Long productCost, String productDetail){
-        return new ProductResponse(supplierCode, productName, productCost, productDetail);
+    public static ProductResponse of(String supplierCode, String productName, Long productCost, String productDetail, List<ProductImageDto> productImageDtos){
+        return new ProductResponse(supplierCode, productName, productCost, productDetail, productImageDtos);
     }
 
     public static ProductResponse from(ProductDto dto) {
@@ -20,7 +23,8 @@ public record ProductResponse(
                 dto.supplierCode(),
                 dto.productName(),
                 dto.productCost(),
-                dto.productDetail()
+                dto.productDetail(),
+                dto.productImageDtos()
         );
     }
 }

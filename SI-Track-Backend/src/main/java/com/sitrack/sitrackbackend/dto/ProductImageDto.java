@@ -15,6 +15,15 @@ public record ProductImageDto(
         return new ProductImageDto(originalName, saveName, imagePath, imageType);
     }
 
+    public static ProductImageDto from(ProductImage entity) {
+        return new ProductImageDto(
+                entity.getOriginalName(),
+                entity.getSaveName(),
+                entity.getImagePath(),
+                entity.getImageType()
+        );
+    }
+
     public ProductImage toEntity(Product product, ProductImageDto productImageDto){
         return ProductImage.of(
                 product,
