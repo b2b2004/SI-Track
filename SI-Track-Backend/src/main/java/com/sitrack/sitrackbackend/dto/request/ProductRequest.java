@@ -16,9 +16,8 @@ public record ProductRequest(
         String productDetail,
         Long productStockQuantity,
         Long productSalesQuantity,
-        String userId,
-        List<MultipartFile> productImages
-) {
+        String userId
+){
 
     public static ProductRequest of(Long categoryId,
                                     String supplierCode,
@@ -29,7 +28,7 @@ public record ProductRequest(
                                     Long productStockQuantity,
                                     Long productSalesQuantity,
                                     String userId){
-        return new ProductRequest(categoryId, supplierCode, productName, productCost, productPrice, productDetail, productStockQuantity, productSalesQuantity, userId, null);
+        return new ProductRequest(categoryId, supplierCode, productName, productCost, productPrice, productDetail, productStockQuantity, productSalesQuantity, userId);
     }
 
     public ProductDto toDto(UserAccountDto userAccountDto) {

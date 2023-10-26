@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 public record ProductDto(
         Long productId,
         UserAccountDto userAccountdto,
-        List<ProductImage> productImages,
+        List<ProductImageDto> productImageDtos,
         Long categoryId,
         String supplierCode,
         String productName,
@@ -41,7 +41,8 @@ public record ProductDto(
         return new ProductDto(
                 entity.getId(),
                 UserAccountDto.from(entity.getUserAccount()),
-                entity.getProductImages(),
+                entity.getProductImages().stream().map(ProductImageDto::from)
+                        .collect(Collectors.toList()),
                 entity.getCategoryId(),
                 entity.getSupplierCode(),
                 entity.getProductName(),

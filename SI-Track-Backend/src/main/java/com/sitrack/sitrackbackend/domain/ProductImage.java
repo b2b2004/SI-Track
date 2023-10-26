@@ -33,6 +33,7 @@ public class ProductImage {
     private String imagePath; // 파일 경로
 
     @Setter
+    @Enumerated(value = EnumType.STRING)
     private ProductImageType imageType; // 이미지 타입 -> 썸네일, 서브네일 구분
 
     protected ProductImage(){}
