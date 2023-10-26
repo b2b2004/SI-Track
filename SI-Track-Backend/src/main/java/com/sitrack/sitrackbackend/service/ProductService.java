@@ -1,6 +1,7 @@
 package com.sitrack.sitrackbackend.service;
 
 import com.sitrack.sitrackbackend.domain.Product;
+import com.sitrack.sitrackbackend.domain.ProductImage;
 import com.sitrack.sitrackbackend.domain.account.UserAccount;
 import com.sitrack.sitrackbackend.dto.ProductDto;
 import com.sitrack.sitrackbackend.dto.ProductImageDto;
@@ -19,7 +20,6 @@ import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -32,20 +32,28 @@ public class ProductService {
     private final ImageService imageService;
 
     public String register_product(ProductDto productDto, List<MultipartFile> images){
-        UserAccount userAccount = userAccountRepository.findByUserId(productDto.userAccountdto().userId());
-        Product product = productDto.toEntity(userAccount);
-        productRepository.save(product);
-        List<ProductImageDto> productImageDtos = new ArrayList<>();
         try {
-            productImageDtos = imageService.parseImageFile(images);
+            UserAccount userAccount = userAccountRepository.findByUserId(productDto.userAccountdto().userId());
+            Product product = productDto.toEntity(userAccount);
+
+            List<ProductImageDto> productImageDtos = imageService.parseImageFile(images);
+            List<ProductImage> productImages = new ArrayList<>();
+
+            for(ProductImageDto image : productImageDtos){
+                ProductImage productImage = image.toEntity(product, image);
+                productImages.add(productImage);
+            }
+            product.addproductImages(productImages);
+
+            productRepository.save(product);
+            imageService.save(product, productImageDtos);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        imageService.save(product, productImageDtos);
         return "상품 등록 완료";
     }
 
-    public String update_product(Long productId, ProductDto dto){
+    public String update_product(Long productId, ProductDto dto, List<MultipartFile> productImages){
         try {
             Product product = productRepository.getReferenceById(productId);
             String userIdCk = product.getUserAccount().getUserId();
@@ -64,7 +72,11 @@ public class ProductService {
                     product.setProductDetail(dto.productDetail());
                 }
 
+                imageService.delete_By_product_id(productId);
                 productRepository.save(product);
+
+                List<ProductImageDto> productImageDtos = imageService.parseImageFile(productImages);
+                imageService.save(product, productImageDtos);
             }else{
                 return "권한이 없습니다.";
                 // 상품 등록자와 상품 업데이트자가 다를때
@@ -73,6 +85,8 @@ public class ProductService {
 
         }catch (EntityNotFoundException e){
             log.info("수정에 필요한 정보가 없습니다. - {}",  e.getLocalizedMessage());
+        }catch (IOException e) {
+            log.info("이미지 오류 - {}", e.getLocalizedMessage());
         }
 
         return "상품 업데이트 완료";
@@ -94,11 +108,12 @@ public class ProductService {
     public ProductResponse findbyId_product_one(Long productId){
         ProductDto productDto = productRepository.findById(productId)
                                             .map(ProductDto::from)
-                                            .orElseThrow(()-> new EntityNotFoundException("게시글이 없습니다 - productId: " + productId));
+                                            .orElseThrow(()-> new EntityNotFoundException("상품이 없습니다 - productId: " + productId));
         return ProductResponse.from(productDto);
     }
 
     public Page<ProductDto> findbyId_product_all_and_search(Pageable pageable, String searchValue){
+
         // 검색어가 없을때 처리
         if(searchValue == null || searchValue.isBlank()){
             return productRepository.findAll(pageable).map(ProductDto::from);

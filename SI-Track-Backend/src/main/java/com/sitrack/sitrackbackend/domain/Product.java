@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -26,7 +27,7 @@ public class Product extends AuditingFields{
 
     @Setter
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    private List<ProductImage> productImages;
+    private List<ProductImage> productImages = new ArrayList<>();
 
     @Setter
     @Column(nullable = false)
@@ -70,6 +71,14 @@ public class Product extends AuditingFields{
         this.productDetail = productDetail;
         this.productStockQuantity = productStockQuantity;
         this.productSalesQuantity = productSalesQuantity;
+    }
+
+    public void addproductImage(ProductImage productImage){
+        this.getProductImages().add(productImage);
+    }
+
+    public void addproductImages(List<ProductImage> productImage){
+        this.getProductImages().addAll(productImage);
     }
 
     protected Product() {}

@@ -27,8 +27,8 @@ public class ImageService {
     private final ProductImageRepository productImageRepository;
 
     public List<ProductImageDto> parseImageFile(List<MultipartFile> multipartFiles) throws IOException {
-        List<ProductImageDto> productImageDtos= new ArrayList<>();
-        String imgSavePath = ""; // 미정
+        List<ProductImageDto> productImageDtos = new ArrayList<>();
+        String imgSavePath = "src/main/resources/static/img"; // 임시 저장
         ProductImageType productImageType = Subnail;
 
         int count = 0;
@@ -42,6 +42,8 @@ public class ImageService {
 
                     if(count == 0){
                         productImageType = Thumbnail;
+                    }else{
+                        productImageType = Subnail;
                     }
 
                     ProductImageDto productImageDto = ProductImageDto.of(img.getOriginalFilename(), fileName, imgSavePath, productImageType);
@@ -58,5 +60,9 @@ public class ImageService {
             ProductImage productImage = image.toEntity(product, image);
             productImageRepository.save(productImage);
         }
+    }
+
+    public void delete_By_product_id(Long productId){
+        productImageRepository.deleteByProductId(productId);
     }
 }
