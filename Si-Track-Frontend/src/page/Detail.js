@@ -3,6 +3,7 @@ import img from '../assets/no01.png';
 import detailimg1 from '../assets/no10.png';
 import detailimg2 from '../assets/no11.png';
 import detailimg3 from '../assets/no12.png';
+import { Link } from "react-router-dom";
 
 export default function Detail(){
     return(
@@ -25,7 +26,7 @@ export default function Detail(){
                        <input type="text" disabled/>
                        </label>
                     </form>
-                    <button type="submit">결제하기</button>
+                    <button type="submit"><Link to='/pay'>결제하기</Link></button>
                     <button type="submit">장바구니</button>
                     <button>견적서출력</button>
                 </dl>
