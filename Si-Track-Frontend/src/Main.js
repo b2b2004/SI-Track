@@ -10,6 +10,8 @@ import Success from "./page/Success";
 import Mypage from "./page/Mypage";
 import Change from "./page/Change";
 import Register from "./page/Register";
+import Pay from "./page/Pay";
+import Paycomplete from "./page/Paycomplete";
 
 export default function Main(){
     return(
@@ -26,6 +28,8 @@ export default function Main(){
             <Route path="/mypage" element={<Mypage />} />
             <Route path="/change" element={<Change />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/pay" element={<Pay />} />
+            <Route path="/Paycomplete" element={<Paycomplete />} />
             </Routes>
         </App>
         </BrowserRouter>
