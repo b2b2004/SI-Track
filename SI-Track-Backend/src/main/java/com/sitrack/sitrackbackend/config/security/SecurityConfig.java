@@ -1,10 +1,12 @@
 package com.sitrack.sitrackbackend.config.security;
 
+import com.sitrack.sitrackbackend.config.CorsConfig;
 import com.sitrack.sitrackbackend.config.security.auth.PrincipalDetailsService;
 import com.sitrack.sitrackbackend.config.security.filter.JwtAuthenticationFilter;
 import com.sitrack.sitrackbackend.config.security.filter.JwtAuthorizationFilter;
 import com.sitrack.sitrackbackend.repository.UserAccountRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,9 +14,22 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Arrays;
 
 @RequiredArgsConstructor
 @Configuration
@@ -26,16 +41,18 @@ public class SecurityConfig {
     private final PrincipalDetailsService principalDetailsService;
     private final UserAccountRepository userAccountRepository;
 
+    private final CorsConfig corsConfig;
+
     // 시큐리티 필터 설정
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .cors().disable()
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .formLogin().disable()
                 .httpBasic().disable() // http의 기본 인증. ID, PW 인증방식
+                .addFilter(corsConfig.corsFilter())
                 .addFilter(new JwtAuthenticationFilter(authenticationManager(), jwtTokenProvider()))  // AuthenticationManager
                 .addFilter(new JwtAuthorizationFilter(authenticationManager(),  jwtTokenProvider(), principalDetailsService))  // AuthenticationManager
                 .authorizeHttpRequests()
