@@ -5,53 +5,60 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.apache.catalina.User;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Getter
 @ToString(callSuper = true)
 @Entity
-public class Cart extends AuditingFields{
+@EntityListeners(AuditingEntityListener.class)
+public class Cart{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cart_id")
     private Long id;
 
-    // userid 추가
-    @Setter
-    @ManyToOne(optional = false)
+    @OneToOne
     @JoinColumn(name = "user_id")
     private UserAccount userAccount;
 
-    // productid 추가
-    @Setter
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "product_id")
-    private Product product;
+    @OneToMany(mappedBy = "cart")
+    private List<CartItem> cartItems = new ArrayList<>();
 
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @CreatedDate
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt; // 생성일시
 
     @Setter
-    @Column(nullable = false)
     private Long cartQuantity; // 상품 수량
-
-    @Setter
-    @Column
-    private Enum isPaid;
 
     protected Cart(){}
 
-    public Cart(Long id, UserAccount userAccount, Product product, Long cartQuantity, Enum isPaid) {
-        this.id = id;
-        this.userAccount = userAccount;
-        this.product = product;
-        this.cartQuantity = cartQuantity;
-        this.isPaid = isPaid;
+    public void addcartItem(CartItem cartItem){
+        this.getCartItems().add(cartItem);
     }
 
-    public static Cart of(Long id, UserAccount userAccount, Product product, Long cartQuantity, Enum isPaid){
-        return new Cart(id, userAccount, product, cartQuantity, isPaid);
+    public Cart(UserAccount user) {
+        this.userAccount = user;
+    }
+
+    public Cart(UserAccount userAccount, Long cartQuantity) {
+        this.userAccount = userAccount;
+        this.cartQuantity = cartQuantity;
+    }
+
+    public static Cart of(UserAccount userAccount, Long cartQuantity){
+        return new Cart(userAccount, cartQuantity);
     }
 
     @Override

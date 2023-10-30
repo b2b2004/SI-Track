@@ -37,6 +37,9 @@ public class UserAccount extends AuditingFields {
     @Column(length = 100, nullable = false)
     private String userPhoneNumber;
 
+    @OneToOne(mappedBy = "userAccount")
+    private Cart cart;
+
     protected UserAccount(){}
 
     public UserAccount(String userId, String userPassword, String userName, String userEmail, String userPhoneNumber) {
