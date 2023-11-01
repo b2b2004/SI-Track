@@ -30,8 +30,8 @@ public class CartController {
     }
 
     // 장바구니 상품 추가
-    @PostMapping("/addProduct")
-    public ResponseEntity<?> addProduct(@RequestBody CartItemRequest cartItemRequest,
+    @PostMapping("/addCart")
+    public ResponseEntity<?> addCart(@RequestBody CartItemRequest cartItemRequest,
                                         @AuthenticationPrincipal PrincipalDetails principalDetails){
         UserAccount user = principalDetails.getUser();
         cartService.createCart(cartItemRequest, user);
