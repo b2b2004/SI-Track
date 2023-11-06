@@ -6,6 +6,7 @@ import com.sitrack.sitrackbackend.domain.account.UserAccount;
 import com.sitrack.sitrackbackend.repository.UserAccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
@@ -73,7 +74,9 @@ public class JwtProvider {
                 return null;
             }
 
-            UserAccount tokenUser = userAccountRepository.findByUserId(userId);
+            UserAccount tokenUser = userAccountRepository.findByUserId(userId)
+                    .orElseThrow(()-> new UsernameNotFoundException("해당 사용자를 찾을 수 없습니다. : " + userId));
+
             return tokenUser;
 
         } catch (Exception e){

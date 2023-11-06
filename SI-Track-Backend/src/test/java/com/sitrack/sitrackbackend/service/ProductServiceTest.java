@@ -65,7 +65,7 @@ public class ProductServiceTest {
         List<MultipartFile> multipartFiles = createMultipartImage();
         List<ProductImageDto> productImageDtos = createProductImageDto();
 
-        given(userAccountRepository.findByUserId(userId)).willReturn(userAccount);
+        given(userAccountRepository.findByUserId(userId)).willReturn(Optional.of(userAccount));
         given(imageService.parseImageFile(multipartFiles)).willReturn(productImageDtos);
 
         // When

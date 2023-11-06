@@ -27,11 +27,11 @@ public class Cart{
     @Column(name = "cart_id")
     private Long id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private UserAccount userAccount;
 
-    @OneToMany(mappedBy = "cart")
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
     private List<CartItem> cartItems = new ArrayList<>();
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
@@ -42,12 +42,19 @@ public class Cart{
     @Setter
     private Long cartQuantity; // 상품 수량
 
-    protected Cart(){}
-
-    public void addcartItem(CartItem cartItem){
-        this.getCartItems().add(cartItem);
+    // 연관관계 메서드
+    public void serUserAccout(UserAccount userAccount) {
+        this.userAccount = userAccount;
+        userAccount.setCart(this);
     }
 
+    public void addcartItem(CartItem cartItem){
+        cartItems.add(cartItem);
+        cartItem.setCart(this);
+    }
+
+
+    protected Cart(){}
     public Cart(UserAccount user) {
         this.userAccount = user;
     }

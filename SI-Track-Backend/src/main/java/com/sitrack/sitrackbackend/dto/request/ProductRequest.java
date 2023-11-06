@@ -15,8 +15,7 @@ public record ProductRequest(
         Long productPrice,
         String productDetail,
         Long productStockQuantity,
-        Long productSalesQuantity,
-        String userId
+        Long productSalesQuantity
 ){
 
     public static ProductRequest of(Long categoryId,
@@ -26,9 +25,8 @@ public record ProductRequest(
                                     Long productPrice,
                                     String productDetail,
                                     Long productStockQuantity,
-                                    Long productSalesQuantity,
-                                    String userId){
-        return new ProductRequest(categoryId, supplierCode, productName, productCost, productPrice, productDetail, productStockQuantity, productSalesQuantity, userId);
+                                    Long productSalesQuantity){
+        return new ProductRequest(categoryId, supplierCode, productName, productCost, productPrice, productDetail, productStockQuantity, productSalesQuantity);
     }
 
     public ProductDto toDto(UserAccountDto userAccountDto) {

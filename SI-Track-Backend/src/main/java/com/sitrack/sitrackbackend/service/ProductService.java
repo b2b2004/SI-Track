@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,7 +34,8 @@ public class ProductService {
 
     public String register_product(ProductDto productDto, List<MultipartFile> images){
         try {
-            UserAccount userAccount = userAccountRepository.findByUserId(productDto.userAccountdto().userId());
+            UserAccount userAccount = userAccountRepository.findByUserId(productDto.userAccountdto().userId())
+                    .orElseThrow(()-> new UsernameNotFoundException("해당 사용자를 찾을 수 없습니다. : " + productDto.userAccountdto().userId()));
             Product product = productDto.toEntity(userAccount);
 
             List<ProductImageDto> productImageDtos = imageService.parseImageFile(images);
