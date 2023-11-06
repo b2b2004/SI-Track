@@ -110,7 +110,9 @@ margin-bottom: 30px;
     }
 .direct{
     text-align: center;
+    display: none;
 }
 .database{
     text-align: center;
+    display: none;
 }

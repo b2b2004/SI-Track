@@ -1,10 +1,13 @@
 import { click } from '@testing-library/user-event/dist/click';
 import './Signup.css';
+import Post from './Post';
 import { useState } from 'react';
 export default function Signup(){
 
     const [modal,setModal] = useState(false);
-
+    const [addressObj,setAddressObj] = useState('');
+    const [locationObj,setLocationObj] = useState('');
+    const address = addressObj.townAddress;
     return(
         <div className='signup-container'>
         <h1>
@@ -49,8 +52,8 @@ export default function Signup(){
             <input type='text' placeholder='회사/단체명'></input>
             <input type='text' placeholder='담당자 이름'></input>
             <input type='text' placeholder='사업자번호'></input>
-            <input type='text' placeholder='사업자주소'></input>
-            <button type='button' >주소찾기</button>
+            <input type='text'defaultValue={address} placeholder='사업자주소'></input>
+            <Post setAddressObj={setAddressObj} setLocationObj={setLocationObj} />  
             <input type='text' placeholder='상세주소'></input>
             <input type='text' placeholder='대표자이름'></input>
             <input type='text' placeholder='연락처'></input>

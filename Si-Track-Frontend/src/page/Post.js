@@ -8,6 +8,7 @@ export default function DaumPost(props){
       let fullAddress = data.address;
       let extraAddress = ''; 
       let localAddress = data.sido + ' ' + data.sigungu;
+      let postcode = data.zonecode;
       if (data.addressType === 'R') { 
         if (data.bname !== '') {
           extraAddress += data.bname; 
@@ -18,7 +19,8 @@ export default function DaumPost(props){
         fullAddress = fullAddress.replace(localAddress, '');
         props.setAddressObj({
           areaAddress: localAddress,
-          townAddress: fullAddress += (extraAddress !== '' ? `(${extraAddress})` : '')
+          townAddress: fullAddress += (extraAddress !== '' ? `(${extraAddress})` : ''),
+          postcode: postcode,
         });
       }
     }
