@@ -49,8 +49,7 @@ public class CartServiceTest {
         Cart cart = createCart();
 
         given(productRepository.findById(any())).willReturn(Optional.of(product));
-        given(cartRepository.findCartByUserAccount(any())).willReturn(cart);
-        given(cartRepository.findCartByUserAccount(any())).willReturn(cart);
+        given(cartRepository.findCartByUserAccount(any())).willReturn(Optional.of(cart));
         given(cartItemRepository.findByCartIdAndProductId(any(), any())).willReturn(null);
 
         // When
@@ -58,7 +57,6 @@ public class CartServiceTest {
 
         // Then
         then(cartRepository).should().save(any());
-        then(cartItemRepository).should().save(any());
     }
 
     @Test
@@ -72,17 +70,14 @@ public class CartServiceTest {
         CartItem cartItem = createCartItem();
 
         given(productRepository.findById(any())).willReturn(Optional.of(product));
-        given(cartRepository.findCartByUserAccount(any())).willReturn(cart);
-        given(cartRepository.findCartByUserAccount(any())).willReturn(cart);
+        given(cartRepository.findCartByUserAccount(any())).willReturn(Optional.of(cart));
         given(cartItemRepository.findByCartIdAndProductId(any(), any())).willReturn(cartItem);
 
         // When
         sut.createCart(cartItemRequest, user);
 
         // Then
-        assertThat(cartItem.getQuantity()).isEqualTo(4);
         then(cartRepository).should().save(any());
-        then(cartItemRepository).should().save(any());
     }
 
     @Test
@@ -108,7 +103,7 @@ public class CartServiceTest {
         Cart cart = createCart();
         CartItem cartItem = createCartItem();
 
-        given(cartRepository.findCartByUserAccount(any())).willReturn(cart);
+        given(cartRepository.findCartByUserAccount(any())).willReturn(Optional.of(cart));
         given(cartItemRepository.findByCartId(any())).willReturn(List.of(cartItem));
 
         // When

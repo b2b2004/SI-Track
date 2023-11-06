@@ -5,6 +5,8 @@ import com.sitrack.sitrackbackend.config.security.JwtProvider;
 import com.sitrack.sitrackbackend.config.security.auth.PrincipalDetails;
 import com.sitrack.sitrackbackend.domain.account.UserAccount;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,6 +18,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -73,6 +77,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         String jwtToken = jwtProvider.generateJwtToken(userId, userPassword);
         response.addHeader("Authorization", "Bearer " + jwtToken);
-
     }
+
+
 }

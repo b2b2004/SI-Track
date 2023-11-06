@@ -4,6 +4,8 @@ import com.sitrack.sitrackbackend.domain.Cart;
 import com.sitrack.sitrackbackend.domain.account.UserAccount;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
+
 public interface CartRepository extends JpaRepository<Cart, Long> {
-    Cart findCartByUserAccount(UserAccount user);
+    Optional<Cart> findCartByUserAccount(UserAccount user);
 }

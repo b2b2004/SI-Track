@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +32,8 @@ public class AccountService {
     }
 
     public String login(LoginDto loginDto){
-        UserAccount user = userAccountRepository.findByUserId(loginDto.userId());
+        UserAccount user = userAccountRepository.findByUserId(loginDto.userId())
+                .orElseThrow(()-> new UsernameNotFoundException("해당 사용자를 찾을 수 없습니다. : " + loginDto.userId()));
         String rawPassword = loginDto.userPassword();
 
         String userId = user.getUserId();
