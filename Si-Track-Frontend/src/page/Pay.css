@@ -28,7 +28,7 @@
 }
 .paycontainer>form>ul>li:nth-of-type(2)>ul:first-of-type>li{
 width: 33.333%;
-border: 1px solid;
+border: 1px solid #ddd;
 background-color: #fff;
 display: flex;
 align-items: center;
@@ -115,4 +115,23 @@ margin-bottom: 30px;
 .database{
     text-align: center;
     display: none;
+}
+.paycontainer>form>ul>li:last-of-type>ul>li{
+    display: flex;
+    flex-wrap: nowrap;
+    padding: 10px;
+}
+.paycontainer>form>ul>li:last-of-type>ul>li>figure{
+    margin-right: 20px;
+}
+.paycontainer>form>ul>li:last-of-type>ul>li>dl>dt{
+    text-align: center;
+    border: 1px solid #ddd;
+    font-weight: bold;
+    padding: 10px;
+}
+.paycontainer>form>ul>li:last-of-type>ul>li>dl>dd{
+    text-align: center;
+    border: 1px solid #ddd;
+    padding: 10px;
 }

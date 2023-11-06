@@ -5,6 +5,7 @@
     box-sizing: border-box;
     border: 1px solid #666;
 }
+
 .product>img{
     width: 100%;
     margin-bottom: 20px;
@@ -15,6 +16,7 @@
 .product dt{
     font-size: 1.3em;
     margin-bottom: 25px;
+    margin-top: 10px;
 }
 .product dd{
     margin: 0;

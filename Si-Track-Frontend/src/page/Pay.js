@@ -2,7 +2,7 @@ import './Pay.css';
 import { useState } from 'react';
 import Post from './Post';
 import { Link } from 'react-router-dom';
-
+import img from '../assets/no01.png';
 export default function Pay(){
     const [addressObj,setAddressObj] = useState('');
     const [locationObj,setLocationObj] = useState('');
@@ -50,8 +50,33 @@ export default function Pay(){
         <li className='database'>
             데이터베이스에 입력된 사용자 주소
         </li>
+        <li>
+
+        <ul>
+            <li>
+                <figure>
+                    <img src={img} alt="상품이미지"></img>
+                </figure>
+                <dl>
+                    <dt>상품명</dt>
+                    <dd>sssss</dd>
+                </dl>
+                <dl>
+                    <dt>상품설명</dt>
+                    <dd>(대충상품설명이 들어가는 칸)</dd>
+                </dl>
+                <dl>
+                    <dt>주문가격</dt>
+                    <dd>7000원</dd>
+                </dl>
+
+            </li>
+            
+        </ul>
+                    
+        </li>
         <p><Link to='/paycomplete'><input defaultValue="결제"/></Link></p>
-        <p><input defaultValue="취소"/></p>
+        <p><Link to='/'><input defaultValue="취소"/></Link></p>
     </ul>
 </form>
 </div>

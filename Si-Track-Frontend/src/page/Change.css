@@ -41,6 +41,10 @@
 .changecontainer>form>table>tbody>tr>td{
     width: 200px;
 }
+.changecontainer>form>table>tbody>tr>td>input{
+    border: 1px solid #ddd;
+    height: 30px;
+}
 .changecontainer>form>table>tbody>tr>td>button{
     border: 1px solid #e5e5e5;
     padding: 10px;
