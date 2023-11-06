@@ -12,6 +12,7 @@ import Change from "./page/Change";
 import Register from "./page/Register";
 import Pay from "./page/Pay";
 import Paycomplete from "./page/Paycomplete";
+import Cart from "./page/Cart";
 
 export default function Main(){
     return(
@@ -30,6 +31,7 @@ export default function Main(){
             <Route path="/register" element={<Register />} />
             <Route path="/pay" element={<Pay />} />
             <Route path="/Paycomplete" element={<Paycomplete />} />
+            <Route path="/cart" element={<Cart />} />
             </Routes>
         </App>
         </BrowserRouter>

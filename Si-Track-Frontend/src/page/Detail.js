@@ -27,7 +27,7 @@ export default function Detail(){
                        </label>
                     </form>
                     <button type="submit"><Link to='/pay'>결제하기</Link></button>
-                    <button type="submit">장바구니</button>
+                    <button type="submit"><Link to='/cart'>장바구니</Link></button>
                     <button>견적서출력</button>
                 </dl>
             </figure>
