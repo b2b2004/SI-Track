@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,30 +32,34 @@ public class CartService {
 
     // 장바구니 생성
     public void createCart(CartItemRequest cartItemRequest, UserAccount user){
+
         // 상품 id로 상품 가져오고
         Product product = productRepository.findById(cartItemRequest.productId()).orElseThrow();
 
-        // 유저 아이디로 카트 있는지 확인하고
-        Cart cart = cartRepository.findCartByUserAccount(user);
-
         // 장바구니 없으면 만들어주고
-        if (cart == null) {
+        if (!cartRepository.findCartByUserAccount(user).isPresent()) {
             Cart newCart = new Cart(user);
             cartRepository.save(newCart);
         }
 
-        cart = cartRepository.findCartByUserAccount(user);
+        Cart cart = cartRepository.findCartByUserAccount(user)
+                .orElseThrow(()-> new EntityNotFoundException("장바구니가 없습니다."));
         CartItem cartItem = cartItemRepository.findByCartIdAndProductId(cart.getId(), product.getId());
+
 
         if(cartItem == null){   // 상품이 존재 하지 않을 시
             cartItem = CartItem.of(cart, product, cartItemRequest.quantity());
             cart.addcartItem(cartItem);
-        }else{  // 상품이 존재 할 시 수량만 증가
-            cartItem.addQuantity(cartItemRequest.quantity());
+        }else{  // 상품 존재 시
+            List<CartItem> cartItems =  cart.getCartItems();
+            for(CartItem item : cartItems){
+                if(item.equals(cartItem)){
+                    item.addQuantity(cartItemRequest.quantity());
+                }
+            }
         }
 
         cartRepository.save(cart);
-        cartItemRepository.save(cartItem);
     }
 
     // 장바구니 상품 삭제
@@ -73,9 +78,9 @@ public class CartService {
 
     // 장바구니 조회
     public List<CartItemResponse> findAllCart(UserAccount user){
-        user.getCart().getCartItems();
 
-        Cart cart = cartRepository.findCartByUserAccount(user);
+        Cart cart = cartRepository.findCartByUserAccount(user)
+                .orElseThrow(()-> new EntityNotFoundException("장바구니가 없습니다."));
         List<CartItem> items = cartItemRepository.findByCartId(cart.getId());
         List<CartItemResponse> result = new ArrayList<>();
 

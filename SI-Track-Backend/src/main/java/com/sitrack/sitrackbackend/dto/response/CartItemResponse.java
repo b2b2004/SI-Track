@@ -18,6 +18,11 @@ public record CartItemResponse(
         String productimage,
         Long amount
 ) {
+
+    public static CartItemResponse of(Long cartItemId, Long productId, String productName, String productDetail, Long productPrice, String productimage, Long amount) {
+        return new CartItemResponse(cartItemId, productId, productName, productDetail, productPrice, productimage, amount);
+    }
+
     public static CartItemResponse toDto(CartItem cartItem, Long amount) {
         Product product = cartItem.getProduct();
         List<ProductImage> productImages = product.getProductImages();
@@ -29,6 +34,5 @@ public record CartItemResponse(
         }
         return new CartItemResponse(cartItem.getId(), product.getId(), product.getProductName(), product.getProductDetail(), product.getProductPrice(), a, amount);
     }
-
 
 }

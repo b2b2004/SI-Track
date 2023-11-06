@@ -123,8 +123,7 @@ public class ProductControllerTest {
                 1000L,
                  "종이다",
                 10L,
-                5L,
-                "test1"
+                5L
         );
     }
 
