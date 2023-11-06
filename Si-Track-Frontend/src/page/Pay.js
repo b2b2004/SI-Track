@@ -6,6 +6,8 @@ import { Link } from 'react-router-dom';
 export default function Pay(){
     const [addressObj,setAddressObj] = useState('');
     const [locationObj,setLocationObj] = useState('');
+    const address = addressObj.townAddress;
+    const postcode = addressObj.postcode;
     return(
 
         <div className='paycontainer'>
@@ -36,8 +38,8 @@ export default function Pay(){
                 <input type='text' disabled placeholder='지역주소'></input>
                 <Post setAddressObj={setAddressObj} setLocationObj={setLocationObj} />  
                 <ul>
-        <li><input type='text' placeholder='우편번호'></input></li>
-        <li><input type='text' placeholder='주소'></input></li>
+        <li><input type='text' defaultValue={postcode} placeholder='우편번호'></input></li>
+        <li><input type='text'  defaultValue={address} placeholder='주소'></input></li>
         <li><input type='text' placeholder='상세주소'></input></li>
         <li><input type='text' placeholder='요청사항'></input></li>
                 </ul>
