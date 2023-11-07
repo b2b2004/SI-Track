@@ -3,6 +3,7 @@ package com.sitrack.sitrackbackend.domain.account;
 
 import com.sitrack.sitrackbackend.domain.AuditingFields;
 import com.sitrack.sitrackbackend.domain.Cart;
+import com.sitrack.sitrackbackend.domain.Order;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -16,6 +17,8 @@ import java.util.Objects;
 @ToString(callSuper = true)
 @Entity
 public class UserAccount extends AuditingFields {
+
+
 
     @Id
     @Column(length = 100, nullable = false, name = "user_id")
@@ -37,8 +40,12 @@ public class UserAccount extends AuditingFields {
     @Column(length = 100, nullable = false)
     private String userPhoneNumber;
 
+    @Setter
     @OneToOne(mappedBy = "userAccount")
     private Cart cart;
+
+    @OneToMany(mappedBy = "userAccount", cascade = CascadeType.ALL)
+    private List<Order> orders = new ArrayList<>();
 
     protected UserAccount(){}
 
