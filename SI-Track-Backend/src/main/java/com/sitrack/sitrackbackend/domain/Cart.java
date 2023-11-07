@@ -13,6 +13,7 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
@@ -31,7 +32,7 @@ public class Cart{
     @JoinColumn(name = "user_id")
     private UserAccount userAccount;
 
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartItem> cartItems = new ArrayList<>();
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
@@ -52,7 +53,6 @@ public class Cart{
         cartItems.add(cartItem);
         cartItem.setCart(this);
     }
-
 
     protected Cart(){}
     public Cart(UserAccount user) {

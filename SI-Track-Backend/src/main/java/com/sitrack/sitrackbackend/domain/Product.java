@@ -1,6 +1,7 @@
 package com.sitrack.sitrackbackend.domain;
 
 import com.sitrack.sitrackbackend.domain.account.UserAccount;
+import com.sitrack.sitrackbackend.domain.constant.ProductImageType;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -9,6 +10,8 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import static com.sitrack.sitrackbackend.domain.constant.ProductImageType.Subnail;
 
 @Getter
 @ToString(callSuper = true)
@@ -79,6 +82,19 @@ public class Product extends AuditingFields{
 
     public void addproductImages(List<ProductImage> productImage){
         this.getProductImages().addAll(productImage);
+    }
+
+    public void minusproductStockQuantity(Long amount) {
+        this.setProductStockQuantity(this.getProductStockQuantity() - amount);
+    }
+
+    public String getSubNailImage(){
+        for(ProductImage productImage : this.productImages){
+            if(productImage.getImageType() == Subnail){
+                return productImage.getSaveName();
+            }
+        }
+        return null;
     }
 
     protected Product() {}
