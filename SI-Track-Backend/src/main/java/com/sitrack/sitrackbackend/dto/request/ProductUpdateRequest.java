@@ -8,8 +8,7 @@ public record ProductUpdateRequest(
         Long categoryId,
         String supplierCode,
         String productName,
-        String productDetail,
-        String userId
+        String productDetail
 ) {
 
     public ProductDto toDto(UserAccountDto userAccountDto){

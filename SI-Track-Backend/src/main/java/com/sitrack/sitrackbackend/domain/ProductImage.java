@@ -17,7 +17,7 @@ public class ProductImage {
 
     @Setter
     @JoinColumn(name = "product_id")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Product product;
 
     @Setter

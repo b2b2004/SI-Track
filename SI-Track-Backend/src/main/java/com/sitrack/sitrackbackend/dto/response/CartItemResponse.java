@@ -25,14 +25,8 @@ public record CartItemResponse(
 
     public static CartItemResponse toDto(CartItem cartItem, Long amount) {
         Product product = cartItem.getProduct();
-        List<ProductImage> productImages = product.getProductImages();
-        String a = "";
-        for(ProductImage image : productImages){
-            if(image.getImageType() == Subnail){
-                a = image.getSaveName();
-            }
-        }
-        return new CartItemResponse(cartItem.getId(), product.getId(), product.getProductName(), product.getProductDetail(), product.getProductPrice(), a, amount);
+        String imageName = product.getSubNailImage();
+        return new CartItemResponse(cartItem.getId(), product.getId(), product.getProductName(), product.getProductDetail(), product.getProductPrice(), imageName, amount);
     }
 
 }
