@@ -3,6 +3,7 @@ package com.sitrack.sitrackbackend.service;
 import com.sitrack.sitrackbackend.domain.Product;
 import com.sitrack.sitrackbackend.domain.ProductImage;
 import com.sitrack.sitrackbackend.domain.account.UserAccount;
+import com.sitrack.sitrackbackend.domain.constant.RoleType;
 import com.sitrack.sitrackbackend.dto.ProductDto;
 import com.sitrack.sitrackbackend.dto.ProductImageDto;
 import com.sitrack.sitrackbackend.dto.response.ProductResponse;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,9 +36,14 @@ public class ProductService {
 
     public String register_product(ProductDto productDto, List<MultipartFile> images){
         try {
-            UserAccount userAccount = userAccountRepository.findByUserId(productDto.userAccountdto().userId())
+            UserAccount user = userAccountRepository.findByUserId(productDto.userAccountdto().userId())
                     .orElseThrow(()-> new UsernameNotFoundException("해당 사용자를 찾을 수 없습니다. : " + productDto.userAccountdto().userId()));
-            Product product = productDto.toEntity(userAccount);
+
+            if(user.getRoleType() != RoleType.ADMIN && user.getRoleType() != RoleType.MANAGER) {
+                return "권한이 없습니다.";
+            }
+
+            Product product = productDto.toEntity(user);
 
             List<ProductImageDto> productImageDtos = imageService.parseImageFile(images);
             List<ProductImage> productImages = new ArrayList<>();
@@ -58,9 +65,11 @@ public class ProductService {
     public String update_product(Long productId, ProductDto dto, List<MultipartFile> productImages){
         try {
             Product product = productRepository.getReferenceById(productId);
-            String userIdCk = product.getUserAccount().getUserId();
+            UserAccount user = userAccountRepository.findByUserId(dto.userAccountdto().userId())
+                    .orElseThrow(()-> new UsernameNotFoundException("해당 사용자를 찾을 수 없습니다. : " + dto.userAccountdto().userId()));
 
-            if(userIdCk.equals(dto.userAccountdto().userId())){
+            // ADMIN, MANAGER은 상품 수정 가능
+            if(user.getRoleType() == RoleType.ADMIN || user.getRoleType() == RoleType.MANAGER){
                 if(dto.categoryId() != null){
                     product.setCategoryId(dto.categoryId());
                 }
@@ -81,10 +90,7 @@ public class ProductService {
                 imageService.save(product, productImageDtos);
             }else{
                 return "권한이 없습니다.";
-                // 상품 등록자와 상품 업데이트자가 다를때
-                // 추후 권한 관련 코드로 업데이트 하겠음
             }
-
         }catch (EntityNotFoundException e){
             log.info("수정에 필요한 정보가 없습니다. - {}",  e.getLocalizedMessage());
         }catch (IOException e) {
@@ -94,16 +100,16 @@ public class ProductService {
         return "상품 업데이트 완료";
     }
 
-    public String delete_product(long prouductId, String userId){
+    public String delete_product(long prouductId, UserAccount userAccount){
+        UserAccount user = userAccountRepository.findByUserId(userAccount.getUserId())
+                .orElseThrow(()-> new UsernameNotFoundException("해당 사용자를 찾을 수 없습니다. : " + userAccount.getUserId()));
 
-        Product product = productRepository.getReferenceById(prouductId);
-
-        if(product.getUserAccount().getUserId().equals(userId)){
+        if(user.getRoleType() == RoleType.ADMIN || user.getRoleType() == RoleType.MANAGER){
             productRepository.deleteById(prouductId);
             productRepository.flush();
             return "상품 삭제 완료";
         }else{
-            return "등록자와 같지 않습니다.";
+            return "권한이 없습니다.";
         }
     }
 
