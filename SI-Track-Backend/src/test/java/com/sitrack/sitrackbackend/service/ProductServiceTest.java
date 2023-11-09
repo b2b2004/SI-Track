@@ -4,6 +4,7 @@ import com.sitrack.sitrackbackend.domain.Product;
 import com.sitrack.sitrackbackend.domain.ProductImage;
 import com.sitrack.sitrackbackend.domain.account.UserAccount;
 import com.sitrack.sitrackbackend.domain.constant.ProductImageType;
+import com.sitrack.sitrackbackend.domain.constant.RoleType;
 import com.sitrack.sitrackbackend.dto.ProductDto;
 import com.sitrack.sitrackbackend.dto.ProductImageDto;
 import com.sitrack.sitrackbackend.dto.UserAccountDto;
@@ -57,9 +58,10 @@ public class ProductServiceTest {
 
     @DisplayName("[ProductS] 상품 등록 성공")
     @Test
-    public void register_product() throws IOException {
+    public void register_product_has_role() throws IOException {
         // Given
         UserAccount userAccount = createUserAccount();
+        userAccount.setRoleType(RoleType.ADMIN);
         ProductDto productdto = createProductDto();
         String userId = productdto.userAccountdto().userId();
         List<MultipartFile> multipartFiles = createMultipartImage();
@@ -77,18 +79,40 @@ public class ProductServiceTest {
         assertThat(result).isEqualTo("상품 등록 완료");
     }
 
+    @DisplayName("[ProductS] 권한이 없어 상품 등록 실패")
+    @Test
+    public void register_product_has_noRole() throws IOException {
+        // Given
+        UserAccount userAccount = createUserAccount();
+        ProductDto productdto = createProductDto();
+        String userId = productdto.userAccountdto().userId();
+        List<MultipartFile> multipartFiles = createMultipartImage();
+
+        given(userAccountRepository.findByUserId(userId)).willReturn(Optional.of(userAccount));
+
+        // When
+        String result = sut.register_product(productdto, multipartFiles);
+
+        // Then
+        assertThat(result).isEqualTo("권한이 없습니다.");
+    }
+
     @DisplayName("[ProductS] 업데이트 성공")
     @Test
     public void update_product_success() throws IOException {
         // Given
         Product product = createProduct();
         ProductDto productdto = createProductDto(10L,"지우개");
+        UserAccount user = createUserAccount();
+        user.setRoleType(RoleType.ADMIN);
         List<MultipartFile> multipartFiles = createMultipartImage();
         List<ProductImageDto> productImageDtos = createProductImageDto();
+
 
         given(productRepository.getReferenceById(productdto.productId())).willReturn(product);
         willDoNothing().given(imageService).delete_By_product_id(any());
         given(imageService.parseImageFile(multipartFiles)).willReturn(productImageDtos);
+        given(userAccountRepository.findByUserId(any())).willReturn(Optional.of(user));
 
         // When
         String result = sut.update_product(productdto.productId(), productdto, multipartFiles);
@@ -103,18 +127,18 @@ public class ProductServiceTest {
         then(productRepository).should().save(any());
     }
 
-    @DisplayName("[ProductS] 기존 상품 담당자와 아이디가 달라 업데이트 실패")
+    @DisplayName("[ProductS] 권한이 없어 업데이트 실패")
     @Test
     public void update_product_fail(){
         // Given
         Long productId = 1L;
-        Product diffproduct = createProduct();
-        diffproduct.setUserAccount(createUserAccount("user2"));
+        Product product = createProduct();
+        UserAccount user = createUserAccount();
         List<MultipartFile> multipartFiles = createMultipartImage();
         ProductDto productdto = createProductDto();
 
-        given(productRepository.getReferenceById(productId)).willReturn(diffproduct);
-
+        given(productRepository.getReferenceById(productId)).willReturn(product);
+        given(userAccountRepository.findByUserId(any())).willReturn(Optional.of(user));
         // When
         String result = sut.update_product(productId, productdto, multipartFiles);
 
@@ -122,21 +146,38 @@ public class ProductServiceTest {
         assertThat(result).isEqualTo("권한이 없습니다.");
     }
 
-    @DisplayName("[ProductS] 상품 등록자와 삭제자와 같아 삭제 성공")
+    @DisplayName("[ProductS] 상품 삭제 성공")
     @Test
     public void delete_product(){
         // Given
         Long productId = 1L;
-        String userId = "user1";
+        UserAccount user = createUserAccount();
+        user.setRoleType(RoleType.ADMIN);
         Product product = createProduct();
-        given(productRepository.getReferenceById(productId)).willReturn(product);
 
+        given(userAccountRepository.findByUserId(any())).willReturn(Optional.of(user));
         // When
-        String result = sut.delete_product(productId,userId);
+        String result = sut.delete_product(productId, user);
 
         // Then
         then(productRepository).should().deleteById(any());
         assertThat(result).isEqualTo("상품 삭제 완료");
+    }
+
+    @DisplayName("[ProductS] 권한이 없어 상품 삭제 실패")
+    @Test
+    public void delete_product_has_noRole(){
+        // Given
+        Long productId = 1L;
+        UserAccount user = createUserAccount();
+        Product product = createProduct();
+
+        given(userAccountRepository.findByUserId(any())).willReturn(Optional.of(user));
+        // When
+        String result = sut.delete_product(productId, user);
+
+        // Then
+        assertThat(result).isEqualTo("권한이 없습니다.");
     }
 
     @DisplayName("[ProductS] 상품 조회 시 상품 반환")

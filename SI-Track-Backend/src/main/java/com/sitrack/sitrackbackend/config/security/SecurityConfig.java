@@ -7,6 +7,7 @@ import com.sitrack.sitrackbackend.config.security.filter.JwtAuthorizationFilter;
 import com.sitrack.sitrackbackend.repository.UserAccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -50,13 +51,16 @@ public class SecurityConfig {
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
+                .authorizeHttpRequests()
+                .antMatchers("/account/**", "/product", "/product/list").permitAll()
+                .antMatchers("/product/admin/**").hasAnyRole("ADMIN", "MANAGER")
+                .anyRequest().authenticated()
+                .and()
                 .formLogin().disable()
                 .httpBasic().disable() // http의 기본 인증. ID, PW 인증방식
                 .addFilter(corsConfig.corsFilter())
                 .addFilter(new JwtAuthenticationFilter(authenticationManager(), jwtTokenProvider()))  // AuthenticationManager
-                .addFilter(new JwtAuthorizationFilter(authenticationManager(),  jwtTokenProvider(), principalDetailsService))  // AuthenticationManager
-                .authorizeHttpRequests()
-                .anyRequest().permitAll();
+                .addFilter(new JwtAuthorizationFilter(authenticationManager(),  jwtTokenProvider(), principalDetailsService));  // AuthenticationManager
 
         return http.build();
     }

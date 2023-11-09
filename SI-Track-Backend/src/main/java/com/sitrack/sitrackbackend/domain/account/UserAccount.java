@@ -4,6 +4,7 @@ package com.sitrack.sitrackbackend.domain.account;
 import com.sitrack.sitrackbackend.domain.AuditingFields;
 import com.sitrack.sitrackbackend.domain.Cart;
 import com.sitrack.sitrackbackend.domain.Order;
+import com.sitrack.sitrackbackend.domain.constant.RoleType;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -17,8 +18,6 @@ import java.util.Objects;
 @ToString(callSuper = true)
 @Entity
 public class UserAccount extends AuditingFields {
-
-
 
     @Id
     @Column(length = 100, nullable = false, name = "user_id")
@@ -41,6 +40,11 @@ public class UserAccount extends AuditingFields {
     private String userPhoneNumber;
 
     @Setter
+    @Column(length = 100, nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    private RoleType roleType;
+
+    @Setter
     @OneToOne(mappedBy = "userAccount")
     private Cart cart;
 
@@ -55,6 +59,7 @@ public class UserAccount extends AuditingFields {
         this.userName = userName;
         this.userEmail = userEmail;
         this.userPhoneNumber = userPhoneNumber;
+        this.roleType = RoleType.USER;
     }
 
     public static UserAccount of(String userId, String userPassword, String userName, String userEmail, String userPhoneNumber){

@@ -16,10 +16,12 @@ public class PrincipalDetails implements UserDetails {
 
     private final UserAccount user;
 
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-        return authorities;
+        Collection<GrantedAuthority> collectors = new ArrayList<GrantedAuthority>();
+        collectors.add(()->{return "ROLE_"+user.getRoleType();});
+        return collectors;
     }
 
     @Override
