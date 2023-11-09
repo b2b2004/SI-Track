@@ -3,6 +3,7 @@ package com.sitrack.sitrackbackend.service;
 import com.sitrack.sitrackbackend.config.security.JwtProvider;
 import com.sitrack.sitrackbackend.config.security.auth.PrincipalDetails;
 import com.sitrack.sitrackbackend.domain.account.UserAccount;
+import com.sitrack.sitrackbackend.domain.constant.RoleType;
 import com.sitrack.sitrackbackend.dto.LoginDto;
 import com.sitrack.sitrackbackend.dto.UserAccountDto;
 import com.sitrack.sitrackbackend.repository.UserAccountRepository;
@@ -27,6 +28,7 @@ public class AccountService {
         String rawPassword = userAccountDto.userPassword();
         UserAccount userAccount = userAccountDto.toEntity();
         userAccount.setUserPassword(bCryptPasswordEncoder.encode(rawPassword));
+        userAccount.setRoleType(RoleType.USER);
         userAccountRepository.save(userAccount);
         return "회원 가입 완료";
     }
