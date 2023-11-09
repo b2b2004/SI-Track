@@ -90,7 +90,7 @@ public class ProductControllerTest {
     }
 
     @DisplayName("[ProductC] 상품 등록 - 정상 호출")
-    @WithAuthUser(userId = "kwon", role = "ROLE_USER")
+    @WithAuthUser(userId = "kwon", role = "ROLE_ADMIN")
     @Test
     public void product_new_register() throws Exception {
         // Given
@@ -103,7 +103,7 @@ public class ProductControllerTest {
         MockMultipartFile productRequest = new MockMultipartFile("productRequest", "productRequest", "application/json", pRDtoJson.getBytes(StandardCharsets.UTF_8));
 
         mvc.perform(
-                multipart("/product/register")
+                multipart("/product/admin/register")
                         .file(image1)
                         .file(image2)
                         .file(productRequest)
