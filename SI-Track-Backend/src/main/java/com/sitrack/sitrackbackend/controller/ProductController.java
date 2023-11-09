@@ -32,7 +32,7 @@ public class ProductController {
     private final ProductService productService;
     private final PaginationService paginationService;
 
-    @PostMapping("/register")
+    @PostMapping("/admin/register")
     public ResponseEntity<?> register_product(@RequestPart ProductRequest productRequest,
                                               @RequestPart List<MultipartFile> productImages,
                                               @AuthenticationPrincipal PrincipalDetails principalDetails){
@@ -40,13 +40,13 @@ public class ProductController {
         return new ResponseEntity<>(msg, HttpStatus.OK);
     }
 
-    @GetMapping("/update/{productId}")
+    @GetMapping("/admin/update/{productId}")
     public ResponseEntity<?> update_form(@PathVariable Long productId){
         ProductResponse product = productService.findbyId_product_one(productId);
         return new ResponseEntity<>(product, HttpStatus.OK);
     }
 
-    @PostMapping("/update/{productId}")
+    @PostMapping("/admin/update/{productId}")
     public ResponseEntity<?> update_product(@RequestPart ProductUpdateRequest productUpdateRequest,
                                             @RequestPart List<MultipartFile> productImages,
                                             @PathVariable Long productId,
@@ -55,10 +55,10 @@ public class ProductController {
         return new ResponseEntity<>(msg, HttpStatus.OK);
     }
 
-    @DeleteMapping("{productId}")
+    @DeleteMapping("/admin/{productId}")
     public ResponseEntity<?> delete_product(@PathVariable Long productId,
                                             @AuthenticationPrincipal PrincipalDetails principalDetails){
-        String msg = productService.delete_product(productId, principalDetails.getUser().getUserId());
+        String msg = productService.delete_product(productId, principalDetails.getUser());
         return new ResponseEntity<>(msg, HttpStatus.OK);
     }
 
