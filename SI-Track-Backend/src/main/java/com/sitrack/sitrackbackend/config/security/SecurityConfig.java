@@ -52,7 +52,7 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests()
-                .antMatchers("/account/**", "/product", "/product/list").permitAll()
+                .antMatchers("/account/user/**", "/product", "/product/list").permitAll()
                 .antMatchers("/product/admin/**").hasAnyRole("ADMIN", "MANAGER")
                 .anyRequest().authenticated()
                 .and()

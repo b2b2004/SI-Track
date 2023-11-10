@@ -4,6 +4,9 @@
 ### querydsl
 src/main/generated
 
+### properties
+email.properties
+
 ### JPA buddy
 .jpb/
 
