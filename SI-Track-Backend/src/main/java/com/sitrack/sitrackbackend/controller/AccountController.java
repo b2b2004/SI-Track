@@ -1,6 +1,7 @@
 package com.sitrack.sitrackbackend.controller;
 
 import com.sitrack.sitrackbackend.config.security.auth.PrincipalDetails;
+import com.sitrack.sitrackbackend.domain.account.UserAccount;
 import com.sitrack.sitrackbackend.dto.*;
 import com.sitrack.sitrackbackend.dto.response.SearchIdResponse;
 import com.sitrack.sitrackbackend.service.AccountService;
@@ -53,7 +54,8 @@ public class AccountController {
     @PostMapping("/login/changePwd")
     public ResponseEntity<?> changePwd(@RequestBody UserAccountPwdDto userAccountPwdDto,
                                        @AuthenticationPrincipal PrincipalDetails principalDetails){
-        String msg = accountService.chagePwd(userAccountPwdDto, principalDetails);
+        UserAccount user = principalDetails.getUser();
+        String msg = accountService.chagePwd(userAccountPwdDto, user);
         return new ResponseEntity<>(msg, HttpStatus.OK);
     }
 
@@ -61,7 +63,8 @@ public class AccountController {
     @PostMapping("/login/changeInfo")
     public ResponseEntity<?> changeInfo(@RequestBody UserAccountInfoDto userAccountInfoDto,
                                         @AuthenticationPrincipal PrincipalDetails principalDetails){
-        String msg = accountService.chageInformaition(userAccountInfoDto, principalDetails);
+        UserAccount user = principalDetails.getUser();
+        String msg = accountService.chageInformaition(userAccountInfoDto, user);
         return new ResponseEntity<>(msg, HttpStatus.OK);
     }
 

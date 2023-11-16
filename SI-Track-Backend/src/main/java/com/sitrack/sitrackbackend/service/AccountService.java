@@ -74,10 +74,9 @@ public class AccountService {
         return "이메일로 임시 비밀 번호가 발송 되었습니다.";
     }
 
-    public String chagePwd(UserAccountPwdDto userAccountPwdDto, PrincipalDetails principalDetails) {
-        String userId = principalDetails.getUser().getUserId();
-        UserAccount user = userAccountRepository.findByUserId(userId)
-                .orElseThrow(() -> new UsernameNotFoundException("해당 정보의 사용자가 없습니다. : " + userId));
+    public String chagePwd(UserAccountPwdDto userAccountPwdDto, UserAccount user1) {
+        UserAccount user = userAccountRepository.findByUserId(user1.getUserId())
+                .orElseThrow(() -> new UsernameNotFoundException("해당 정보의 사용자가 없습니다. : " + user1.getUserId()));
         if(!userAccountPwdDto.nowPwd().equals(user.getUserPassword())){
             return "현재 비밀번호와 일치하지 않습니다.";
         }
@@ -85,10 +84,9 @@ public class AccountService {
         return "비밀번호가 변경 되었습니다.";
     }
 
-    public String chageInformaition(UserAccountInfoDto userAccountInfoDto, PrincipalDetails principalDetails) {
-        String userId = principalDetails.getUser().getUserId();
-        UserAccount user = userAccountRepository.findByUserId(userId)
-                .orElseThrow(() -> new UsernameNotFoundException("해당 정보의 사용자가 없습니다. : " + userId));
+    public String chageInformaition(UserAccountInfoDto userAccountInfoDto, UserAccount user1) {
+        UserAccount user = userAccountRepository.findByUserId(user1.getUserId())
+                .orElseThrow(() -> new UsernameNotFoundException("해당 정보의 사용자가 없습니다. : " + user1.getUserId()));
         user.setUserEmail(userAccountInfoDto.userEmail());
         user.setUserPhoneNumber(userAccountInfoDto.userPhoneNumber());
 
