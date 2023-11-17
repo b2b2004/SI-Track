@@ -83,6 +83,10 @@ public class Order extends AuditingFields{
         }
     }
 
+    public static Order of(UserAccount userAccount, Long totalAmount, String orderAddress, String orderStatus, String orderRequest, String recipient, String phoneNumber, List<OrderItem> orderItem){
+        return new Order(userAccount, totalAmount, orderAddress, orderStatus, orderRequest, recipient, phoneNumber, orderItem);
+    }
+
     public static Order of(UserAccount userAccount, OrderRequest orderRequest, List<OrderItem> orderItems){
         return new Order(userAccount, orderRequest.totalAmount(), orderRequest.orderAddress(), "주문 대기", orderRequest.orderRequest(), orderRequest.recipient(), orderRequest.phoneNumber(), orderItems);
     }

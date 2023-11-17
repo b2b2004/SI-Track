@@ -40,7 +40,8 @@ public class PrincipalDetails implements UserDetails {
                 user.getUserPassword(),
                 user.getUserName(),
                 user.getUserEmail(),
-                user.getUserPhoneNumber()
+                user.getUserPhoneNumber(),
+                user.getRoleType()
         );
     }
 
