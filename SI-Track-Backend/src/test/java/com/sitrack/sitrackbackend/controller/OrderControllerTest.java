@@ -61,7 +61,7 @@ public class OrderControllerTest {
                 "권용호",
                 "010-1111-2222",
                 List.of(
-                        new OrderItemDto(1L, 2L)
+                        new OrderItemDto(1L, 2L, 1000L)
                 )
         );
     }

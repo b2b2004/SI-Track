@@ -1,6 +1,7 @@
 package com.sitrack.sitrackbackend.service;
 
 import com.sitrack.sitrackbackend.domain.account.UserAccount;
+import com.sitrack.sitrackbackend.domain.constant.RoleType;
 import com.sitrack.sitrackbackend.dto.*;
 import com.sitrack.sitrackbackend.dto.response.SearchIdResponse;
 import com.sitrack.sitrackbackend.repository.UserAccountRepository;
@@ -178,6 +179,7 @@ public class AccountServiceTest {
                 "권용호",
                 "b2b@naver.com",
                 "010-1111-2222",
+                RoleType.USER,
                 LocalDateTime.now(),
                 "kwon",
                 LocalDateTime.now(),

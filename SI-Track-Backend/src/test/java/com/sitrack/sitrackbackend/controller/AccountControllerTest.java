@@ -1,6 +1,7 @@
 package com.sitrack.sitrackbackend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sitrack.sitrackbackend.domain.constant.RoleType;
 import com.sitrack.sitrackbackend.dto.SearchIdDto;
 import com.sitrack.sitrackbackend.dto.SearchPwdDto;
 import com.sitrack.sitrackbackend.dto.UserAccountDto;
@@ -94,6 +95,7 @@ public class AccountControllerTest {
                 "권용호",
                 "b2b@naver.com",
                 "010-1111-2222",
+                RoleType.USER,
                 LocalDateTime.now(),
                 "kwon",
                 LocalDateTime.now(),
