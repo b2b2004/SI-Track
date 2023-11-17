@@ -58,6 +58,26 @@ public record ProductDto(
         );
     }
 
+    public static ProductDto from1(Product entity) {
+        return new ProductDto(
+                entity.getId(),
+                UserAccountDto.from(entity.getUserAccount()),
+                null,
+                entity.getCategoryId(),
+                entity.getSupplierCode(),
+                entity.getProductName(),
+                entity.getProductCost(),
+                entity.getProductPrice(),
+                null,
+                entity.getProductStockQuantity(),
+                entity.getProductSalesQuantity(),
+                entity.getCreatedAt(),
+                entity.getCreatedBy(),
+                entity.getModifiedAt(),
+                entity.getModifiedBy()
+        );
+    }
+
     public Product toEntity(UserAccount userAccount){
         return Product.of(
                 userAccount,

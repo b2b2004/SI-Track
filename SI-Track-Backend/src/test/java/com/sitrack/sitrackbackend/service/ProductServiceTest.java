@@ -256,6 +256,7 @@ public class ProductServiceTest {
                 "권용호",
                 "b2b@naver.com",
                 "010-1111-2222",
+                RoleType.USER,
                 LocalDateTime.now(),
                 "kwon",
                 LocalDateTime.now(),

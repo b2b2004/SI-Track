@@ -2,9 +2,10 @@ package com.sitrack.sitrackbackend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sitrack.sitrackbackend.annotation.WithAuthUser;
-import com.sitrack.sitrackbackend.dto.OrderItemDto;
-import com.sitrack.sitrackbackend.dto.request.OrderRequest;
-import com.sitrack.sitrackbackend.service.OrderService;
+import com.sitrack.sitrackbackend.domain.constant.RoleType;
+import com.sitrack.sitrackbackend.dto.AdminProductDto;
+import com.sitrack.sitrackbackend.dto.UserAccountDto;
+import com.sitrack.sitrackbackend.service.ManagerService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.then;
@@ -21,48 +22,50 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(OrderController.class)
-public class OrderControllerTest {
+@WebMvcTest(ManagerController.class)
+public class ManagerControllerTest {
 
     private final MockMvc mvc;
     private final ObjectMapper objectMapper;
 
     @MockBean
-    private OrderService orderService;
+    private ManagerService managerService;
 
-    public OrderControllerTest(@Autowired MockMvc mvc,
-                              @Autowired ObjectMapper objectMapper) {
+    public ManagerControllerTest(@Autowired MockMvc mvc,
+                               @Autowired ObjectMapper objectMapper) {
         this.mvc = mvc;
         this.objectMapper = objectMapper;
     }
 
-    @DisplayName("[OrderC] 주문 등록")
-    @WithAuthUser(userId = "test1", role = "ROLE_USER")
+    @DisplayName("[ManagerC] 권한 설정 완료")
+    @WithAuthUser(userId = "test1", role = "ROLE_MANAGER")
     @Test
-    public void save_Order() throws Exception {
+    public void update_product() throws Exception {
         // Given
-        OrderRequest orderRequest = createOrderRequest();
+        UserAccountDto userAccountDto = createUserAccountDto("test1");
 
         // When & Then
         mvc.perform(
-                post("/order/page")
-                        .content(objectMapper.writeValueAsString(orderRequest))
+                post("/manager/update/role")
+                        .content(objectMapper.writeValueAsString(userAccountDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
         ).andExpect(status().isOk());
-        then(orderService).should().save(any(), any());
+        then(managerService).should().setRole(any(), any());
     }
 
-    private OrderRequest createOrderRequest(){
-        return OrderRequest.of(
-                20000L,
-                "서울시",
-                "조심히 배송",
+    private UserAccountDto createUserAccountDto(String userId) {
+        return UserAccountDto.of(
+                userId,
+                "1234",
                 "권용호",
+                "b2b@naver.com",
                 "010-1111-2222",
-                List.of(
-                        new OrderItemDto(1L, 2L, 1000L)
-                )
+                RoleType.ADMIN,
+                LocalDateTime.now(),
+                "kwon",
+                LocalDateTime.now(),
+                "kwon"
         );
     }
 }
