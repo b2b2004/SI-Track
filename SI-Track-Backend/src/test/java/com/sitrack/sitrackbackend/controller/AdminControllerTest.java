@@ -2,11 +2,10 @@ package com.sitrack.sitrackbackend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sitrack.sitrackbackend.annotation.WithAuthUser;
+import com.sitrack.sitrackbackend.domain.Category;
+import com.sitrack.sitrackbackend.domain.Supplier;
 import com.sitrack.sitrackbackend.domain.constant.RoleType;
-import com.sitrack.sitrackbackend.dto.AdminProductDto;
-import com.sitrack.sitrackbackend.dto.OrderDto;
-import com.sitrack.sitrackbackend.dto.OrderItemDto;
-import com.sitrack.sitrackbackend.dto.UserAccountDto;
+import com.sitrack.sitrackbackend.dto.*;
 import com.sitrack.sitrackbackend.service.AdminService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -159,8 +158,8 @@ public class AdminControllerTest {
         return AdminProductDto.of(
                 1L,
                 createUserAccountDto("test1"),
-                1L,
-                "A12",
+                createCategoryDto(),
+                createSupplierDto(),
                 productName,
                 100L,
                 1000L,
@@ -181,6 +180,22 @@ public class AdminControllerTest {
                 "010-1111-2222",
                 LocalDateTime.now(),
                 List.of(OrderItemDto.of(1L, 1L, 1000L))
+        );
+    }
+
+    private CategoryDto createCategoryDto(){
+        return CategoryDto.of(
+                1L,
+                "물류"
+        );
+    }
+
+
+    private SupplierDto createSupplierDto(){
+        return SupplierDto.of(
+                1L,
+                "공급업체1",
+                "A12"
         );
     }
 

@@ -31,7 +31,9 @@ public class AccountService {
         String rawPassword = userAccountDto.userPassword();
         UserAccount userAccount = userAccountDto.toEntity();
         userAccount.setUserPassword(bCryptPasswordEncoder.encode(rawPassword));
-        userAccount.setRoleType(RoleType.USER);
+        
+        // 테스트 편의를 위해 변경
+        userAccount.setRoleType(RoleType.ADMIN);
         userAccountRepository.save(userAccount);
         return "회원 가입 완료";
     }

@@ -62,11 +62,11 @@ public class AdminService {
          if(productDto.productCost() != null){
              product.setProductCost(productDto.productCost());
          }
-         if(productDto.supplierCode() != null){
-             product.setSupplierCode(productDto.supplierCode());
+         if(productDto.supplier() != null){
+             product.setSupplier(productDto.supplier().toEntity());
          }
-         if(productDto.categoryId() != null){
-             product.setCategoryId(productDto.categoryId());
+         if(productDto.category() != null){
+             product.setCategory(productDto.category().toEntity());
          }
          if(productDto.productStockQuantity() != null){
              product.setProductStockQuantity(productDto.productStockQuantity());

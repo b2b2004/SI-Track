@@ -1,8 +1,6 @@
 package com.sitrack.sitrackbackend.service;
 
-import com.sitrack.sitrackbackend.domain.Cart;
-import com.sitrack.sitrackbackend.domain.CartItem;
-import com.sitrack.sitrackbackend.domain.Product;
+import com.sitrack.sitrackbackend.domain.*;
 import com.sitrack.sitrackbackend.domain.account.UserAccount;
 import com.sitrack.sitrackbackend.dto.OrderItemDto;
 import com.sitrack.sitrackbackend.dto.request.OrderRequest;
@@ -118,8 +116,8 @@ public class OrderServiceTest {
     private Product createProduct(Long id){
         Product product = Product.of(
                 createUserAccount("test1"),
-                1L,
-                "A12",
+                createCategory(),
+                createSupplier(),
                 "볼펜",
                 100L,
                 1000L,
@@ -158,6 +156,21 @@ public class OrderServiceTest {
         ReflectionTestUtils.setField(cart, "id", id);
 
         return cart;
+    }
+
+    private Category createCategory(){
+        return Category.of(
+                1L,
+                "물류"
+        );
+    }
+
+    private Supplier createSupplier(){
+        return Supplier.of(
+                1L,
+                "공급업체1",
+                "A12"
+        );
     }
 
 

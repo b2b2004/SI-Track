@@ -8,8 +8,8 @@ import java.time.LocalDateTime;
 public record AdminProductDto(
         @NotNull Long productId,
         @NotNull UserAccountDto userAccountdto,
-        @NotNull Long categoryId,
-        @NotNull String supplierCode,
+        @NotNull CategoryDto category,
+        @NotNull SupplierDto supplier,
         @NotNull String productName,
         @NotNull Long productCost,
         @NotNull Long productPrice,
@@ -25,8 +25,8 @@ public record AdminProductDto(
         return new AdminProductDto(
                 entity.getId(),
                 UserAccountDto.from(entity.getUserAccount()),
-                entity.getCategoryId(),
-                entity.getSupplierCode(),
+                CategoryDto.from(entity.getCategory()),
+                SupplierDto.from(entity.getSupplier()),
                 entity.getProductName(),
                 entity.getProductCost(),
                 entity.getProductPrice(),
@@ -39,7 +39,7 @@ public record AdminProductDto(
         );
     }
 
-    public static AdminProductDto of(Long productId, UserAccountDto userAccountdto, Long categoryId, String supplierCode, String productName, Long productCost, Long productPrice, Long productStockQuantity, Long productSalesQuantity) {
-        return new AdminProductDto(productId, userAccountdto, categoryId, supplierCode, productName, productCost, productPrice, productStockQuantity, productSalesQuantity, null, null, null, null);
+    public static AdminProductDto of(Long productId, UserAccountDto userAccountdto, CategoryDto categoryDto, SupplierDto supplierDto, String productName, Long productCost, Long productPrice, Long productStockQuantity, Long productSalesQuantity) {
+        return new AdminProductDto(productId, userAccountdto, categoryDto, supplierDto, productName, productCost, productPrice, productStockQuantity, productSalesQuantity, null, null, null, null);
     }
 }

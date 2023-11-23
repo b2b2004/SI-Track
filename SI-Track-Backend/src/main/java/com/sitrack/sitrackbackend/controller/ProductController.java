@@ -2,10 +2,12 @@ package com.sitrack.sitrackbackend.controller;
 
 import com.sitrack.sitrackbackend.config.security.auth.PrincipalDetails;
 import com.sitrack.sitrackbackend.domain.Product;
+import com.sitrack.sitrackbackend.domain.account.UserAccount;
 import com.sitrack.sitrackbackend.dto.ProductDto;
 import com.sitrack.sitrackbackend.dto.request.ProductRequest;
 import com.sitrack.sitrackbackend.dto.request.ProductUpdateRequest;
 import com.sitrack.sitrackbackend.dto.response.ProductResponse;
+import com.sitrack.sitrackbackend.dto.response.ProductUpdateResponse;
 import com.sitrack.sitrackbackend.service.PaginationService;
 import com.sitrack.sitrackbackend.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -36,13 +38,14 @@ public class ProductController {
     public ResponseEntity<?> register_product(@RequestPart ProductRequest productRequest,
                                               @RequestPart List<MultipartFile> productImages,
                                               @AuthenticationPrincipal PrincipalDetails principalDetails){
-        String msg = productService.register_product(productRequest.toDto(principalDetails.todto()), productImages);
+        UserAccount user = principalDetails.getUser();
+        String msg = productService.register_product(productRequest, user, productImages);
         return new ResponseEntity<>(msg, HttpStatus.OK);
     }
 
     @GetMapping("/admin/update/{productId}")
     public ResponseEntity<?> update_form(@PathVariable Long productId){
-        ProductResponse product = productService.findbyId_product_one(productId);
+        ProductUpdateResponse product = productService.findbyId_UpdateProduct_one(productId);
         return new ResponseEntity<>(product, HttpStatus.OK);
     }
 
@@ -51,7 +54,8 @@ public class ProductController {
                                             @RequestPart List<MultipartFile> productImages,
                                             @PathVariable Long productId,
                                             @AuthenticationPrincipal PrincipalDetails principalDetails){
-        String msg = productService.update_product(productId, productUpdateRequest.toDto(principalDetails.todto()), productImages);
+        UserAccount user = principalDetails.getUser();
+        String msg = productService.update_product(productId, productUpdateRequest, user, productImages);
         return new ResponseEntity<>(msg, HttpStatus.OK);
     }
 
