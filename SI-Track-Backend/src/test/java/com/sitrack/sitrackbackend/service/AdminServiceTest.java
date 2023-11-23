@@ -1,14 +1,9 @@
 package com.sitrack.sitrackbackend.service;
 
-import com.sitrack.sitrackbackend.domain.Order;
-import com.sitrack.sitrackbackend.domain.OrderItem;
-import com.sitrack.sitrackbackend.domain.Product;
+import com.sitrack.sitrackbackend.domain.*;
 import com.sitrack.sitrackbackend.domain.account.UserAccount;
 import com.sitrack.sitrackbackend.domain.constant.RoleType;
-import com.sitrack.sitrackbackend.dto.AdminProductDto;
-import com.sitrack.sitrackbackend.dto.OrderDto;
-import com.sitrack.sitrackbackend.dto.OrderItemDto;
-import com.sitrack.sitrackbackend.dto.UserAccountDto;
+import com.sitrack.sitrackbackend.dto.*;
 import com.sitrack.sitrackbackend.repository.OrderRepository;
 import com.sitrack.sitrackbackend.repository.ProductRepository;
 import com.sitrack.sitrackbackend.repository.UserAccountRepository;
@@ -167,8 +162,8 @@ public class AdminServiceTest {
     private Product createProduct(String productName) {
         return Product.of(
                 createUserAccount("test1"),
-                1L,
-                "A12",
+                createCategory(),
+                createSupplier(),
                 productName,
                 100L,
                 1000L,
@@ -210,13 +205,43 @@ public class AdminServiceTest {
         return AdminProductDto.of(
                 1L,
                 createUserAccountDto(),
-                1L,
-                "A12",
+                createCategoryDto(),
+                createSupplierDto(),
                 productName,
                 100L,
                 1000L,
                 1000L,
                 100L
+        );
+    }
+
+    private Category createCategory(){
+        return Category.of(
+                1L,
+                "물류"
+        );
+    }
+
+    private CategoryDto createCategoryDto(){
+        return CategoryDto.of(
+                1L,
+                "물류"
+        );
+    }
+
+    private Supplier createSupplier(){
+        return Supplier.of(
+                1L,
+                "공급업체1",
+                "A12"
+        );
+    }
+
+    private SupplierDto createSupplierDto(){
+        return SupplierDto.of(
+                1L,
+                "공급업체1",
+                "A12"
         );
     }
 }

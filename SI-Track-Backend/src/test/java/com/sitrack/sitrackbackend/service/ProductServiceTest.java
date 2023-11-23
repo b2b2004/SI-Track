@@ -1,15 +1,17 @@
 package com.sitrack.sitrackbackend.service;
 
+import com.sitrack.sitrackbackend.domain.Category;
 import com.sitrack.sitrackbackend.domain.Product;
-import com.sitrack.sitrackbackend.domain.ProductImage;
+import com.sitrack.sitrackbackend.domain.Supplier;
 import com.sitrack.sitrackbackend.domain.account.UserAccount;
-import com.sitrack.sitrackbackend.domain.constant.ProductImageType;
 import com.sitrack.sitrackbackend.domain.constant.RoleType;
-import com.sitrack.sitrackbackend.dto.ProductDto;
-import com.sitrack.sitrackbackend.dto.ProductImageDto;
-import com.sitrack.sitrackbackend.dto.UserAccountDto;
+import com.sitrack.sitrackbackend.dto.*;
+import com.sitrack.sitrackbackend.dto.request.ProductRequest;
+import com.sitrack.sitrackbackend.dto.request.ProductUpdateRequest;
 import com.sitrack.sitrackbackend.dto.response.ProductResponse;
+import com.sitrack.sitrackbackend.repository.CategoryRepository;
 import com.sitrack.sitrackbackend.repository.ProductRepository;
+import com.sitrack.sitrackbackend.repository.SupplierRepository;
 import com.sitrack.sitrackbackend.repository.UserAccountRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,25 +23,21 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import java.io.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.sitrack.sitrackbackend.domain.constant.ProductImageType.Subnail;
 import static com.sitrack.sitrackbackend.domain.constant.ProductImageType.Thumbnail;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.assertj.core.api.InstanceOfAssertFactories.OPTIONAL;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class ProductServiceTest {
@@ -56,22 +54,31 @@ public class ProductServiceTest {
     @Mock
     private UserAccountRepository userAccountRepository;
 
+    @Mock
+    private CategoryRepository categoryRepository;
+
+    @Mock
+    private SupplierRepository supplierRepository;
+
     @DisplayName("[ProductS] 상품 등록 성공")
     @Test
     public void register_product_has_role() throws IOException {
         // Given
         UserAccount userAccount = createUserAccount();
         userAccount.setRoleType(RoleType.ADMIN);
-        ProductDto productdto = createProductDto();
-        String userId = productdto.userAccountdto().userId();
+        ProductRequest productRequest = createProductRequest();
         List<MultipartFile> multipartFiles = createMultipartImage();
         List<ProductImageDto> productImageDtos = createProductImageDto();
+        Category category = createCategory();
+        Supplier supplier = createSupplier();
 
-        given(userAccountRepository.findByUserId(userId)).willReturn(Optional.of(userAccount));
+        given(userAccountRepository.findByUserId(userAccount.getUserId())).willReturn(Optional.of(userAccount));
         given(imageService.parseImageFile(multipartFiles)).willReturn(productImageDtos);
+        given(categoryRepository.findByCategoryName(productRequest.categoryName())).willReturn(Optional.of(category));
+        given(supplierRepository.findBySupplierCode(productRequest.supplierCode())).willReturn(Optional.of(supplier));
 
         // When
-        String result = sut.register_product(productdto, multipartFiles);
+        String result = sut.register_product(productRequest, userAccount, multipartFiles);
 
         // Then
         then(productRepository).should().save(any());
@@ -84,6 +91,7 @@ public class ProductServiceTest {
     public void register_product_has_noRole() throws IOException {
         // Given
         UserAccount userAccount = createUserAccount();
+        ProductRequest productRequest = createProductRequest();
         ProductDto productdto = createProductDto();
         String userId = productdto.userAccountdto().userId();
         List<MultipartFile> multipartFiles = createMultipartImage();
@@ -91,7 +99,7 @@ public class ProductServiceTest {
         given(userAccountRepository.findByUserId(userId)).willReturn(Optional.of(userAccount));
 
         // When
-        String result = sut.register_product(productdto, multipartFiles);
+        String result = sut.register_product(productRequest, userAccount, multipartFiles);
 
         // Then
         assertThat(result).isEqualTo("권한이 없습니다.");
@@ -102,27 +110,30 @@ public class ProductServiceTest {
     public void update_product_success() throws IOException {
         // Given
         Product product = createProduct();
-        ProductDto productdto = createProductDto(10L,"지우개");
+        ProductUpdateRequest productUpdateRequest = createProductUpdateReqeust();
         UserAccount user = createUserAccount();
         user.setRoleType(RoleType.ADMIN);
         List<MultipartFile> multipartFiles = createMultipartImage();
         List<ProductImageDto> productImageDtos = createProductImageDto();
+        Category category = createCategory();
+        Supplier supplier = createSupplier();
 
-
-        given(productRepository.getReferenceById(productdto.productId())).willReturn(product);
+        given(productRepository.getReferenceById(product.getId())).willReturn(product);
         willDoNothing().given(imageService).delete_By_product_id(any());
         given(imageService.parseImageFile(multipartFiles)).willReturn(productImageDtos);
         given(userAccountRepository.findByUserId(any())).willReturn(Optional.of(user));
+        given(categoryRepository.findByCategoryName(productUpdateRequest.categoryName())).willReturn(Optional.of(category));
+        given(supplierRepository.findBySupplierCode(productUpdateRequest.supplierCode())).willReturn(Optional.of(supplier));
 
         // When
-        String result = sut.update_product(productdto.productId(), productdto, multipartFiles);
+        String result = sut.update_product(product.getId(), productUpdateRequest, user, multipartFiles);
 
         // Then
         assertThat(result).isEqualTo("상품 업데이트 완료");
         assertThat(product)
-                .hasFieldOrPropertyWithValue("categoryId", productdto.categoryId())
-                .hasFieldOrPropertyWithValue("productDetail", productdto.productDetail());
-        then(productRepository).should().getReferenceById(productdto.productId());
+                .hasFieldOrPropertyWithValue("Category", product.getCategory())
+                .hasFieldOrPropertyWithValue("productDetail", productUpdateRequest.productDetail());
+        then(productRepository).should().getReferenceById(product.getId());
         then(imageService).should().delete_By_product_id(any());
         then(productRepository).should().save(any());
     }
@@ -132,15 +143,15 @@ public class ProductServiceTest {
     public void update_product_fail(){
         // Given
         Long productId = 1L;
+        ProductUpdateRequest productUpdateRequest = createProductUpdateReqeust();
         Product product = createProduct();
         UserAccount user = createUserAccount();
         List<MultipartFile> multipartFiles = createMultipartImage();
-        ProductDto productdto = createProductDto();
 
         given(productRepository.getReferenceById(productId)).willReturn(product);
         given(userAccountRepository.findByUserId(any())).willReturn(Optional.of(user));
         // When
-        String result = sut.update_product(productId, productdto, multipartFiles);
+        String result = sut.update_product(product.getId(), productUpdateRequest, user, multipartFiles);
 
         // Then
         assertThat(result).isEqualTo("권한이 없습니다.");
@@ -193,7 +204,7 @@ public class ProductServiceTest {
 
         // Then
         assertThat(productResponse)
-                .hasFieldOrPropertyWithValue("supplierCode", product.getSupplierCode())
+                .hasFieldOrPropertyWithValue("supplierCode", product.getSupplier().getSupplierCode())
                 .hasFieldOrPropertyWithValue("productName", product.getProductName())
                 .hasFieldOrPropertyWithValue("productDetail", product.getProductDetail());
         then(productRepository).should().findById(productId);
@@ -281,36 +292,22 @@ public class ProductServiceTest {
     private ProductDto createProductDto() {
         return ProductDto.of(
                 createUserAccountDto(),
-                1L,
-                "A12",
+                createCategoryDto(),
+                createSupplierDto(),
                 "볼펜",
                 100L,
                 1000L,
                 "볼펜이다",
-                1000L,
-                100L
-        );
-    }
-
-    private ProductDto createProductDto(Long categoryId, String productDetail) {
-        return ProductDto.of(
-                createUserAccountDto(),
-                categoryId,
-                "A12",
-                "볼펜",
-                100L,
-                1000L,
-                productDetail,
                 1000L,
                 100L
         );
     }
 
     private Product createProduct(){
-        return Product.of(
+        Product product = Product.of(
                 createUserAccount(),
-                1L,
-                "A12",
+                createCategory(),
+                createSupplier(),
                 "볼펜",
                 100L,
                 1000L,
@@ -318,6 +315,8 @@ public class ProductServiceTest {
                 1000L,
                 100L
         );
+        ReflectionTestUtils.setField(product, "id", 1L);
+        return product;
     }
 
     private ProductResponse createProductResponse(){
@@ -343,6 +342,58 @@ public class ProductServiceTest {
                 new MockMultipartFile("testImage1", "testImage3.PNG", MediaType.IMAGE_PNG_VALUE, "test1".getBytes()),
                 new MockMultipartFile("testImage2", "testImage3.PNG", MediaType.IMAGE_PNG_VALUE, "test2".getBytes()),
                 new MockMultipartFile("testImage3", "testImage3.PNG", MediaType.IMAGE_PNG_VALUE, "test2".getBytes())
+        );
+    }
+
+    private ProductRequest createProductRequest(){
+        return ProductRequest.of(
+                "물류",
+                "A12",
+                "볼펜",
+                100L,
+                1000L,
+                "볼펜이다",
+                1000L,
+                100L
+        );
+    }
+
+    private ProductUpdateRequest createProductUpdateReqeust(){
+        return ProductUpdateRequest.of(
+                "사무용품",
+                "공급업체1",
+                "모니터",
+                "모니터이다"
+        );
+    }
+
+    private Category createCategory(){
+        return Category.of(
+                1L,
+                "물류"
+        );
+    }
+
+    private CategoryDto createCategoryDto(){
+        return CategoryDto.of(
+                1L,
+                "물류"
+        );
+    }
+
+    private Supplier createSupplier(){
+        return Supplier.of(
+                1L,
+                "공급업체1",
+                "A12"
+        );
+    }
+
+    private SupplierDto createSupplierDto(){
+        return SupplierDto.of(
+                1L,
+                "공급업체1",
+                "A12"
         );
     }
 }

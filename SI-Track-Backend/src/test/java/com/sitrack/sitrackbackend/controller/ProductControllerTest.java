@@ -94,7 +94,7 @@ public class ProductControllerTest {
     @Test
     public void product_new_register() throws Exception {
         // Given
-        given(productService.register_product(any(ProductDto.class), any())).willReturn("상품 등록 완료");
+        given(productService.register_product(any(ProductRequest.class), any(), any())).willReturn("상품 등록 완료");
 
         MockMultipartFile image1 = new MockMultipartFile("productImages", "test.txt", "text/plain", "test file".getBytes(StandardCharsets.UTF_8) );
         MockMultipartFile image2 = new MockMultipartFile("productImages", "test2.txt", "text/plain", "test file2".getBytes(StandardCharsets.UTF_8) );
@@ -110,13 +110,13 @@ public class ProductControllerTest {
                         .with(csrf()))
                 .andExpect(status().isOk());
 
-        then(productService).should().register_product(any(ProductDto.class), any());
+        then(productService).should().register_product(any(ProductRequest.class), any(), any());
     }
 
 
     private ProductRequest createProductRequest(){
         return ProductRequest.of(
-                1L,
+                "사무용품",
                 "A12",
                 "종이",
                 100L,

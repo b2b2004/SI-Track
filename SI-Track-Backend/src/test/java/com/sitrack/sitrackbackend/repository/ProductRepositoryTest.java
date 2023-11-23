@@ -2,7 +2,9 @@ package com.sitrack.sitrackbackend.repository;
 
 
 import com.sitrack.sitrackbackend.config.JpaConfig;
+import com.sitrack.sitrackbackend.domain.Category;
 import com.sitrack.sitrackbackend.domain.Product;
+import com.sitrack.sitrackbackend.domain.Supplier;
 import com.sitrack.sitrackbackend.domain.account.UserAccount;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -48,7 +50,7 @@ public class ProductRepositoryTest {
         // Given
         long previousCount = productRepository.count();
         UserAccount userAccount = userAccountRepository.save(UserAccount.of("user4", "1234", "권용호", "b@naver.com", "010-1111-2222"));
-        Product product = Product.of(userAccount, 100L, "ABC", "종이", 1000L, 2000L, "종이다", 100L, 5L);
+        Product product = Product.of(userAccount, createCategory(), createSupplier(), "종이", 1000L, 2000L, "종이다", 100L, 5L);
 
         // When
         productRepository.save(product);
@@ -85,4 +87,18 @@ public class ProductRepositoryTest {
         assertThat(productRepository.count()).isEqualTo( previousArticleCount - 1);
     }
 
+    private Category createCategory(){
+        return Category.of(
+                1L,
+                "물류"
+        );
+    }
+
+    private Supplier createSupplier(){
+        return Supplier.of(
+                1L,
+                "공급업체1",
+                "A12"
+        );
+    }
 }
