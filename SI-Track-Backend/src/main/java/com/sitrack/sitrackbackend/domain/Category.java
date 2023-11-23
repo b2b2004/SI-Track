@@ -15,4 +15,15 @@ public class Category {
 
     @Column(length = 50, nullable = false)
     private String categoryName;
+
+    protected Category() {}
+
+    public Category(Long id, String categoryName) {
+        this.id = id;
+        this.categoryName = categoryName;
+    }
+
+    public static Category of(Long id, String categoryName){
+        return new Category(id, categoryName);
+    }
 }

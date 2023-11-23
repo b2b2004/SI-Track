@@ -33,12 +33,14 @@ public class Product extends AuditingFields{
     private List<ProductImage> productImages = new ArrayList<>();
 
     @Setter
-    @Column(nullable = false)
-    private Long categoryId;
+    @JoinColumn(name = "category_id")
+    @ManyToOne(optional = false)
+    private Category category;
 
     @Setter
-    @Column(length = 50, nullable = false)
-    private String supplierCode;
+    @JoinColumn(name = "supplier_id")
+    @ManyToOne(optional = false)
+    private Supplier supplier;
 
     @Setter
     @Column(length = 50, nullable = false)
@@ -64,10 +66,10 @@ public class Product extends AuditingFields{
     @Column(nullable = false)
     private Long productSalesQuantity; // 상품 판매 수량
 
-    public Product(UserAccount userAccount, Long categoryId, String supplierCode, String productName,  Long productCost, Long productPrice, String productDetail, Long productStockQuantity, Long productSalesQuantity) {
+    public Product(UserAccount userAccount, Category category, Supplier supplier, String productName,  Long productCost, Long productPrice, String productDetail, Long productStockQuantity, Long productSalesQuantity) {
         this.userAccount = userAccount;
-        this.categoryId = categoryId;
-        this.supplierCode = supplierCode;
+        this.category = category;
+        this.supplier = supplier;
         this.productName = productName;
         this.productCost = productCost;
         this.productPrice = productPrice;
@@ -99,8 +101,8 @@ public class Product extends AuditingFields{
 
     protected Product() {}
 
-    public static Product of(UserAccount userAccount, Long categoryId, String supplierCode, String productName, Long productCost, Long productPrice, String productDetail, Long productStockQuantity, Long productSalesQuantity){
-        return new Product(userAccount, categoryId, supplierCode, productName, productCost, productPrice, productDetail, productStockQuantity, productSalesQuantity);
+    public static Product of(UserAccount userAccount, Category category, Supplier supplier, String productName, Long productCost, Long productPrice, String productDetail, Long productStockQuantity, Long productSalesQuantity){
+        return new Product(userAccount, category, supplier, productName, productCost, productPrice, productDetail, productStockQuantity, productSalesQuantity);
     }
 
 
