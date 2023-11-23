@@ -1,19 +1,25 @@
 package com.sitrack.sitrackbackend.service;
 
+import com.sitrack.sitrackbackend.domain.Category;
 import com.sitrack.sitrackbackend.domain.Product;
 import com.sitrack.sitrackbackend.domain.ProductImage;
+import com.sitrack.sitrackbackend.domain.Supplier;
 import com.sitrack.sitrackbackend.domain.account.UserAccount;
 import com.sitrack.sitrackbackend.domain.constant.RoleType;
 import com.sitrack.sitrackbackend.dto.ProductDto;
 import com.sitrack.sitrackbackend.dto.ProductImageDto;
+import com.sitrack.sitrackbackend.dto.request.ProductRequest;
+import com.sitrack.sitrackbackend.dto.request.ProductUpdateRequest;
 import com.sitrack.sitrackbackend.dto.response.ProductResponse;
+import com.sitrack.sitrackbackend.dto.response.ProductUpdateResponse;
+import com.sitrack.sitrackbackend.repository.CategoryRepository;
 import com.sitrack.sitrackbackend.repository.ProductRepository;
+import com.sitrack.sitrackbackend.repository.SupplierRepository;
 import com.sitrack.sitrackbackend.repository.UserAccountRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,19 +38,22 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final UserAccountRepository userAccountRepository;
+    private final CategoryRepository categoryRepository;
+    private final SupplierRepository supplierRepository;
     private final ImageService imageService;
 
-    public String register_product(ProductDto productDto, List<MultipartFile> images){
+    public String register_product(ProductRequest productRequest, UserAccount userAccount, List<MultipartFile> images){
         try {
-            UserAccount user = userAccountRepository.findByUserId(productDto.userAccountdto().userId())
-                    .orElseThrow(()-> new UsernameNotFoundException("해당 사용자를 찾을 수 없습니다. : " + productDto.userAccountdto().userId()));
+            UserAccount user = userAccountRepository.findByUserId(userAccount.getUserId())
+                    .orElseThrow(()-> new UsernameNotFoundException("해당 사용자를 찾을 수 없습니다. : " + userAccount.getUserId()));
 
             if(user.getRoleType() != RoleType.ADMIN && user.getRoleType() != RoleType.MANAGER) {
                 return "권한이 없습니다.";
             }
 
-            Product product = productDto.toEntity(user);
-
+            Category category = categoryRepository.findByCategoryName(productRequest.categoryName()).orElseThrow();
+            Supplier supplier = supplierRepository.findBySupplierCode(productRequest.supplierCode()).orElseThrow();
+            Product product = productRequest.toEntity(user, category, supplier);
             List<ProductImageDto> productImageDtos = imageService.parseImageFile(images);
             List<ProductImage> productImages = new ArrayList<>();
 
@@ -52,6 +61,7 @@ public class ProductService {
                 ProductImage productImage = image.toEntity(product, image);
                 productImages.add(productImage);
             }
+
             product.addproductImages(productImages);
 
             productRepository.save(product);
@@ -62,19 +72,23 @@ public class ProductService {
         return "상품 등록 완료";
     }
 
-    public String update_product(Long productId, ProductDto dto, List<MultipartFile> productImages){
+    //
+    public String update_product(Long productId, ProductUpdateRequest dto, UserAccount userAccount, List<MultipartFile> productImages){
         try {
             Product product = productRepository.getReferenceById(productId);
-            UserAccount user = userAccountRepository.findByUserId(dto.userAccountdto().userId())
-                    .orElseThrow(()-> new UsernameNotFoundException("해당 사용자를 찾을 수 없습니다. : " + dto.userAccountdto().userId()));
+            UserAccount user = userAccountRepository.findByUserId(userAccount.getUserId())
+                    .orElseThrow(()-> new UsernameNotFoundException("해당 사용자를 찾을 수 없습니다. : " + userAccount.getUserId()));
 
             // ADMIN, MANAGER은 상품 수정 가능
+            // 근데 불러오는게 맞는 것 같은대
             if(user.getRoleType() == RoleType.ADMIN || user.getRoleType() == RoleType.MANAGER){
-                if(dto.categoryId() != null){
-                    product.setCategoryId(dto.categoryId());
+                if(dto.categoryName() != null){
+                    Category category = categoryRepository.findByCategoryName(dto.categoryName()).orElseThrow();
+                    product.setCategory(category);
                 }
                 if(dto.supplierCode() != null){
-                    product.setSupplierCode(dto.supplierCode());
+                    Supplier supplier = supplierRepository.findBySupplierCode(dto.supplierCode()).orElseThrow();
+                    product.setSupplier(supplier);
                 }
                 if(dto.productName() != null){
                     product.setProductName(dto.productName());
@@ -118,6 +132,13 @@ public class ProductService {
                                             .map(ProductDto::from)
                                             .orElseThrow(()-> new EntityNotFoundException("상품이 없습니다 - productId: " + productId));
         return ProductResponse.from(productDto);
+    }
+
+    public ProductUpdateResponse findbyId_UpdateProduct_one(Long productId){
+        ProductDto productDto = productRepository.findById(productId)
+                .map(ProductDto::from)
+                .orElseThrow(()-> new EntityNotFoundException("상품이 없습니다 - productId: " + productId));
+        return ProductUpdateResponse.from(productDto);
     }
 
     public Page<ProductDto> findbyId_product_all_and_search(Pageable pageable, String searchValue){
