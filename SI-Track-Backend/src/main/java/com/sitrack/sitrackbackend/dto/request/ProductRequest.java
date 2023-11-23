@@ -1,14 +1,12 @@
 package com.sitrack.sitrackbackend.dto.request;
 
-import com.sitrack.sitrackbackend.domain.ProductImage;
-import com.sitrack.sitrackbackend.dto.ProductDto;
-import com.sitrack.sitrackbackend.dto.UserAccountDto;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
+import com.sitrack.sitrackbackend.domain.Category;
+import com.sitrack.sitrackbackend.domain.Product;
+import com.sitrack.sitrackbackend.domain.Supplier;
+import com.sitrack.sitrackbackend.domain.account.UserAccount;
 
 public record ProductRequest(
-        Long categoryId,
+        String categoryName,
         String supplierCode,
         String productName,
         Long productCost,
@@ -18,7 +16,7 @@ public record ProductRequest(
         Long productSalesQuantity
 ){
 
-    public static ProductRequest of(Long categoryId,
+    public static ProductRequest of(String categoryName,
                                     String supplierCode,
                                     String productName,
                                     Long productCost,
@@ -26,14 +24,14 @@ public record ProductRequest(
                                     String productDetail,
                                     Long productStockQuantity,
                                     Long productSalesQuantity){
-        return new ProductRequest(categoryId, supplierCode, productName, productCost, productPrice, productDetail, productStockQuantity, productSalesQuantity);
+        return new ProductRequest(categoryName, supplierCode, productName, productCost, productPrice, productDetail, productStockQuantity, productSalesQuantity);
     }
 
-    public ProductDto toDto(UserAccountDto userAccountDto) {
-        return ProductDto.of(
-                userAccountDto,
-                categoryId,
-                supplierCode,
+    public Product toEntity(UserAccount userAccount, Category category, Supplier supplier) {
+        return Product.of(
+                userAccount,
+                category,
+                supplier,
                 productName,
                 productCost,
                 productPrice,
