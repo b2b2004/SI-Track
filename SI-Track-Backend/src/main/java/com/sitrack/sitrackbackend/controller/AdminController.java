@@ -1,21 +1,12 @@
 package com.sitrack.sitrackbackend.controller;
 
-import com.sitrack.sitrackbackend.config.security.auth.PrincipalDetails;
-import com.sitrack.sitrackbackend.domain.account.UserAccount;
-import com.sitrack.sitrackbackend.dto.AdminProductDto;
-import com.sitrack.sitrackbackend.dto.OrderDto;
-import com.sitrack.sitrackbackend.dto.UserAccountDto;
+import com.sitrack.sitrackbackend.dto.*;
 import com.sitrack.sitrackbackend.service.AdminService;
-import com.sitrack.sitrackbackend.service.ManagerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -47,6 +38,18 @@ public class AdminController {
         return new ResponseEntity<>(orderList, HttpStatus.OK);
     }
 
+    @GetMapping("/allSupplier")
+    public ResponseEntity<?> findAllSupplier(){
+        List<SupplierDto> supplierList = adminService.findAllSupplier();
+        return new ResponseEntity<>(supplierList, HttpStatus.OK);
+    }
+
+    @GetMapping("/allCategory")
+    public ResponseEntity<?> findAllCategory(){
+        List<CategoryDto> categoryList = adminService.findAllCategory();
+        return new ResponseEntity<>(categoryList, HttpStatus.OK);
+    }
+
     // 상품 재고 업데이트
     @PostMapping("/update/product")
     public ResponseEntity<?> updateProduct(@RequestBody AdminProductDto productDto){
@@ -58,6 +61,42 @@ public class AdminController {
     @PostMapping("/update/order")
     public ResponseEntity<?> updateOrder(@RequestBody OrderDto orderDto){
         String msg = adminService.updateOrder(orderDto);
+        return new ResponseEntity<>(msg, HttpStatus.OK);
+    }
+
+    @PostMapping("/register/supplier")
+    public ResponseEntity<?> registerSupplier(@RequestBody SupplierDto supplierDto){
+        String msg = adminService.registerSupplier(supplierDto);
+        return new ResponseEntity<>(msg, HttpStatus.OK);
+    }
+
+    @PostMapping("/register/category")
+    public ResponseEntity<?> registerCategory(@RequestBody CategoryDto categoryDto){
+        String msg = adminService.registerCategory(categoryDto);
+        return new ResponseEntity<>(msg, HttpStatus.OK);
+    }
+
+    @PostMapping("/update/supplier")
+    public ResponseEntity<?> updateSupplier(@RequestBody SupplierDto supplierDto){
+        String msg = adminService.updateSupplier(supplierDto);
+        return new ResponseEntity<>(msg, HttpStatus.OK);
+    }
+
+    @PostMapping("/update/category")
+    public ResponseEntity<?> updateCategory(@RequestBody CategoryDto categoryDto){
+        String msg = adminService.updateCategory(categoryDto);
+        return new ResponseEntity<>(msg, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete/supplier/{supplierId}")
+    public ResponseEntity<?> deleteSupplier(@PathVariable Long supplierId){
+        String msg = adminService.deleteSupplier(supplierId);
+        return new ResponseEntity<>(msg, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete/category/{categoryId}")
+    public ResponseEntity<?> deleteCategory(@PathVariable Long categoryId){
+        String msg = adminService.deleteCategory(categoryId);
         return new ResponseEntity<>(msg, HttpStatus.OK);
     }
 

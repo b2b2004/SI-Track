@@ -105,6 +105,45 @@ public class AdminControllerTest {
         then(adminService).should().findAllOrders();
     }
 
+    @DisplayName("[AdminC] 공급업체 리스트 출력")
+    @WithAuthUser(userId = "test1", role = "ROLE_ADMIN")
+    @Test
+    public void findAll_suppliers() throws Exception {
+        // Given
+        List<SupplierDto> supplierList = List.of(createSupplierDto("공급업체1"), createSupplierDto("공급업체2"), createSupplierDto("공급업체3"));
+        given(adminService.findAllSupplier()).willReturn(supplierList);
+
+        // When & Then
+        mvc.perform(
+                        get("/admin/allSupplier"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().encoding("UTF-8"))
+                .andExpect(jsonPath("$..supplierId").exists())
+                .andExpect(jsonPath("$..supplierName").exists())
+                .andExpect(jsonPath("$..supplierCode").exists());
+        then(adminService).should().findAllSupplier();
+    }
+
+    @DisplayName("[AdminC] 카테고리 리스트 출력")
+    @WithAuthUser(userId = "test1", role = "ROLE_ADMIN")
+    @Test
+    public void findAll_categorys() throws Exception {
+        // Given
+        List<CategoryDto> categoryList = List.of(createCategoryDto("사무용품"), createCategoryDto("마우스"));
+        given(adminService.findAllCategory()).willReturn(categoryList);
+
+        // When & Then
+        mvc.perform(
+                        get("/admin/allCategory"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().encoding("UTF-8"))
+                .andExpect(jsonPath("$..categoryId").exists())
+                .andExpect(jsonPath("$..categoryName").exists());
+        then(adminService).should().findAllCategory();
+    }
+
     @DisplayName("[AdminC] 상품 업데이트 성공")
     @WithAuthUser(userId = "test1", role = "ROLE_ADMIN")
     @Test
@@ -139,6 +178,40 @@ public class AdminControllerTest {
         then(adminService).should().updateOrder(any());
     }
 
+    @DisplayName("[AdminC] 공급업체 등록 성공")
+    @WithAuthUser(userId = "test1", role = "ROLE_ADMIN")
+    @Test
+    public void register_supplier() throws Exception {
+        // Given
+        SupplierDto supplierDto = createSupplierDto("공급업체1");
+
+        // When & Then
+        mvc.perform(
+                post("/admin/register/supplier")
+                        .content(objectMapper.writeValueAsString(supplierDto))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
+        ).andExpect(status().isOk());
+        then(adminService).should().registerSupplier(any());
+    }
+
+    @DisplayName("[AdminC] 카테고리 등록 성공")
+    @WithAuthUser(userId = "test1", role = "ROLE_ADMIN")
+    @Test
+    public void register_category() throws Exception {
+        // Given
+        CategoryDto categoryDto = createCategoryDto("사무용품");
+
+        // When & Then
+        mvc.perform(
+                post("/admin/register/category")
+                        .content(objectMapper.writeValueAsString(categoryDto))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
+        ).andExpect(status().isOk());
+        then(adminService).should().registerCategory(any());
+    }
+
     private UserAccountDto createUserAccountDto(String userId) {
         return UserAccountDto.of(
                 userId,
@@ -158,8 +231,8 @@ public class AdminControllerTest {
         return AdminProductDto.of(
                 1L,
                 createUserAccountDto("test1"),
-                createCategoryDto(),
-                createSupplierDto(),
+                createCategoryDto("물류"),
+                createSupplierDto("공급업체1"),
                 productName,
                 100L,
                 1000L,
@@ -183,18 +256,18 @@ public class AdminControllerTest {
         );
     }
 
-    private CategoryDto createCategoryDto(){
+    private CategoryDto createCategoryDto(String categoryName){
         return CategoryDto.of(
                 1L,
-                "물류"
+                categoryName
         );
     }
 
 
-    private SupplierDto createSupplierDto(){
+    private SupplierDto createSupplierDto(String supplierName){
         return SupplierDto.of(
                 1L,
-                "공급업체1",
+                supplierName,
                 "A12"
         );
     }
