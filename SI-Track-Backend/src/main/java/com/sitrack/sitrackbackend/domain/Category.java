@@ -1,6 +1,7 @@
 package com.sitrack.sitrackbackend.domain;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 
@@ -13,6 +14,7 @@ public class Category {
     @Column(name = "category_id")
     private Long id;
 
+    @Setter
     @Column(length = 50, nullable = false)
     private String categoryName;
 
@@ -23,7 +25,16 @@ public class Category {
         this.categoryName = categoryName;
     }
 
+    public Category(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
     public static Category of(Long id, String categoryName){
+
         return new Category(id, categoryName);
+    }
+
+    public static Category of(String categoryName){
+        return new Category(categoryName);
     }
 }

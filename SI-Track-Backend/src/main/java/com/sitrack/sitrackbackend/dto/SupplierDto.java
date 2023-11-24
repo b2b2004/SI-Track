@@ -22,7 +22,6 @@ public record SupplierDto(
 
     public Supplier toEntity(){
         return Supplier.of(
-                supplierId,
                 supplierName,
                 supplierCode
         );
