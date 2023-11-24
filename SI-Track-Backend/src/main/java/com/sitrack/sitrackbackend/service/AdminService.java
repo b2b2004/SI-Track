@@ -1,13 +1,11 @@
 package com.sitrack.sitrackbackend.service;
 
+import com.sitrack.sitrackbackend.domain.Category;
 import com.sitrack.sitrackbackend.domain.Order;
 import com.sitrack.sitrackbackend.domain.Product;
-import com.sitrack.sitrackbackend.dto.AdminProductDto;
-import com.sitrack.sitrackbackend.dto.OrderDto;
-import com.sitrack.sitrackbackend.dto.UserAccountDto;
-import com.sitrack.sitrackbackend.repository.OrderRepository;
-import com.sitrack.sitrackbackend.repository.ProductRepository;
-import com.sitrack.sitrackbackend.repository.UserAccountRepository;
+import com.sitrack.sitrackbackend.domain.Supplier;
+import com.sitrack.sitrackbackend.dto.*;
+import com.sitrack.sitrackbackend.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +21,8 @@ public class AdminService {
     private final UserAccountRepository userAccountRepository;
     private final ProductRepository productRepository;
     private final OrderRepository orderRepository;
+    private final SupplierRepository supplierRepository;
+    private final CategoryRepository categoryRepository;
 
     // TODO: 페이징 기능
 
@@ -47,8 +47,23 @@ public class AdminService {
         List<OrderDto> orderDtos = orderRepository.findAll()
                 .stream().map(OrderDto::from)
                 .collect(Collectors.toList());
-        System.out.println(orderDtos);
         return orderDtos;
+    }
+
+    @Transactional(readOnly = true)
+    public List<SupplierDto> findAllSupplier() {
+        List<SupplierDto> supplierDtos = supplierRepository.findAll()
+                .stream().map(SupplierDto::from)
+                .collect(Collectors.toList());
+        return supplierDtos;
+    }
+
+    @Transactional(readOnly = true)
+    public List<CategoryDto> findAllCategory() {
+        List<CategoryDto> categoryDtos = categoryRepository.findAll()
+                .stream().map(CategoryDto::from)
+                .collect(Collectors.toList());
+        return categoryDtos;
     }
 
     public String updateProduct(AdminProductDto productDto) {
@@ -85,5 +100,68 @@ public class AdminService {
             return "업데이트 실패";
         }
         return "주문 현황 업데이트 완료";
+    }
+
+    public String updateSupplier(SupplierDto supplierDto) {
+        Supplier supplier = supplierRepository.findById(supplierDto.supplierId()).orElseThrow();
+
+        if(!supplierDto.supplierCode().isBlank()){
+            supplier.setSupplierName(supplierDto.supplierCode());
+        }else{
+            return "코드를 확인해주세요.";
+        }
+
+        if(!supplierDto.supplierName().isBlank()){
+            supplier.setSupplierName(supplierDto.supplierName());
+        }else{
+            return "공급업체 이름을 확인해주세요.";
+        }
+
+        return "공급업체 정보 수정 완료";
+    }
+
+    public String updateCategory(CategoryDto categoryDto) {
+        Category category = categoryRepository.findById(categoryDto.categoryId()).orElseThrow();
+
+        if(!categoryDto.categoryName().isBlank()){
+            category.setCategoryName(categoryDto.categoryName());
+        }else{
+            return "카테고리 이름을 확인해주세요.";
+        }
+
+        return "카테고리 정보 수정 완료";
+    }
+
+    public String registerSupplier(SupplierDto supplierDto) {
+        if(supplierDto.supplierCode().isBlank()){
+            return "코드를 확인해주세요.";
+        }
+        if(supplierDto.supplierName().isBlank()){
+            return "공급업체 이름을 확인해주세요.";
+        }
+        Supplier supplier = supplierDto.toEntity();
+        supplierRepository.save(supplier);
+        return "등록 성공";
+    }
+
+    public String registerCategory(CategoryDto categoryDto) {
+        if(categoryDto.categoryName().isBlank()){
+            return "카테고리 이름을 확인해주세요.";
+        }
+
+        Category category = categoryDto.toEntity();
+        categoryRepository.save(category);
+        return "등록 성공";
+    }
+
+
+    public String deleteSupplier(Long supplierId) {
+        supplierRepository.deleteById(supplierId);
+        return "삭제 성공";
+    }
+
+    public String deleteCategory(Long categoryId) {
+        categoryRepository.deleteById(categoryId);
+        return "삭제 성공";
     }
 }
