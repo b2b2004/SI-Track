@@ -2,9 +2,15 @@ package com.sitrack.sitrackbackend.dto;
 
 import com.sitrack.sitrackbackend.domain.Supplier;
 
+import javax.validation.constraints.NotBlank;
+
 public record SupplierDto(
          Long supplierId,
+
+         @NotBlank(message = "supplierName is Null")
          String supplierName,
+
+         @NotBlank(message = "supplierCode is Null")
          String supplierCode
 ) {
 

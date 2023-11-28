@@ -90,8 +90,8 @@ public class AccountControllerTest {
 
     private UserAccountDto createUserAccountDto() {
         return UserAccountDto.of(
-                "user1",
-                "1234",
+                "test1test1",
+                "!!QQ11122233",
                 "권용호",
                 "b2b@naver.com",
                 "010-1111-2222",

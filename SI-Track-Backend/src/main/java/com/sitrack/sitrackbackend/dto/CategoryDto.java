@@ -2,8 +2,12 @@ package com.sitrack.sitrackbackend.dto;
 
 import com.sitrack.sitrackbackend.domain.Category;
 
+import javax.validation.constraints.NotBlank;
+
 public record CategoryDto(
         Long categoryId,
+
+        @NotBlank(message = "categoryName is Null")
         String categoryName
 ) {
 

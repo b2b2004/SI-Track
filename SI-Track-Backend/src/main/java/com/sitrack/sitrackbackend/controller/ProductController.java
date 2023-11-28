@@ -22,6 +22,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +36,7 @@ public class ProductController {
     private final PaginationService paginationService;
 
     @PostMapping("/admin/register")
-    public ResponseEntity<?> register_product(@RequestPart ProductRequest productRequest,
+    public ResponseEntity<?> register_product(@Valid @RequestPart ProductRequest productRequest,
                                               @RequestPart List<MultipartFile> productImages,
                                               @AuthenticationPrincipal PrincipalDetails principalDetails){
         UserAccount user = principalDetails.getUser();
@@ -50,7 +51,7 @@ public class ProductController {
     }
 
     @PostMapping("/admin/update/{productId}")
-    public ResponseEntity<?> update_product(@RequestPart ProductUpdateRequest productUpdateRequest,
+    public ResponseEntity<?> update_product(@Valid @RequestPart ProductUpdateRequest productUpdateRequest,
                                             @RequestPart List<MultipartFile> productImages,
                                             @PathVariable Long productId,
                                             @AuthenticationPrincipal PrincipalDetails principalDetails){
