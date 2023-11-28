@@ -13,6 +13,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -31,7 +32,7 @@ public class CartController {
 
     // 장바구니 상품 추가
     @PostMapping("/addCart")
-    public ResponseEntity<?> addCart(@RequestBody CartItemRequest cartItemRequest,
+    public ResponseEntity<?> addCart(@Valid @RequestBody CartItemRequest cartItemRequest,
                                         @AuthenticationPrincipal PrincipalDetails principalDetails){
         UserAccount user = principalDetails.getUser();
         cartService.createCart(cartItemRequest, user);

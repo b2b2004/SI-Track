@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -26,7 +27,7 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping("/page")
-    public ResponseEntity<?> order_Page(@RequestBody OrderRequest orderRequest,
+    public ResponseEntity<?> order_Page(@Valid @RequestBody OrderRequest orderRequest,
                                         @AuthenticationPrincipal PrincipalDetails principalDetails){
         UserAccount userAccount = principalDetails.getUser();
         orderService.save(orderRequest, userAccount);

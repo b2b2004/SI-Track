@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -52,7 +53,7 @@ public class AdminController {
 
     // 상품 재고 업데이트
     @PostMapping("/update/product")
-    public ResponseEntity<?> updateProduct(@RequestBody AdminProductDto productDto){
+    public ResponseEntity<?> updateProduct(@Valid @RequestBody AdminProductDto productDto){
         String msg = adminService.updateProduct(productDto);
         return new ResponseEntity<>(msg, HttpStatus.OK);
     }
@@ -65,25 +66,25 @@ public class AdminController {
     }
 
     @PostMapping("/register/supplier")
-    public ResponseEntity<?> registerSupplier(@RequestBody SupplierDto supplierDto){
+    public ResponseEntity<?> registerSupplier(@Valid @RequestBody SupplierDto supplierDto){
         String msg = adminService.registerSupplier(supplierDto);
         return new ResponseEntity<>(msg, HttpStatus.OK);
     }
 
     @PostMapping("/register/category")
-    public ResponseEntity<?> registerCategory(@RequestBody CategoryDto categoryDto){
+    public ResponseEntity<?> registerCategory(@Valid @RequestBody CategoryDto categoryDto){
         String msg = adminService.registerCategory(categoryDto);
         return new ResponseEntity<>(msg, HttpStatus.OK);
     }
 
     @PostMapping("/update/supplier")
-    public ResponseEntity<?> updateSupplier(@RequestBody SupplierDto supplierDto){
+    public ResponseEntity<?> updateSupplier(@Valid @RequestBody SupplierDto supplierDto){
         String msg = adminService.updateSupplier(supplierDto);
         return new ResponseEntity<>(msg, HttpStatus.OK);
     }
 
     @PostMapping("/update/category")
-    public ResponseEntity<?> updateCategory(@RequestBody CategoryDto categoryDto){
+    public ResponseEntity<?> updateCategory(@Valid @RequestBody CategoryDto categoryDto){
         String msg = adminService.updateCategory(categoryDto);
         return new ResponseEntity<>(msg, HttpStatus.OK);
     }
