@@ -1,5 +1,6 @@
 package com.sitrack.sitrackbackend.service;
 
+import com.sitrack.sitrackbackend.Exception.CustomException;
 import com.sitrack.sitrackbackend.domain.Cart;
 import com.sitrack.sitrackbackend.domain.CartItem;
 import com.sitrack.sitrackbackend.domain.Product;
@@ -20,6 +21,8 @@ import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.sitrack.sitrackbackend.Exception.ErrorCode.CART_NOT_FOUND;
+
 @RequiredArgsConstructor
 @Transactional
 @Service
@@ -28,7 +31,6 @@ public class CartService {
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
     private final ProductRepository productRepository;
-    private final UserAccountRepository userAccountRepository;
 
     // 장바구니 생성
     public void createCart(CartItemRequest cartItemRequest, UserAccount user){
@@ -43,7 +45,7 @@ public class CartService {
         }
 
         Cart cart = cartRepository.findCartByUserAccount(user)
-                .orElseThrow(()-> new EntityNotFoundException("장바구니가 없습니다."));
+                .orElseThrow(()-> new CustomException(CART_NOT_FOUND));
         CartItem cartItem = cartItemRepository.findByCartIdAndProductId(cart.getId(), product.getId());
 
 
@@ -65,7 +67,8 @@ public class CartService {
     // 장바구니 상품 삭제
     public void deleteOneCart(Long id, UserAccount user){
 
-        CartItem cartItem = cartItemRepository.findById(id).orElseThrow();
+        CartItem cartItem = cartItemRepository.findById(id)
+                .orElseThrow(()-> new CustomException(CART_NOT_FOUND));
         Cart cart = cartItem.getCart();
 
         if(!cart.getUserAccount().equals(user)){
@@ -80,7 +83,7 @@ public class CartService {
     public List<CartItemResponse> findAllCart(UserAccount user){
 
         Cart cart = cartRepository.findCartByUserAccount(user)
-                .orElseThrow(()-> new EntityNotFoundException("장바구니가 없습니다."));
+                .orElseThrow(()-> new CustomException(CART_NOT_FOUND));
         List<CartItem> items = cartItemRepository.findByCartId(cart.getId());
         List<CartItemResponse> result = new ArrayList<>();
 

@@ -1,5 +1,6 @@
 package com.sitrack.sitrackbackend.service;
 
+import com.sitrack.sitrackbackend.Exception.CustomException;
 import com.sitrack.sitrackbackend.domain.account.UserAccount;
 import com.sitrack.sitrackbackend.domain.constant.RoleType;
 import com.sitrack.sitrackbackend.dto.UserAccountDto;
@@ -7,6 +8,8 @@ import com.sitrack.sitrackbackend.repository.UserAccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.sitrack.sitrackbackend.Exception.ErrorCode.USER_NOT_FOUND;
 
 @RequiredArgsConstructor
 @Transactional
@@ -19,7 +22,8 @@ public class ManagerService {
         if(user.getRoleType() != RoleType.MANAGER){
             return "권한이 없습니다. 관리자에게 문의하세요.";
         }
-        UserAccount user1 = userAccountRepository.findByUserId(userAccountDto.userId()).orElseThrow();
+        UserAccount user1 = userAccountRepository.findByUserId(userAccountDto.userId())
+                .orElseThrow(()-> new CustomException(USER_NOT_FOUND));
         if(userAccountDto.roleType() != null){
             user1.setRoleType(userAccountDto.roleType());
         }else{
