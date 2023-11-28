@@ -1,5 +1,6 @@
 package com.sitrack.sitrackbackend.service;
 
+import com.sitrack.sitrackbackend.Exception.CustomException;
 import com.sitrack.sitrackbackend.domain.account.UserAccount;
 import com.sitrack.sitrackbackend.domain.constant.RoleType;
 import com.sitrack.sitrackbackend.dto.*;
@@ -83,8 +84,7 @@ public class AccountServiceTest {
 
         // Then
         assertThat(t)
-                .isInstanceOf(UsernameNotFoundException.class)
-                .hasMessage("해당 사용자의 아이디를 찾을 수 없습니다. : " + searchIdDto.userName());
+                .isInstanceOf(CustomException.class);
         then(userAccountRepository).should().findByUserNameAndUserEmail(searchIdDto.userName(), searchIdDto.userEmail());
     }
 
@@ -117,8 +117,7 @@ public class AccountServiceTest {
 
         // Then
         assertThat(t)
-                .isInstanceOf(UsernameNotFoundException.class)
-                .hasMessage("해당 정보의 사용자가 없습니다. : " + searchPwdDto.userId());
+                .isInstanceOf(CustomException.class);
         then(userAccountRepository).should().findByUserIdAndUserEmail(any(), any());
     }
 
