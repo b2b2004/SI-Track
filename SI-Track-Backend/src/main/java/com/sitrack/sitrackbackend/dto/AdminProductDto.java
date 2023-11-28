@@ -1,20 +1,37 @@
 package com.sitrack.sitrackbackend.dto;
 
 import com.sitrack.sitrackbackend.domain.Product;
-import com.sun.istack.NotNull;
+import org.hibernate.validator.constraints.Range;
 
+
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
 public record AdminProductDto(
-        @NotNull Long productId,
-        @NotNull UserAccountDto userAccountdto,
-        @NotNull CategoryDto category,
-        @NotNull SupplierDto supplier,
-        @NotNull String productName,
-        @NotNull Long productCost,
-        @NotNull Long productPrice,
-        @NotNull Long productStockQuantity,
-        @NotNull Long productSalesQuantity,
+
+        Long productId,
+
+        UserAccountDto userAccountdto,
+
+        CategoryDto category,
+
+        SupplierDto supplier,
+
+        @NotBlank(message = "productName is Null")
+        String productName,
+
+        @Range(min = 1, max = 10000000, message = "productCost is over Range")
+        Long productCost,
+
+        @Range(min = 1, max = 10000000, message = "productPrice is over Range")
+        Long productPrice,
+
+        @Range(max = 10000000, message = "productStockQuantity is over Range")
+        Long productStockQuantity,
+
+        @Range(max = 10000000, message = "productSalesQuantity is over Range")
+        Long productSalesQuantity,
+
         LocalDateTime createdAt,
         String createdBy,
         LocalDateTime modifiedAt,
