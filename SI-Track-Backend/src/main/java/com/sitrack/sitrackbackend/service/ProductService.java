@@ -1,5 +1,6 @@
 package com.sitrack.sitrackbackend.service;
 
+import com.sitrack.sitrackbackend.Exception.CustomException;
 import com.sitrack.sitrackbackend.domain.Category;
 import com.sitrack.sitrackbackend.domain.Product;
 import com.sitrack.sitrackbackend.domain.ProductImage;
@@ -20,7 +21,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,6 +29,9 @@ import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.sitrack.sitrackbackend.Exception.ErrorCode.PRODUCT_NOT_FOUND;
+import static com.sitrack.sitrackbackend.Exception.ErrorCode.USER_NOT_FOUND;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -45,7 +48,7 @@ public class ProductService {
     public String register_product(ProductRequest productRequest, UserAccount userAccount, List<MultipartFile> images){
         try {
             UserAccount user = userAccountRepository.findByUserId(userAccount.getUserId())
-                    .orElseThrow(()-> new UsernameNotFoundException("해당 사용자를 찾을 수 없습니다. : " + userAccount.getUserId()));
+                    .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
             if(user.getRoleType() != RoleType.ADMIN && user.getRoleType() != RoleType.MANAGER) {
                 return "권한이 없습니다.";
@@ -77,10 +80,9 @@ public class ProductService {
         try {
             Product product = productRepository.getReferenceById(productId);
             UserAccount user = userAccountRepository.findByUserId(userAccount.getUserId())
-                    .orElseThrow(()-> new UsernameNotFoundException("해당 사용자를 찾을 수 없습니다. : " + userAccount.getUserId()));
+                    .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
             // ADMIN, MANAGER은 상품 수정 가능
-            // 근데 불러오는게 맞는 것 같은대
             if(user.getRoleType() == RoleType.ADMIN || user.getRoleType() == RoleType.MANAGER){
                 if(dto.categoryName() != null){
                     Category category = categoryRepository.findByCategoryName(dto.categoryName()).orElseThrow();
@@ -116,7 +118,7 @@ public class ProductService {
 
     public String delete_product(long prouductId, UserAccount userAccount){
         UserAccount user = userAccountRepository.findByUserId(userAccount.getUserId())
-                .orElseThrow(()-> new UsernameNotFoundException("해당 사용자를 찾을 수 없습니다. : " + userAccount.getUserId()));
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
         if(user.getRoleType() == RoleType.ADMIN || user.getRoleType() == RoleType.MANAGER){
             productRepository.deleteById(prouductId);
@@ -130,14 +132,14 @@ public class ProductService {
     public ProductResponse findbyId_product_one(Long productId){
         ProductDto productDto = productRepository.findById(productId)
                                             .map(ProductDto::from)
-                                            .orElseThrow(()-> new EntityNotFoundException("상품이 없습니다 - productId: " + productId));
+                                            .orElseThrow(()-> new CustomException(PRODUCT_NOT_FOUND));
         return ProductResponse.from(productDto);
     }
 
     public ProductUpdateResponse findbyId_UpdateProduct_one(Long productId){
         ProductDto productDto = productRepository.findById(productId)
                 .map(ProductDto::from)
-                .orElseThrow(()-> new EntityNotFoundException("상품이 없습니다 - productId: " + productId));
+                .orElseThrow(()-> new CustomException(PRODUCT_NOT_FOUND));
         return ProductUpdateResponse.from(productDto);
     }
 

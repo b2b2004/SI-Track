@@ -1,5 +1,6 @@
 package com.sitrack.sitrackbackend.service;
 
+import com.sitrack.sitrackbackend.Exception.CustomException;
 import com.sitrack.sitrackbackend.config.security.JwtProvider;
 import com.sitrack.sitrackbackend.config.security.auth.PrincipalDetails;
 import com.sitrack.sitrackbackend.domain.account.UserAccount;
@@ -15,6 +16,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.sitrack.sitrackbackend.Exception.ErrorCode.USER_NOT_FOUND;
 
 @RequiredArgsConstructor
 @Transactional
@@ -38,39 +41,39 @@ public class AccountService {
         return "회원 가입 완료";
     }
 
-    public String login(LoginDto loginDto) {
-        UserAccount user = userAccountRepository.findByUserId(loginDto.userId())
-                .orElseThrow(() -> new UsernameNotFoundException("해당 사용자를 찾을 수 없습니다. : " + loginDto.userId()));
-        String rawPassword = loginDto.userPassword();
-
-        String userId = user.getUserId();
-        String userPassword = user.getUserPassword();
-
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userId, userPassword);
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-
-        // 인증이 완료된 객체이면,
-        if (authentication.isAuthenticated()) {
-            PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-
-            String authenticatedUserID = principalDetails.getUser().getUserId();
-            String authenticateduserPassword = principalDetails.getUser().getUserPassword();
-            return "로그인 성공 " + jwtProvider.generateJwtToken(authenticatedUserID, authenticateduserPassword);
-        }
-
-        return "로그인 실패";
-    }
+//    public String login(LoginDto loginDto) {
+//        UserAccount user = userAccountRepository.findByUserId(loginDto.userId())
+//                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+//        String rawPassword = loginDto.userPassword();
+//
+//        String userId = user.getUserId();
+//        String userPassword = user.getUserPassword();
+//
+//        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userId, userPassword);
+//        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+//
+//        // 인증이 완료된 객체이면,
+//        if (authentication.isAuthenticated()) {
+//            PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+//
+//            String authenticatedUserID = principalDetails.getUser().getUserId();
+//            String authenticateduserPassword = principalDetails.getUser().getUserPassword();
+//            return "로그인 성공 " + jwtProvider.generateJwtToken(authenticatedUserID, authenticateduserPassword);
+//        }
+//
+//        return "로그인 실패";
+//    }
 
     public SearchIdResponse searchId(SearchIdDto searchIdDto) {
         UserAccount user = userAccountRepository.findByUserNameAndUserEmail(searchIdDto.userName(), searchIdDto.userEmail())
-                .orElseThrow(() -> new UsernameNotFoundException("해당 사용자의 아이디를 찾을 수 없습니다. : " + searchIdDto.userName()));
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         SearchIdResponse searchIdResponse = SearchIdResponse.of(user.getUserId(), user.getCreatedAt());
         return searchIdResponse;
     }
 
     public String searchPwd(SearchPwdDto searchPwdDto) {
         UserAccount user = userAccountRepository.findByUserIdAndUserEmail(searchPwdDto.userId(), searchPwdDto.userEmail())
-                .orElseThrow(() -> new UsernameNotFoundException("해당 정보의 사용자가 없습니다. : " + searchPwdDto.userId()));
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         String newPWD = emailService.createMailAndcreatePWD(user.getUserName(), user.getUserEmail());
         user.setUserPassword(bCryptPasswordEncoder.encode(newPWD));
         return "이메일로 임시 비밀 번호가 발송 되었습니다.";
@@ -78,7 +81,7 @@ public class AccountService {
 
     public String chagePwd(UserAccountPwdDto userAccountPwdDto, UserAccount user1) {
         UserAccount user = userAccountRepository.findByUserId(user1.getUserId())
-                .orElseThrow(() -> new UsernameNotFoundException("해당 정보의 사용자가 없습니다. : " + user1.getUserId()));
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         if(!userAccountPwdDto.nowPwd().equals(user.getUserPassword())){
             return "현재 비밀번호와 일치하지 않습니다.";
         }
@@ -88,11 +91,19 @@ public class AccountService {
 
     public String chageInformaition(UserAccountInfoDto userAccountInfoDto, UserAccount user1) {
         UserAccount user = userAccountRepository.findByUserId(user1.getUserId())
-                .orElseThrow(() -> new UsernameNotFoundException("해당 정보의 사용자가 없습니다. : " + user1.getUserId()));
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         user.setUserEmail(userAccountInfoDto.userEmail());
         user.setUserPhoneNumber(userAccountInfoDto.userPhoneNumber());
 
         return "정보가 변경 되었습니다.";
+    }
+
+    @Transactional(readOnly = true)
+    public UserAccountDto findUser(UserAccount user) {
+        UserAccountDto user1 = userAccountRepository.findByUserId(user.getUserId())
+                .map(UserAccountDto::from)
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        return user1;
     }
 }
 

@@ -1,5 +1,6 @@
 package com.sitrack.sitrackbackend.service;
 
+import com.sitrack.sitrackbackend.Exception.CustomException;
 import com.sitrack.sitrackbackend.domain.Category;
 import com.sitrack.sitrackbackend.domain.Order;
 import com.sitrack.sitrackbackend.domain.Product;
@@ -12,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.sitrack.sitrackbackend.Exception.ErrorCode.*;
 
 @RequiredArgsConstructor
 @Transactional
@@ -67,7 +70,8 @@ public class AdminService {
     }
 
     public String updateProduct(AdminProductDto productDto) {
-         Product product = productRepository.findById(productDto.productId()).orElseThrow();
+         Product product = productRepository.findById(productDto.productId())
+                 .orElseThrow(()-> new CustomException(PRODUCT_NOT_FOUND));
          if(productDto.productName() != null){
              product.setProductName(productDto.productName());
          }
@@ -93,7 +97,8 @@ public class AdminService {
     }
 
     public String updateOrder(OrderDto orderDto) {
-        Order order = orderRepository.findById(orderDto.orderId()).orElseThrow();
+        Order order = orderRepository.findById(orderDto.orderId())
+                .orElseThrow(()-> new CustomException(ORDER_NOT_FOUND));
         if(orderDto.orderStatus() != null){
             order.setOrderStatus(orderDto.orderStatus());
         }else{
@@ -103,7 +108,8 @@ public class AdminService {
     }
 
     public String updateSupplier(SupplierDto supplierDto) {
-        Supplier supplier = supplierRepository.findById(supplierDto.supplierId()).orElseThrow();
+        Supplier supplier = supplierRepository.findById(supplierDto.supplierId())
+                .orElseThrow(()-> new CustomException(SUPPLIER_NOT_FOUND));
 
         if(!supplierDto.supplierCode().isBlank()){
             supplier.setSupplierName(supplierDto.supplierCode());
@@ -121,7 +127,8 @@ public class AdminService {
     }
 
     public String updateCategory(CategoryDto categoryDto) {
-        Category category = categoryRepository.findById(categoryDto.categoryId()).orElseThrow();
+        Category category = categoryRepository.findById(categoryDto.categoryId())
+                .orElseThrow(()-> new CustomException(CATEGORY_NOT_FOUND));
 
         if(!categoryDto.categoryName().isBlank()){
             category.setCategoryName(categoryDto.categoryName());

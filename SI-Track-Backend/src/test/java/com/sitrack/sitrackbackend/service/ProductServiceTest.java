@@ -1,5 +1,6 @@
 package com.sitrack.sitrackbackend.service;
 
+import com.sitrack.sitrackbackend.Exception.CustomException;
 import com.sitrack.sitrackbackend.domain.Category;
 import com.sitrack.sitrackbackend.domain.Product;
 import com.sitrack.sitrackbackend.domain.Supplier;
@@ -223,8 +224,7 @@ public class ProductServiceTest {
 
         // Then
         assertThat(t)
-                .isInstanceOf(EntityNotFoundException.class)
-                .hasMessage("상품이 없습니다 - productId: " + productId);
+                .isInstanceOf(CustomException.class);
         then(productRepository).should().findById(productId);
     }
 

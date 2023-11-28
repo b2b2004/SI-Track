@@ -1,5 +1,6 @@
 package com.sitrack.sitrackbackend.service;
 
+import com.sitrack.sitrackbackend.Exception.CustomException;
 import com.sitrack.sitrackbackend.domain.*;
 import com.sitrack.sitrackbackend.domain.account.UserAccount;
 import com.sitrack.sitrackbackend.dto.OrderItemDto;
@@ -14,6 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.sitrack.sitrackbackend.Exception.ErrorCode.PRODUCT_NOT_FOUND;
+import static com.sitrack.sitrackbackend.Exception.ErrorCode.USER_NOT_FOUND;
 
 @RequiredArgsConstructor
 @Transactional
@@ -33,7 +37,8 @@ public class OrderService {
         List<OrderItem> orderItems = new ArrayList<>();
 
         for(OrderItemDto dto : orderItemDto){
-           Product product = productRepository.findById(dto.productId()).orElseThrow();
+           Product product = productRepository.findById(dto.productId())
+                   .orElseThrow(()-> new CustomException(PRODUCT_NOT_FOUND));
            OrderItem orderItem = OrderItem.of(product, dto.quantity(), product.getProductPrice());
            products.add(product);
            orderItems.add(orderItem);
@@ -75,7 +80,8 @@ public class OrderService {
 
     public List<OrderResponse> findByUserOrders(UserAccount userAccount) {
 
-        UserAccount user = userAccountRepository.findByUserId(userAccount.getUserId()).orElseThrow();
+        UserAccount user = userAccountRepository.findByUserId(userAccount.getUserId())
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         List<Order> orders = user.getOrders();
         List<OrderResponse> orderResponses = new ArrayList<>();
 
