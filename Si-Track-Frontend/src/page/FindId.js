@@ -3,6 +3,31 @@ import './FindId.css';
 import { Link } from 'react-router-dom';
 import Success from './Success';
 export default function FindId(){
+    function handlefindid(){
+        if(name===''){
+            alert('이름을 입력해주세요.');
+            return false;
+        }
+        if(email===''){
+            alert('이메일을 입력해주세요.');
+            return false;
+        }
+        fetch("http://localhost:8080/account/user/searchId",{
+            method:"POST",
+            headers:{
+                "content-Type":"application/json; charset=utf-8"
+            },
+            body:JSON.stringify({
+                userName:name,
+                userEmail:email,
+            }),
+        })
+        .then((data)=>{
+            console.log(data);
+        })
+    }
+    const [name,setName] = useState('');
+    const [email,setEmail] = useState('');
     const [toggle,setToggle] = useState('none');
     if(toggle==='form1'){
         document.querySelector('.formcont1').style.display='block'
@@ -24,7 +49,7 @@ export default function FindId(){
                 <label>회원정보에 등록한 휴대전화로 인증</label>
                 </div>
                 <div className='formcont1'>
-            <form method="post">
+            <form>
                 <p>이름</p>
                 <input type="text"></input>
                 <p>휴대전화</p>
@@ -43,14 +68,14 @@ export default function FindId(){
             <div className='formcont2'>
             <form method="post" >
                 <p>이름</p>
-                <input type="text"></input>
+                <input type="text" onChange={(e)=>setName(e.target.value)}></input>
                 <p>이메일 주소</p>
-                <input type="text"></input>
+                <input type="text" onChange={(e)=>setEmail(e.target.value)} ></input>
                 <span>@</span>
                 <input type="text"></input>
                 <button >인증번호받기</button>
                 <input type="text" disabled value='인증번호 6자리 숫자 입력'></input>
-                <button type='submit' ><Link to='/success'>다음</Link></button>
+                <button type='submit' onClick={handlefindid} ><Link to='/success'>다음</Link></button>
             </form>
             </div>
         </div>

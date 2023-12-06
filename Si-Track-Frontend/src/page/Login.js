@@ -5,9 +5,10 @@ export default function Login(){
     const [id,setId] = useState("");
     const [pw,setPw] = useState("");
 
-    function handlelogin(e){
-        let jwtToken = e.headers.get("Authorization");
-        console.log(jwtToken);
+    function handlelogin(data){
+        data.preventDefault();
+        console.log(data);
+
         if(id===''){
             alert('아이디를 입력해주세요.');
             return false;
@@ -16,8 +17,7 @@ export default function Login(){
             alert('비밀번호를 입력해주세요.');
             return false;
         }
-        e.preventDefault();
-        fetch("http://localhost:8080//login",{
+        fetch("http://localhost:8080/login",{
             method:"POST",
             headers:{
                 "content-Type":"application/json; charset=utf-8"
@@ -27,11 +27,15 @@ export default function Login(){
                 userPassword:pw,
             }),
         })
-        .then((e)=>{
+        .then((data)=>{
+            let jwtToken = data.headers.get("Authorization");
+            console.log(jwtToken);
             if(jwtToken!==null){
-                localStorage.setItem('Authorization',jwtToken);
+                localStorage.setItem('Authorization',{
+                    jwtToken,
+                });
                 alert("로그인이 완료되었습니다.");
-                window.location.href("/");
+                window.location.href="/";
             }
             else if(jwtToken===null){
                 alert('아이디, 비밀번호를 확인해주세요.')

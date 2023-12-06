@@ -1,11 +1,28 @@
 import ProductItem from "../components/ProductItem";
 import './Productlist.css';
-import { getCouurses } from "../api/api";
+import { useEffect, useState } from "react";
 
 export default function Productlist(){
-    const courses = getCouurses();
+    const [posts, setPosts] = useState([]);
+    useEffect(() => {
+        fetch("http://localhost:8080/product/list",{
+            method:"GET",
+            headers:{
+                "content-Type":"application/json; charset=utf-8"
+            },
+        })
+        .then(data=> {
+            return data.json();
+        })
+        .then((data) => {
+            setPosts(data.products.content);
+            console.log(data.products.content);
+            console.log(posts);
+        });
+    }, []);
     return(
         <div id="product">
+            {console.log(posts)}
         <h1>title</h1>
         <form>
         <input type="text" placeholder="검색어를 입력해주세요"></input>
@@ -13,10 +30,11 @@ export default function Productlist(){
         </form>
             <div className="container">
             <p>총 
-                {courses.length}
                 개가 검색되었습니다.</p>
             <div>
-                {courses.map((course)=>(<ProductItem key={course.id} course={course}/>))}
+                {posts.map(post => (
+                    <ProductItem post={post} key={post.supplierCode}/>
+                ))}
             </div>
             </div>
         </div>
