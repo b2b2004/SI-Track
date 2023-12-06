@@ -9,5 +9,5 @@ public class SiTrackBackendApplication {
     public static void main(String[] args) {
         SpringApplication.run(SiTrackBackendApplication.class, args);
     }
-
 }
+
