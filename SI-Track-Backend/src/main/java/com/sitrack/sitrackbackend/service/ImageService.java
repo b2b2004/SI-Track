@@ -28,7 +28,7 @@ public class ImageService {
 
     public List<ProductImageDto> parseImageFile(List<MultipartFile> multipartFiles) throws IOException {
         List<ProductImageDto> productImageDtos = new ArrayList<>();
-        String imgSavePath = "src/main/resources/static/img"; // 임시 저장
+        String imgSavePath = "C:\\workspace\\springbootwork\\SI-Track\\Si-Track-Frontend\\public\\img";
         ProductImageType productImageType = Subnail;
 
         int count = 0;
@@ -55,12 +55,12 @@ public class ImageService {
         return productImageDtos;
     }
 
-    public void save(Product product, List<ProductImageDto> images){
-        for(ProductImageDto image : images){
-            ProductImage productImage = image.toEntity(product, image);
-            productImageRepository.save(productImage);
-        }
-    }
+//    public void save(Product product, List<ProductImageDto> images){
+//        for(ProductImageDto image : images){
+//            ProductImage productImage = image.toEntity(product, image);
+//            productImageRepository.save(productImage);
+//        }
+//    }
 
     public void delete_By_product_id(Long productId){
         productImageRepository.deleteByProductId(productId);
