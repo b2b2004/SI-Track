@@ -3,16 +3,35 @@ import img from '../assets/no01.png';
 import detailimg1 from '../assets/no10.png';
 import detailimg2 from '../assets/no11.png';
 import detailimg3 from '../assets/no12.png';
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import { useEffect, useState } from 'react';
+import { post } from 'jquery';
 
 export default function Detail(){
+    const {id} = useParams();
+    const [posts, setPosts] = useState([]);
+    useEffect(() => {
+        fetch(`http://localhost:8080/product/${id}`,{
+            method:"GET",
+            headers:{
+                "content-Type":"application/json; charset=utf-8"
+            },
+        })
+        .then(data=> {
+            return data.json();
+        })
+        .then((data) => {
+            setPosts(data);
+            console.log(posts);
+        });
+    }, []);
     return(
         <div className="detailcontainer">
             <figure>
                 <img src={img} alt="상품이미지"></img>
                 <dl>
-                    <dt>상품명</dt>
-                    <dd>코드번호</dd>
+                    <dt>{posts.productName}</dt>
+                    <dd>{posts.supplierCode}</dd>
                     <form action="post">
                        <label>구매수량
                        <input type="text"/></label>
