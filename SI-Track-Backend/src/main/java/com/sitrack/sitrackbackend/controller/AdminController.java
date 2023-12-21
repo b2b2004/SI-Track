@@ -1,5 +1,6 @@
 package com.sitrack.sitrackbackend.controller;
 
+import com.sitrack.sitrackbackend.domain.account.UserAccount;
 import com.sitrack.sitrackbackend.dto.*;
 import com.sitrack.sitrackbackend.service.AdminService;
 import lombok.RequiredArgsConstructor;
@@ -20,9 +21,11 @@ public class AdminController {
 
     // ADMIN, MANAGER은 모든 유저 정보 확인 가능
     @GetMapping("/allUser")
-    public ResponseEntity<?> findAllUser(){
-        List<UserAccountDto> userAccountList = adminService.findAllUsers();
-        return new ResponseEntity<>(userAccountList, HttpStatus.OK);
+    public ResponseEntity<?> findWithSearchType(@RequestParam(required = false) String searchType,
+                                         @RequestParam(required = false) String searchValue){
+        System.out.println("SearchType: " + searchType + " // searchValue :" + searchValue);
+        List<UserAccountDto> userAccounts = adminService.findUserWithSearchType(searchType, searchValue);
+        return new ResponseEntity<>(userAccounts, HttpStatus.OK);
     }
 
     // ADMIN, MANAGER은 모든 상품 정보 확인 가능
