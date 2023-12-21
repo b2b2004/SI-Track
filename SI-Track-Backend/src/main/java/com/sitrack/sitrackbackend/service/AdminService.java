@@ -5,6 +5,7 @@ import com.sitrack.sitrackbackend.domain.Category;
 import com.sitrack.sitrackbackend.domain.Order;
 import com.sitrack.sitrackbackend.domain.Product;
 import com.sitrack.sitrackbackend.domain.Supplier;
+import com.sitrack.sitrackbackend.domain.account.UserAccount;
 import com.sitrack.sitrackbackend.dto.*;
 import com.sitrack.sitrackbackend.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -26,16 +27,23 @@ public class AdminService {
     private final OrderRepository orderRepository;
     private final SupplierRepository supplierRepository;
     private final CategoryRepository categoryRepository;
+    private final UserAccountRepositoryCustom userAccountRepositoryCustom;
 
     // TODO: 페이징 기능
 
     @Transactional(readOnly = true)
-    public List<UserAccountDto> findAllUsers() {
-       List<UserAccountDto> userAccountDtos = userAccountRepository.findAll()
-               .stream().map(UserAccountDto::from)
-               .collect(Collectors.toList());
-       return userAccountDtos;
+    public List<UserAccountDto> findUserWithSearchType(String searchType, String searchValue){
+
+        System.out.println("!!SearchType: " + searchType + " // searchValue :" + searchValue);
+        if(searchValue == null || searchValue.isBlank()){
+            List<UserAccountDto> userAccountDtos = userAccountRepository.findAll()
+                    .stream().map(UserAccountDto::from)
+                    .collect(Collectors.toList());
+            return userAccountDtos;
+        }
+        return userAccountRepositoryCustom.find(searchType, searchValue);
     }
+
 
     @Transactional(readOnly = true)
     public List<AdminProductDto> findAllProducts() {
