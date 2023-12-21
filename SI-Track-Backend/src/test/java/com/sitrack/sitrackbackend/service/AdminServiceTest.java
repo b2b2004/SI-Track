@@ -51,7 +51,7 @@ public class AdminServiceTest {
         given(userAccountRepository.findAll()).willReturn(userAccountList);
 
         // When
-        List<UserAccountDto> userAccountDtoList = sut.findAllUsers();
+        List<UserAccountDto> userAccountDtoList = sut.findUserWithSearchType(null, null);
 
         // Then
         assertThat(userAccountDtoList)

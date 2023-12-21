@@ -48,7 +48,7 @@ public class AdminControllerTest {
     public void findAll_users() throws Exception {
         // Given
         List<UserAccountDto> userAccountDtoList = List.of(createUserAccountDto("test1"),createUserAccountDto("test2"),createUserAccountDto("test3"));
-        given(adminService.findAllUsers()).willReturn(userAccountDtoList);
+        given(adminService.findUserWithSearchType(null, null)).willReturn(userAccountDtoList);
 
         // When & Then
         mvc.perform(
@@ -60,7 +60,7 @@ public class AdminControllerTest {
                 .andExpect(jsonPath("$..userPassword").exists())
                 .andExpect(jsonPath("$..userEmail").exists())
                 .andExpect(jsonPath("$..userPhoneNumber").exists());
-        then(adminService).should().findAllUsers();
+        then(adminService).should().findUserWithSearchType(null, null);
     }
 
     @DisplayName("[AdminC] 상품 리스트 출력")
