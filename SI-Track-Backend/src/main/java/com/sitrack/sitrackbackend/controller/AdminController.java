@@ -1,16 +1,22 @@
 package com.sitrack.sitrackbackend.controller;
 
-import com.sitrack.sitrackbackend.domain.account.UserAccount;
 import com.sitrack.sitrackbackend.dto.*;
 import com.sitrack.sitrackbackend.service.AdminService;
+import com.sitrack.sitrackbackend.service.PaginationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RequestMapping("/admin")
@@ -18,34 +24,58 @@ import java.util.List;
 public class AdminController {
 
     private final AdminService adminService;
+    private final PaginationService paginationService;
 
     // ADMIN, MANAGER은 모든 유저 정보 확인 가능
     @GetMapping("/allUser")
-    public ResponseEntity<?> findWithSearchType(@RequestParam(required = false) String searchType,
-                                         @RequestParam(required = false) String searchValue){
-        System.out.println("SearchType: " + searchType + " // searchValue :" + searchValue);
-        List<UserAccountDto> userAccounts = adminService.findUserWithSearchType(searchType, searchValue);
-        return new ResponseEntity<>(userAccounts, HttpStatus.OK);
+    public ResponseEntity<?> find_user_all_and_search(@RequestParam(required = false) String searchType,
+                                                @RequestParam(required = false) String searchValue,
+                                                @PageableDefault(size = 12, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable){
+        Page<UserAccountDto> userAccounts = adminService.findUsersWithSearchType(searchType, searchValue, pageable);
+        List<Integer> barNumbers = paginationService.getPaginationBarNumbers(pageable.getPageNumber(), userAccounts.getTotalPages());
+        Map<String, Object> result = new HashMap<>();
+        result.put("users" , userAccounts);
+        result.put("barNumbers", barNumbers);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     // ADMIN, MANAGER은 모든 상품 정보 확인 가능
     @GetMapping("/allProduct")
-    public ResponseEntity<?> findAllProduct(){
-        List<AdminProductDto> productList = adminService.findAllProducts();
-        return new ResponseEntity<>(productList, HttpStatus.OK);
+    public ResponseEntity<?> findAllProduct(@RequestParam(required = false) String searchType,
+                                            @RequestParam(required = false) String searchValue,
+                                            @PageableDefault(size = 12, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable){
+        Page<AdminProductDto> products = adminService.findProductsWithSearchType(searchType, searchValue, pageable);
+        List<Integer> barNumbers = paginationService.getPaginationBarNumbers(pageable.getPageNumber(), products.getTotalPages());
+        Map<String, Object> result = new HashMap<>();
+        result.put("products" , products);
+        result.put("barNumbers", barNumbers);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     // ADMIN, MANAGER은 모든 주문 정보 확인 가능
     @GetMapping("/allOrder")
-    public ResponseEntity<?> findAllOrder(){
-        List<OrderDto> orderList = adminService.findAllOrders();
-        return new ResponseEntity<>(orderList, HttpStatus.OK);
+    public ResponseEntity<?> findAllOrder(@RequestParam(required = false) String searchType,
+                                          @RequestParam(required = false) String searchValue,
+                                          @PageableDefault(size = 12, sort = "orderId", direction = Sort.Direction.DESC) Pageable pageable){
+        Page<OrderDto> orders = adminService.findOrdersWithSearchType(searchType, searchValue, pageable);
+        List<Integer> barNumbers = paginationService.getPaginationBarNumbers(pageable.getPageNumber(), orders.getTotalPages());
+        Map<String, Object> result = new HashMap<>();
+        result.put("orders" , orders);
+        result.put("barNumbers", barNumbers);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @GetMapping("/allSupplier")
-    public ResponseEntity<?> findAllSupplier(){
-        List<SupplierDto> supplierList = adminService.findAllSupplier();
-        return new ResponseEntity<>(supplierList, HttpStatus.OK);
+    public ResponseEntity<?> findAllSupplier(@RequestParam(required = false) String searchType,
+                                             @RequestParam(required = false) String searchValue,
+                                             @PageableDefault(size = 12, sort = "supplierId", direction = Sort.Direction.DESC) Pageable pageable){
+        Page<SupplierDto> suppliers = adminService.findSuppliersWithSearchType(searchType, searchValue, pageable);
+        List<Integer> barNumbers = paginationService.getPaginationBarNumbers(pageable.getPageNumber(), suppliers.getTotalPages());
+        Map<String, Object> result = new HashMap<>();
+        result.put("suppliers" , suppliers);
+        result.put("barNumbers", barNumbers);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @GetMapping("/allCategory")
