@@ -41,7 +41,7 @@ public class ProductRepositoryTest {
         // Then
         assertThat(products)
                 .isNotNull()
-                .hasSize(3);
+                .hasSize(14);
     }
 
     @DisplayName("[PrdouctR] Insert Test")
