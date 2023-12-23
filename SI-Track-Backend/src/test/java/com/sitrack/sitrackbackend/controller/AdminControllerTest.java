@@ -7,18 +7,22 @@ import com.sitrack.sitrackbackend.domain.Supplier;
 import com.sitrack.sitrackbackend.domain.constant.RoleType;
 import com.sitrack.sitrackbackend.dto.*;
 import com.sitrack.sitrackbackend.service.AdminService;
+import com.sitrack.sitrackbackend.service.PaginationService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -36,6 +40,9 @@ public class AdminControllerTest {
     @MockBean
     private AdminService adminService;
 
+    @MockBean
+    private PaginationService paginationService;
+
     public AdminControllerTest(@Autowired MockMvc mvc,
                                  @Autowired ObjectMapper objectMapper) {
         this.mvc = mvc;
@@ -47,20 +54,18 @@ public class AdminControllerTest {
     @Test
     public void findAll_users() throws Exception {
         // Given
-        List<UserAccountDto> userAccountDtoList = List.of(createUserAccountDto("test1"),createUserAccountDto("test2"),createUserAccountDto("test3"));
-        given(adminService.findUserWithSearchType(null, null)).willReturn(userAccountDtoList);
+        given(adminService.findUsersWithSearchType(eq(null), eq(null), any(Pageable.class))).willReturn(Page.empty());
+        given(paginationService.getPaginationBarNumbers(anyInt(), anyInt())).willReturn(List.of(0, 1, 2, 3, 4));
 
         // When & Then
         mvc.perform(
-                get("/admin/allUser"))
+                        get("/admin/allUser"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content().encoding("UTF-8"))
-                .andExpect(jsonPath("$..userId").exists())
-                .andExpect(jsonPath("$..userPassword").exists())
-                .andExpect(jsonPath("$..userEmail").exists())
-                .andExpect(jsonPath("$..userPhoneNumber").exists());
-        then(adminService).should().findUserWithSearchType(null, null);
+                .andExpect(jsonPath("$..users").exists())
+                .andExpect(jsonPath("$..barNumbers").exists());
+        then(adminService).should().findUsersWithSearchType(eq(null), eq(null), any(Pageable.class));
     }
 
     @DisplayName("[AdminC] 상품 리스트 출력")
@@ -68,8 +73,8 @@ public class AdminControllerTest {
     @Test
     public void findAll_products() throws Exception {
         // Given
-        List<AdminProductDto> adminProductDtoList = List.of(createAdminProductDto("볼펜"),createAdminProductDto("종이"),createAdminProductDto("지우개"));
-        given(adminService.findAllProducts()).willReturn(adminProductDtoList);
+        given(adminService.findProductsWithSearchType(eq(null), eq(null), any(Pageable.class))).willReturn(Page.empty());
+        given(paginationService.getPaginationBarNumbers(anyInt(), anyInt())).willReturn(List.of(0, 1, 2, 3, 4));
 
         // When & Then
         mvc.perform(
@@ -77,11 +82,9 @@ public class AdminControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content().encoding("UTF-8"))
-                .andExpect(jsonPath("$..productId").exists())
-                .andExpect(jsonPath("$..productCost").exists())
-                .andExpect(jsonPath("$..productPrice").exists())
-                .andExpect(jsonPath("$..categoryId").exists());
-        then(adminService).should().findAllProducts();
+                .andExpect(jsonPath("$..products").exists())
+                .andExpect(jsonPath("$..barNumbers").exists());
+        then(adminService).should().findProductsWithSearchType(eq(null), eq(null), any(Pageable.class));
     }
 
     @DisplayName("[AdminC] 주문 리스트 출력")
@@ -89,8 +92,8 @@ public class AdminControllerTest {
     @Test
     public void findAll_orders() throws Exception {
         // Given
-        List<OrderDto> orderDtoList = List.of(createOrderDto("테스터1"),createOrderDto("테스터2"),createOrderDto("테스터3"));
-        given(adminService.findAllOrders()).willReturn(orderDtoList);
+        given(adminService.findOrdersWithSearchType(eq(null), eq(null), any(Pageable.class))).willReturn(Page.empty());
+        given(paginationService.getPaginationBarNumbers(anyInt(), anyInt())).willReturn(List.of(0, 1, 2, 3, 4));
 
         // When & Then
         mvc.perform(
@@ -98,11 +101,9 @@ public class AdminControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content().encoding("UTF-8"))
-                .andExpect(jsonPath("$..orderId").exists())
-                .andExpect(jsonPath("$..userId").exists())
-                .andExpect(jsonPath("$..totalAmount").exists())
-                .andExpect(jsonPath("$..orderAddress").exists());
-        then(adminService).should().findAllOrders();
+                .andExpect(jsonPath("$..orders").exists())
+                .andExpect(jsonPath("$..barNumbers").exists());
+        then(adminService).should().findOrdersWithSearchType(eq(null), eq(null), any(Pageable.class));
     }
 
     @DisplayName("[AdminC] 공급업체 리스트 출력")
@@ -110,8 +111,8 @@ public class AdminControllerTest {
     @Test
     public void findAll_suppliers() throws Exception {
         // Given
-        List<SupplierDto> supplierList = List.of(createSupplierDto("공급업체1"), createSupplierDto("공급업체2"), createSupplierDto("공급업체3"));
-        given(adminService.findAllSupplier()).willReturn(supplierList);
+        given(adminService.findSuppliersWithSearchType(eq(null), eq(null), any(Pageable.class))).willReturn(Page.empty());
+        given(paginationService.getPaginationBarNumbers(anyInt(), anyInt())).willReturn(List.of(0, 1, 2, 3, 4));
 
         // When & Then
         mvc.perform(
@@ -119,10 +120,9 @@ public class AdminControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content().encoding("UTF-8"))
-                .andExpect(jsonPath("$..supplierId").exists())
-                .andExpect(jsonPath("$..supplierName").exists())
-                .andExpect(jsonPath("$..supplierCode").exists());
-        then(adminService).should().findAllSupplier();
+                .andExpect(jsonPath("$..suppliers").exists())
+                .andExpect(jsonPath("$..barNumbers").exists());
+        then(adminService).should().findSuppliersWithSearchType(eq(null), eq(null), any(Pageable.class));
     }
 
     @DisplayName("[AdminC] 카테고리 리스트 출력")
