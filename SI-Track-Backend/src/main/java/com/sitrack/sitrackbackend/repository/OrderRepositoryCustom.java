@@ -2,7 +2,9 @@ package com.sitrack.sitrackbackend.repository;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.sitrack.sitrackbackend.dto.UserAccountDto;
+import com.sitrack.sitrackbackend.domain.Order;
+import com.sitrack.sitrackbackend.dto.AdminProductDto;
+import com.sitrack.sitrackbackend.dto.OrderDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -13,16 +15,16 @@ import org.springframework.util.StringUtils;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.sitrack.sitrackbackend.domain.account.QUserAccount.userAccount;
+import static com.sitrack.sitrackbackend.domain.QOrder.order;
+import static com.sitrack.sitrackbackend.domain.QProduct.product;
 
 @Repository
 @RequiredArgsConstructor
-public class UserAccountRepositoryCustom {
-
+public class OrderRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
-    public Page<UserAccountDto> searchPageComplex(String searchType, String searchValue, Pageable pageable){
-        List<UserAccountDto> content = getUserAccountDto(searchType, searchValue, pageable);
+    public Page<OrderDto> searchPageComplex(String searchType, String searchValue, Pageable pageable){
+        List<OrderDto> content = getOrderDto(searchType, searchValue, pageable);
         Long count = getCount(searchType, searchValue);
 
         return new PageImpl<>(content, pageable, count);
@@ -30,37 +32,33 @@ public class UserAccountRepositoryCustom {
 
     private Long getCount(String searchType, String searchValue) {
         Long count = queryFactory
-                .select(userAccount.count())
-                .from(userAccount)
+                .select(order.count())
+                .from(order)
                 .where(typeCheck(searchType, searchValue))
                 .fetchOne();
         return count;
     }
 
-    public List<UserAccountDto> getUserAccountDto(String searchType, String searchValue, Pageable pageable){
+    public List<OrderDto> getOrderDto(String searchType, String searchValue, Pageable pageable){
 
-        List<UserAccountDto> userAccounts = queryFactory
-                .select(userAccount)
-                .from(userAccount)
+        List<OrderDto> orders = queryFactory
+                .select(order)
+                .from(order)
                 .where(typeCheck(searchType, searchValue))
                 .offset(pageable.getOffset()) // 페이지 번호
                 .limit(pageable.getPageSize()) // 페이지 사이즈
                 .fetch()
-                .stream().map(UserAccountDto::from)
+                .stream().map(OrderDto::from)
                 .collect(Collectors.toList());
-        return userAccounts;
+        return orders;
     }
 
     private BooleanExpression userIdLike(String searchValue) {
-        return StringUtils.hasText(searchValue) ? userAccount.userId.contains(searchValue) : null;
+        return StringUtils.hasText(searchValue) ? order.userAccount.userId.contains(searchValue) : null;
     }
 
     private BooleanExpression userNameLike(String searchValue) {
-        return StringUtils.hasText(searchValue) ? userAccount.userName.contains(searchValue) : null;
-    }
-
-    private BooleanExpression userEmailLike(String searchValue) {
-        return StringUtils.hasText(searchValue) ? userAccount.userEmail.contains(searchValue) : null;
+        return StringUtils.hasText(searchValue) ? order.userAccount.userName.contains(searchValue) : null;
     }
 
     private BooleanExpression typeCheck(String searchType, String searchValue){
@@ -72,8 +70,6 @@ public class UserAccountRepositoryCustom {
             return userIdLike(searchValue);
         }else if(searchType.equals("userName")){
             return userNameLike(searchValue);
-        }else if(searchType.equals("userEmail")){
-            return userEmailLike(searchValue);
         }else{
             return null;
         }
