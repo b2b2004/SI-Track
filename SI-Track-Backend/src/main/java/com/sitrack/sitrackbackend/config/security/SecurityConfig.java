@@ -5,6 +5,7 @@ import com.sitrack.sitrackbackend.config.security.auth.PrincipalDetailsService;
 import com.sitrack.sitrackbackend.config.security.filter.JwtAuthenticationFilter;
 import com.sitrack.sitrackbackend.config.security.filter.JwtAuthorizationFilter;
 import com.sitrack.sitrackbackend.config.security.filter.JwtExceptionFilter;
+import com.sitrack.sitrackbackend.repository.RefreshTokenRepository;
 import com.sitrack.sitrackbackend.repository.UserAccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -26,6 +27,7 @@ public class SecurityConfig {
 
     private final AuthenticationConfiguration authenticationConfiguration;
     private final PrincipalDetailsService principalDetailsService;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final UserAccountRepository userAccountRepository;
     private final JwtExceptionFilter jwtExceptionFilter;
 
@@ -47,7 +49,7 @@ public class SecurityConfig {
                 .formLogin().disable()
                 .httpBasic().disable() // http의 기본 인증. ID, PW 인증방식
                 .addFilter(corsConfig.corsFilter())
-                .addFilter(new JwtAuthenticationFilter(authenticationManager(), jwtTokenProvider()))  // AuthenticationManager
+                .addFilter(new JwtAuthenticationFilter(authenticationManager(), jwtTokenProvider(), refreshTokenRepository))  // AuthenticationManager
                 .addFilter(new JwtAuthorizationFilter(authenticationManager(),  jwtTokenProvider(), principalDetailsService))
                 .addFilterBefore(jwtExceptionFilter, JwtAuthorizationFilter.class);
 
