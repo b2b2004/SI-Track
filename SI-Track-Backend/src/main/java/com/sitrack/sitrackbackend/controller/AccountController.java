@@ -6,6 +6,8 @@ import com.sitrack.sitrackbackend.dto.*;
 import com.sitrack.sitrackbackend.dto.response.SearchIdResponse;
 import com.sitrack.sitrackbackend.service.AccountService;
 import com.sitrack.sitrackbackend.service.TokenService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -19,6 +21,7 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @RequestMapping("/account")
 @Controller
+@Api(tags = "User Controller")
 public class AccountController {
 
     private final AccountService accountService;
@@ -30,6 +33,7 @@ public class AccountController {
 //    }
 
     // 회원가입
+    @ApiOperation(value = "유저 회원가입", notes = "유저 회원가입 Method")
     @PostMapping("/user/signup")
     public ResponseEntity<?> userAccountSignup(@Valid @RequestBody UserAccountDto userAccountDto){
         String msg = accountService.signup(userAccountDto);
@@ -37,6 +41,7 @@ public class AccountController {
     }
 
     // 아이디 찾기
+    @ApiOperation(value = "유저 아이디 찾기", notes = "Name, Email을 통한 아이디 찾기")
     @PostMapping("/user/searchId")
     public ResponseEntity<?> userSearchId(@Valid @RequestBody SearchIdDto searchIdDto){
         SearchIdResponse searchIdResponse = accountService.searchId(searchIdDto);
@@ -45,6 +50,7 @@ public class AccountController {
 
     // 비밀번호 찾기
     // 이메일 임시 비밀번호 전송
+    @ApiOperation(value = "유저 비밀번호 찾기", notes = "Id, Email을 통한 임시 비밀번호 발송")
     @PostMapping("/user/searchPwd")
     public ResponseEntity<?> userSearchPwd(@Valid @RequestBody SearchPwdDto searchPwdDto){
         String msg = accountService.searchPwd(searchPwdDto);
@@ -52,6 +58,7 @@ public class AccountController {
     }
 
     // 비밀번호 변경
+    @ApiOperation(value = "마이페이지 비밀번호 변경", notes = "기존 비밀번호 변경")
     @PostMapping("/login/changePwd")
     public ResponseEntity<?> changePwd(@Valid @RequestBody UserAccountPwdDto userAccountPwdDto,
                                        @AuthenticationPrincipal PrincipalDetails principalDetails){
@@ -61,6 +68,7 @@ public class AccountController {
     }
 
     // 개인정보 변경
+    @ApiOperation(value = "마이페이지 개인정보 변경", notes = "Email, phoneNumber 변경 가능")
     @PostMapping("/login/changeInfo")
     public ResponseEntity<?> changeInfo(@Valid @RequestBody UserAccountInfoDto userAccountInfoDto,
                                         @AuthenticationPrincipal PrincipalDetails principalDetails){
@@ -69,6 +77,7 @@ public class AccountController {
         return new ResponseEntity<>(msg, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "유저 개인정보 조회", notes = "유저 개인 정보 조회")
     @GetMapping("/login/info")
     public ResponseEntity<?> findInfo(@AuthenticationPrincipal PrincipalDetails principalDetails){
         UserAccount user = principalDetails.getUser();
@@ -76,6 +85,7 @@ public class AccountController {
         return new ResponseEntity<>(user1, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "RefreshToken 재발급", notes = "AccessToken 만료 시 RefreshToken 재발급")
     @GetMapping("/user/reissue/token")
     public ResponseEntity<?> reissueToken(@CookieValue(required = false) String refreshToken){
         String reissueToken = tokenService.validateRefreshToken(refreshToken);
