@@ -4,8 +4,6 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.sitrack.sitrackbackend.Exception.ErrorCode;
 import com.sitrack.sitrackbackend.domain.account.UserAccount;
-import com.sitrack.sitrackbackend.domain.redis.RefreshToken;
-import com.sitrack.sitrackbackend.repository.RefreshTokenRepository;
 import com.sitrack.sitrackbackend.repository.UserAccountRepository;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +11,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import javax.annotation.PostConstruct;
-import javax.websocket.DecodeException;
 import java.util.Base64;
 import java.util.Date;
 
@@ -22,7 +19,7 @@ public class JwtProvider {
 
     private final UserAccountRepository userAccountRepository;
 
-    static Long ACCESS_TOKEN_EXPIRE_TIME = 60L * 1000L; // 만료 시간 1시간
+    static Long ACCESS_TOKEN_EXPIRE_TIME = 60L * 60L * 1000L; // 만료 시간 1시간
 
     static Long REFRESH_TOKEN_EXPIRE_TIME = 1000L * 60L * 60L * 24L * 3L; // 만료 시간 3일
 
@@ -58,7 +55,7 @@ public class JwtProvider {
     /**
      *  RefreshToken 생성
      */
-    public String createRefreshToken(String userId) {
+    public String createRefreshToken(String userId, String userPassword) {
 
         Date tokenExpiration = new Date(System.currentTimeMillis() + (REFRESH_TOKEN_EXPIRE_TIME));
 
@@ -67,11 +64,20 @@ public class JwtProvider {
                 .withIssuedAt(new Date(System.currentTimeMillis()))
                 .withExpiresAt(tokenExpiration)
                 .withClaim("userId", userId)
+                .withClaim("userPassword", userPassword)
                 .sign(this.getSign(refresh_secret));
     }
 
     public String getUserId(String jwtToken){
         return JWT.require(this.getSign(secretKey)).build().verify(jwtToken).getClaim("userId").asString();
+    }
+
+    public String getRefreshUserId(String jwtToken){
+        return JWT.require(this.getSign(refresh_secret)).build().verify(jwtToken).getClaim("userId").asString();
+    }
+
+    public String getRefreshUserPassword(String jwtToken){
+        return JWT.require(this.getSign(refresh_secret)).build().verify(jwtToken).getClaim("userPassword").asString();
     }
 
     public boolean validateToken(String token) {

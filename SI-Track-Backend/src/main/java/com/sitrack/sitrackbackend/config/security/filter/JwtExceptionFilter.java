@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -28,7 +27,7 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
         }catch (JwtException e){
             e.printStackTrace();
             setResponse(response, e.getMessage());
-        }catch (NullPointerException e){
+        }catch (NullPointerException e) {
             e.printStackTrace();
             setResponse(response, e.getMessage());
         }

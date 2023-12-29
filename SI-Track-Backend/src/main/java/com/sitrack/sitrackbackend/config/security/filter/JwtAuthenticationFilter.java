@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sitrack.sitrackbackend.config.security.JwtProvider;
 import com.sitrack.sitrackbackend.config.security.auth.PrincipalDetails;
 import com.sitrack.sitrackbackend.domain.account.UserAccount;
-import com.sitrack.sitrackbackend.domain.redis.RefreshToken;
 import com.sitrack.sitrackbackend.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONException;
@@ -20,6 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -81,11 +81,15 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String userPassword = principalDetails.getUser().getUserPassword();
 
         String jwtToken = jwtProvider.generateJwtToken(userId, userPassword);
-        String refreshToken = jwtProvider.createRefreshToken(userId);
-        response.addHeader("Authorization", "Bearer " + jwtToken);
+        String refreshToken = jwtProvider.createRefreshToken(userId, userPassword);
 
-        // 레디스에 저장 Refresh 토큰을 저장한다. (사용자 기본키 Id, refresh 토큰, access 토큰 저장)
-        refreshTokenRepository.save(new RefreshToken(userId, refreshToken, jwtToken));
+        // 쿠키에 Refresh Token 추가
+        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
+        refreshTokenCookie.setHttpOnly(true);
+
+        response.getWriter().write("로그인 성공");
+        response.addCookie(refreshTokenCookie);
+        response.addHeader("Authorization", "Bearer " + jwtToken);
     }
 
     @Override
