@@ -39,6 +39,8 @@ public class ProductController {
     public ResponseEntity<?> register_product(@Valid @RequestPart ProductRequest productRequest,
                                               @RequestPart List<MultipartFile> productImages,
                                               @AuthenticationPrincipal PrincipalDetails principalDetails){
+                                                System.out.println("개빡치게하내 쉬발?");
+                                                System.out.println(productRequest);
         UserAccount user = principalDetails.getUser();
         String msg = productService.register_product(productRequest, user, productImages);
         return new ResponseEntity<>(msg, HttpStatus.OK);

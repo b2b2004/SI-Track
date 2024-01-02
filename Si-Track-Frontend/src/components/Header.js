@@ -24,7 +24,6 @@ export default function Header(){
                     <nav>
                         <ul>
                             <li onClick={handlelogout}><Link to="/">로그아웃</Link></li>
-                            <li><Link to="/signup">회원가입</Link></li>
                             <li><Link to="/mypage">내정보</Link></li>
                         </ul>
                         <ul>

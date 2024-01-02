@@ -31,9 +31,7 @@ export default function Login(){
             let jwtToken = data.headers.get("Authorization");
             console.log(jwtToken);
             if(jwtToken!==null){
-                localStorage.setItem('Authorization',{
-                    jwtToken,
-                });
+                localStorage.setItem('Authorization',jwtToken);
                 alert("로그인이 완료되었습니다.");
                 window.location.href="/";
             }

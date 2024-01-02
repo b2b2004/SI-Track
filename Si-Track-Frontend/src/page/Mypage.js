@@ -1,11 +1,32 @@
 import { Link } from "react-router-dom";
 import './Mypage.css'
 import img from '../assets/no01.png'
+import { useEffect, useState } from "react";
 export default function Mypage(){
+    const Authorization = localStorage.getItem('Authorization');
+    const [info , setInfo] = useState([]);
+    // const [order , setOrder] = useState([]);
+    useEffect(()=>{
+        fetch("http://localhost:8080/account/login/info",{
+            method: "GET",
+            headers:{
+                "content-Type":"application/json; charset=utf-8", Authorization
+            }
+        })
+        .then((res) =>{
+            return res.json();
+        })
+        .then((res)=>{
+            setInfo(res);
+            console.log(res)
+        })
+
+
+    },[])
     return(
         <div className="mypagecontainer">
             <div className="group">
-            <h1>###님의 주문내역</h1>
+            <h1>{info.userName}님의 주문내역</h1>
             <button><Link to='/change'>회원정보 변경</Link></button>
             </div>
         <ul>
