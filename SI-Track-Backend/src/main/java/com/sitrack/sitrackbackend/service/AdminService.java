@@ -5,9 +5,12 @@ import com.sitrack.sitrackbackend.domain.Category;
 import com.sitrack.sitrackbackend.domain.Order;
 import com.sitrack.sitrackbackend.domain.Product;
 import com.sitrack.sitrackbackend.domain.Supplier;
+import com.sitrack.sitrackbackend.domain.account.UserAccount;
 import com.sitrack.sitrackbackend.dto.*;
 import com.sitrack.sitrackbackend.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,44 +24,33 @@ import static com.sitrack.sitrackbackend.Exception.ErrorCode.*;
 @Service
 public class AdminService {
 
-    private final UserAccountRepository userAccountRepository;
     private final ProductRepository productRepository;
     private final OrderRepository orderRepository;
     private final SupplierRepository supplierRepository;
     private final CategoryRepository categoryRepository;
-
-    // TODO: 페이징 기능
+    private final UserAccountRepositoryCustom userAccountRepositoryCustom;
+    private final ProductRepositoryCustom productRepositoryCustom;
+    private final OrderRepositoryCustom orderRepositoryCustom;
+    private final SupplierRepositoryCustom supplierRepositoryCustom;
 
     @Transactional(readOnly = true)
-    public List<UserAccountDto> findAllUsers() {
-       List<UserAccountDto> userAccountDtos = userAccountRepository.findAll()
-               .stream().map(UserAccountDto::from)
-               .collect(Collectors.toList());
-       return userAccountDtos;
+    public Page<UserAccountDto> findUsersWithSearchType(String searchType, String searchValue, Pageable pageable){
+        return userAccountRepositoryCustom.searchPageComplex(searchType, searchValue, pageable);
     }
 
     @Transactional(readOnly = true)
-    public List<AdminProductDto> findAllProducts() {
-        List<AdminProductDto> productDtos = productRepository.findAll()
-                .stream().map(AdminProductDto::from)
-                .collect(Collectors.toList());;
-        return productDtos;
+    public Page<AdminProductDto> findProductsWithSearchType(String searchType, String searchValue, Pageable pageable) {
+        return productRepositoryCustom.searchPageComplex(searchType, searchValue, pageable);
     }
 
     @Transactional(readOnly = true)
-    public List<OrderDto> findAllOrders() {
-        List<OrderDto> orderDtos = orderRepository.findAll()
-                .stream().map(OrderDto::from)
-                .collect(Collectors.toList());
-        return orderDtos;
+    public Page<OrderDto> findOrdersWithSearchType(String searchType, String searchValue, Pageable pageable) {
+        return orderRepositoryCustom.searchPageComplex(searchType, searchValue, pageable);
     }
 
     @Transactional(readOnly = true)
-    public List<SupplierDto> findAllSupplier() {
-        List<SupplierDto> supplierDtos = supplierRepository.findAll()
-                .stream().map(SupplierDto::from)
-                .collect(Collectors.toList());
-        return supplierDtos;
+    public Page<SupplierDto> findSuppliersWithSearchType(String searchType, String searchValue, Pageable pageable) {
+        return supplierRepositoryCustom.searchPageComplex(searchType, searchValue, pageable);
     }
 
     @Transactional(readOnly = true)

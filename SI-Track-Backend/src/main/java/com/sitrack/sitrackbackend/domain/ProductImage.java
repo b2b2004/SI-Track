@@ -29,7 +29,7 @@ public class ProductImage {
     private String saveName; // 저장된 파일명
 
     @Setter
-    @Column(length = 50)
+    @Column(length = 200)
     private String imagePath; // 파일 경로
 
     @Setter

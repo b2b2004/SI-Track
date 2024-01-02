@@ -24,7 +24,7 @@ export default function Main(){
             <Route path='/login' element={<Login />} />
             <Route path='/signup' element={<Signup />} />
             <Route path='/findid' element={<FindId />} />
-            <Route path="/detail" element={<Detail />} />
+            <Route path="/product/:id" element={<Detail />} />
             <Route path="/success" element={<Success />} />
             <Route path="/mypage" element={<Mypage />} />
             <Route path="/change" element={<Change />} />

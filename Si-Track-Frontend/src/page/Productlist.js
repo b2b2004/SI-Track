@@ -16,13 +16,11 @@ export default function Productlist(){
         })
         .then((data) => {
             setPosts(data.products.content);
-            console.log(data.products.content);
-            console.log(posts);
+            console.log(data);
         });
     }, []);
     return(
         <div id="product">
-            {console.log(posts)}
         <h1>title</h1>
         <form>
         <input type="text" placeholder="검색어를 입력해주세요"></input>
@@ -33,7 +31,7 @@ export default function Productlist(){
                 개가 검색되었습니다.</p>
             <div>
                 {posts.map(post => (
-                    <ProductItem post={post} key={post.supplierCode}/>
+                    <ProductItem post={post} key={post.productId}/>
                 ))}
             </div>
             </div>
