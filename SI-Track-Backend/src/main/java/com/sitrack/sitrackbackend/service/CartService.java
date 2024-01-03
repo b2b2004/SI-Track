@@ -65,17 +65,8 @@ public class CartService {
     }
 
     // 장바구니 상품 삭제
-    public void deleteOneCart(Long id, UserAccount user){
-
-        CartItem cartItem = cartItemRepository.findById(id)
-                .orElseThrow(()-> new CustomException(CART_NOT_FOUND));
-        Cart cart = cartItem.getCart();
-
-        if(!cart.getUserAccount().equals(user)){
-            System.out.println("아이디가 달라서 삭제 실패");
-            return;
-        }
-
+    public void deleteOneCart(Long id){
+        CartItem cartItem = cartItemRepository.findById(id).orElseThrow(()-> new CustomException(CART_NOT_FOUND));
         cartItemRepository.delete(cartItem);
     }
 

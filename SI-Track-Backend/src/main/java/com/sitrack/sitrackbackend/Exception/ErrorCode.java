@@ -14,6 +14,7 @@ public enum ErrorCode {
     ORDER_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 주문정보가 존재하지 않습니다."),
     SUPPLIER_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 공급업체가 존재하지 않습니다."),
     CATEGORY_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 카테고리가 존재하지 않습니다."),
+    OUT_OF_STOCK(HttpStatus.BAD_REQUEST, "상품 재고가 부족합니다. 관리자에게 문의해주세요."),
 
     /* 401 UNAUTHORIZED : 유효한 인증 자격 증명이 없음 */
     UNKNOWN_ERROR(HttpStatus.UNAUTHORIZED, "관리자엑 문의 해주세요."),
@@ -29,8 +30,7 @@ public enum ErrorCode {
 
 
     /* 409 : CONFLICT : Resource의 현재 상태와 충돌. 보통 중복된 데이터 존재 */
-    DUPLICATE_RESOURCE(HttpStatus.CONFLICT, "데이터가 이미 존재합니다.")
-    ;
+    DUPLICATE_RESOURCE(HttpStatus.CONFLICT, "데이터가 이미 존재합니다.");
 
     private final HttpStatus httpStatus;
     private final String message;

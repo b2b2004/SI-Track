@@ -85,7 +85,7 @@ public class CartControllerTest {
                 post("/cart/1")
                         .with(csrf()))
                 .andExpect(status().isOk());
-        then(cartService).should().deleteOneCart(any(), any());
+        then(cartService).should().deleteOneCart(any());
     }
 
     public CartItemRequest createCartItemRequest(){

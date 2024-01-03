@@ -1,6 +1,7 @@
 package com.sitrack.sitrackbackend.service;
 
 import com.sitrack.sitrackbackend.Exception.CustomException;
+import com.sitrack.sitrackbackend.Exception.ErrorCode;
 import com.sitrack.sitrackbackend.domain.*;
 import com.sitrack.sitrackbackend.domain.account.UserAccount;
 import com.sitrack.sitrackbackend.dto.OrderItemDto;
@@ -49,13 +50,12 @@ public class OrderService {
             for(OrderItem orderItem : orderItems){
                 if(product.getId().equals(orderItem.getProduct().getId())){
                     if(product.getProductStockQuantity() < orderItem.getOrderItemQuantity()){
-                        // 추후 커스텀으로 바꾸겠음.
-                        throw new IndexOutOfBoundsException();
+                        throw new CustomException(ErrorCode.OUT_OF_STOCK);
                     }else{
                         product.minusproductStockQuantity(orderItem.getOrderItemQuantity());
                     }
                 }else{
-                    throw new EntityNotFoundException();
+                    throw new CustomException(PRODUCT_NOT_FOUND);
                 }
             }
         }

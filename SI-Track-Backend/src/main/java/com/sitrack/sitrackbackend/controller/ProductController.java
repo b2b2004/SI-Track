@@ -13,6 +13,7 @@ import com.sitrack.sitrackbackend.service.ProductService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -33,6 +34,7 @@ import java.util.Map;
 @RequestMapping("/product")
 @Controller
 @Api(tags = "Product Controller")
+@Slf4j
 public class ProductController {
 
     private final ProductService productService;
@@ -40,8 +42,8 @@ public class ProductController {
 
     @ApiOperation(value = "상품 등록", notes = "상품정보 및 다중 이미지 등록")
     @PostMapping("/admin/register")
-    public ResponseEntity<?> register_product(@Valid @RequestPart ProductRequest productRequest,
-                                              @RequestPart List<MultipartFile> productImages,
+    public ResponseEntity<?> register_product(@Valid @RequestPart(value = "productRequest") ProductRequest productRequest,
+                                              @RequestPart(value = "productImages") List<MultipartFile> productImages,
                                               @AuthenticationPrincipal PrincipalDetails principalDetails){
                                                 System.out.println("개빡치게하내 쉬발?");
                                                 System.out.println(productRequest);
@@ -59,8 +61,8 @@ public class ProductController {
 
     @ApiOperation(value = "상품 수정", notes = "상품정보 및 다중 이미지 수정")
     @PostMapping("/admin/update/{productId}")
-    public ResponseEntity<?> update_product(@Valid @RequestPart ProductUpdateRequest productUpdateRequest,
-                                            @RequestPart List<MultipartFile> productImages,
+    public ResponseEntity<?> update_product(@Valid @RequestPart(value = "productRequest") ProductUpdateRequest productUpdateRequest,
+                                            @RequestPart(value = "productRequest") List<MultipartFile> productImages,
                                             @PathVariable Long productId,
                                             @AuthenticationPrincipal PrincipalDetails principalDetails){
         UserAccount user = principalDetails.getUser();
