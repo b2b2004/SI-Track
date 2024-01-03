@@ -189,21 +189,6 @@ public class AdminServiceTest {
     }
 
     @Test
-    @DisplayName("[AdminS] 공급업체 업데이트 실패")
-    public void update_Supplier_hasNull_fail(){
-        // Given
-        SupplierDto supplierDto = createSupplierDto("");
-        Supplier supplier = createSupplier();
-        given(supplierRepository.findById(supplierDto.supplierId())).willReturn(Optional.of(supplier));
-
-        // When
-        String result = sut.updateSupplier(supplierDto);
-
-        // Then
-        assertThat(result).isEqualTo("공급업체 이름을 확인해주세요.");
-    }
-
-    @Test
     @DisplayName("[AdminS] 카테고리 업데이트 성공")
     public void update_Category_success(){
         // Given
@@ -248,19 +233,6 @@ public class AdminServiceTest {
     }
 
     @Test
-    @DisplayName("[AdminS] 공급업체 생성 실패")
-    public void register_Supplier_hasNull_fail(){
-        // Given
-        SupplierDto supplierDto = createSupplierDto("");
-
-        // When
-        String result = sut.registerSupplier(supplierDto);
-
-        // Then
-        assertThat(result).isEqualTo("공급업체 이름을 확인해주세요.");
-    }
-
-    @Test
     @DisplayName("[AdminS] 카테고리 생성 성공")
     public void register_Category_success(){
         // Given
@@ -272,19 +244,6 @@ public class AdminServiceTest {
         // Then
         assertThat(result).isEqualTo("등록 성공");
         then(categoryRepository).should().save(any());
-    }
-
-    @Test
-    @DisplayName("[AdminS] 카테고리 생성 실패")
-    public void register_Category_hasNull_fail(){
-        // Given
-        CategoryDto categoryDto = createCategoryDto("");
-
-        // When
-        String result = sut.registerCategory(categoryDto);
-
-        // Then
-        assertThat(result).isEqualTo("카테고리 이름을 확인해주세요.");
     }
 
     private UserAccount createUserAccount(String userId) {

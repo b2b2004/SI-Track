@@ -64,27 +64,15 @@ public class AdminService {
     public String updateProduct(AdminProductDto productDto) {
          Product product = productRepository.findById(productDto.productId())
                  .orElseThrow(()-> new CustomException(PRODUCT_NOT_FOUND));
-         if(productDto.productName() != null){
-             product.setProductName(productDto.productName());
-         }
-         if(productDto.productPrice() != null){
-             product.setProductPrice(productDto.productPrice());
-         }
-         if(productDto.productCost() != null){
-             product.setProductCost(productDto.productCost());
-         }
-         if(productDto.supplier() != null){
-             product.setSupplier(productDto.supplier().toEntity());
-         }
-         if(productDto.category() != null){
-             product.setCategory(productDto.category().toEntity());
-         }
-         if(productDto.productStockQuantity() != null){
-             product.setProductStockQuantity(productDto.productStockQuantity());
-         }
-         if(productDto.productSalesQuantity() != null){
-             product.setProductSalesQuantity(productDto.productSalesQuantity());
-         }
+
+         product.setProductName(productDto.productName());
+         product.setProductPrice(productDto.productPrice());
+         product.setProductCost(productDto.productCost());
+         product.setSupplier(productDto.supplier().toEntity());
+         product.setCategory(productDto.category().toEntity());
+         product.setProductStockQuantity(productDto.productStockQuantity());
+         product.setProductSalesQuantity(productDto.productSalesQuantity());
+
          return "상품 업데이트 완료";
     }
 
@@ -103,51 +91,25 @@ public class AdminService {
         Supplier supplier = supplierRepository.findById(supplierDto.supplierId())
                 .orElseThrow(()-> new CustomException(SUPPLIER_NOT_FOUND));
 
-        if(!supplierDto.supplierCode().isBlank()){
-            supplier.setSupplierName(supplierDto.supplierCode());
-        }else{
-            return "코드를 확인해주세요.";
-        }
-
-        if(!supplierDto.supplierName().isBlank()){
-            supplier.setSupplierName(supplierDto.supplierName());
-        }else{
-            return "공급업체 이름을 확인해주세요.";
-        }
-
+        supplier.setSupplierName(supplierDto.supplierCode());
+        supplier.setSupplierName(supplierDto.supplierName());
         return "공급업체 정보 수정 완료";
     }
 
     public String updateCategory(CategoryDto categoryDto) {
         Category category = categoryRepository.findById(categoryDto.categoryId())
                 .orElseThrow(()-> new CustomException(CATEGORY_NOT_FOUND));
-
-        if(!categoryDto.categoryName().isBlank()){
-            category.setCategoryName(categoryDto.categoryName());
-        }else{
-            return "카테고리 이름을 확인해주세요.";
-        }
-
+        category.setCategoryName(categoryDto.categoryName());
         return "카테고리 정보 수정 완료";
     }
 
     public String registerSupplier(SupplierDto supplierDto) {
-        if(supplierDto.supplierCode().isBlank()){
-            return "코드를 확인해주세요.";
-        }
-        if(supplierDto.supplierName().isBlank()){
-            return "공급업체 이름을 확인해주세요.";
-        }
         Supplier supplier = supplierDto.toEntity();
         supplierRepository.save(supplier);
         return "등록 성공";
     }
 
     public String registerCategory(CategoryDto categoryDto) {
-        if(categoryDto.categoryName().isBlank()){
-            return "카테고리 이름을 확인해주세요.";
-        }
-
         Category category = categoryDto.toEntity();
         categoryRepository.save(category);
         return "등록 성공";

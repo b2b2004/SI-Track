@@ -1,16 +1,12 @@
 package com.sitrack.sitrackbackend.service;
 
-import com.sitrack.sitrackbackend.domain.Product;
-import com.sitrack.sitrackbackend.domain.ProductImage;
 import com.sitrack.sitrackbackend.domain.constant.ProductImageType;
 import com.sitrack.sitrackbackend.dto.ProductImageDto;
 import com.sitrack.sitrackbackend.repository.ProductImageRepository;
-import com.sitrack.sitrackbackend.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.awt.*;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -24,6 +20,7 @@ import static com.sitrack.sitrackbackend.domain.constant.ProductImageType.Thumbn
 @Service
 public class ImageService {
 
+    // AWS S3 저장으로 변경 예정
     private final ProductImageRepository productImageRepository;
 
     public List<ProductImageDto> parseImageFile(List<MultipartFile> multipartFiles) throws IOException {
@@ -54,13 +51,6 @@ public class ImageService {
         }
         return productImageDtos;
     }
-
-//    public void save(Product product, List<ProductImageDto> images){
-//        for(ProductImageDto image : images){
-//            ProductImage productImage = image.toEntity(product, image);
-//            productImageRepository.save(productImage);
-//        }
-//    }
 
     public void delete_By_product_id(Long productId){
         productImageRepository.deleteByProductId(productId);

@@ -49,7 +49,7 @@ public class CartController {
     @PostMapping("/{cartItemId}")
     public ResponseEntity<?> deleteProduct(@PathVariable Long cartItemId,
                                            @AuthenticationPrincipal PrincipalDetails principalDetails){
-        cartService.deleteOneCart(cartItemId, principalDetails.getUser());
+        cartService.deleteOneCart(cartItemId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
