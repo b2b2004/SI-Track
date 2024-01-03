@@ -57,7 +57,7 @@ public class ProductService {
             Category category = categoryRepository.findByCategoryName(productRequest.categoryName()).orElseThrow();
             Supplier supplier = supplierRepository.findBySupplierCode(productRequest.supplierCode()).orElseThrow();
             Product product = productRequest.toEntity(user, category, supplier);
-            List<ProductImageDto> productImageDtos = imageService.parseImageFile(images);
+            List<ProductImageDto> productImageDtos = imageService.awsS3ImageSave(images);
             List<ProductImage> productImages = new ArrayList<>();
 
             for(ProductImageDto image : productImageDtos){
@@ -99,7 +99,7 @@ public class ProductService {
                     product.setProductDetail(dto.productDetail());
                 }
 
-                imageService.delete_By_product_id(productId);
+                imageService.delete_By_product_id_awsS3(productId);
 
                 List<ProductImageDto> productImageDtos = imageService.parseImageFile(images);
                 List<ProductImage> productImages = new ArrayList<>();
