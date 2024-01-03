@@ -46,18 +46,18 @@ values ('user2', '볼펜', 1, 1, '볼펜이다', 100, 1000, 100, 10, now(), 'use
        ('user6', '커터칼', 2, 3, '커터칼이다', 100, 1000, 100, 10, now(), 'user6', now(), 'user6');
 
 insert into product_image (image_path, image_type, original_name, save_name, product_id)
-values ('C:\\workspace\\springbootwork\\SI-Track\\Si-Track-Frontend\\public\\img', 'Thumbnail', 'no01.png', 'no01.png', 1),
-       ('C:\\workspace\\springbootwork\\SI-Track\\Si-Track-Frontend\\public\\img', 'Thumbnail', 'no02.png', 'no02.png', 2),
-       ('C:\\workspace\\springbootwork\\SI-Track\\Si-Track-Frontend\\public\\img', 'Thumbnail', 'no03.png', 'no03.png', 3),
-       ('C:\\workspace\\springbootwork\\SI-Track\\Si-Track-Frontend\\public\\img', 'Thumbnail', 'no04.png', 'no04.png', 4),
-       ('C:\\workspace\\springbootwork\\SI-Track\\Si-Track-Frontend\\public\\img', 'Thumbnail', 'no05.png', 'no05.png', 5),
-       ('C:\\workspace\\springbootwork\\SI-Track\\Si-Track-Frontend\\public\\img', 'Thumbnail', 'no06.png', 'no06.png', 6),
-       ('C:\\workspace\\springbootwork\\SI-Track\\Si-Track-Frontend\\public\\img', 'Thumbnail', 'no07.png', 'no07.png', 7),
-       ('C:\\workspace\\springbootwork\\SI-Track\\Si-Track-Frontend\\public\\img', 'Thumbnail', 'no08.png', 'no08.png', 8),
-       ('C:\\workspace\\springbootwork\\SI-Track\\Si-Track-Frontend\\public\\img', 'Thumbnail', 'no09.png', 'no09.png', 9),
-       ('C:\\workspace\\springbootwork\\SI-Track\\Si-Track-Frontend\\public\\img', 'Thumbnail', 'no10.png', 'no10.png', 10),
-       ('C:\\workspace\\springbootwork\\SI-Track\\Si-Track-Frontend\\public\\img', 'Thumbnail', 'no11.png', 'no11.png', 11),
-       ('C:\\workspace\\springbootwork\\SI-Track\\Si-Track-Frontend\\public\\img', 'Thumbnail', 'no12.png', 'no12.png', 12),
-       ('C:\\workspace\\springbootwork\\SI-Track\\Si-Track-Frontend\\public\\img', 'Thumbnail', 'no13.png', 'no13.png', 13),
-       ('C:\\workspace\\springbootwork\\SI-Track\\Si-Track-Frontend\\public\\img', 'Thumbnail', 'no14.png', 'no14.png', 14);
+values ('https://si-image-s3.s3.ap-northeast-2.amazonaws.com/', 'Thumbnail', 'no01.png', 'no01.png', 1),
+       ('https://si-image-s3.s3.ap-northeast-2.amazonaws.com/', 'Thumbnail', 'no02.png', 'no02.png', 2),
+       ('https://si-image-s3.s3.ap-northeast-2.amazonaws.com/', 'Thumbnail', 'no03.png', 'no03.png', 3),
+       ('https://si-image-s3.s3.ap-northeast-2.amazonaws.com/', 'Thumbnail', 'no04.png', 'no04.png', 4),
+       ('https://si-image-s3.s3.ap-northeast-2.amazonaws.com/', 'Thumbnail', 'no05.png', 'no05.png', 5),
+       ('https://si-image-s3.s3.ap-northeast-2.amazonaws.com/', 'Thumbnail', 'no06.png', 'no06.png', 6),
+       ('https://si-image-s3.s3.ap-northeast-2.amazonaws.com/', 'Thumbnail', 'no07.png', 'no07.png', 7),
+       ('https://si-image-s3.s3.ap-northeast-2.amazonaws.com/', 'Thumbnail', 'no08.png', 'no08.png', 8),
+       ('https://si-image-s3.s3.ap-northeast-2.amazonaws.com/', 'Thumbnail', 'no09.png', 'no09.png', 9),
+       ('https://si-image-s3.s3.ap-northeast-2.amazonaws.com/', 'Thumbnail', 'no10.png', 'no10.png', 10),
+       ('https://si-image-s3.s3.ap-northeast-2.amazonaws.com/', 'Thumbnail', 'no11.png', 'no11.png', 11),
+       ('https://si-image-s3.s3.ap-northeast-2.amazonaws.com/', 'Thumbnail', 'no12.png', 'no12.png', 12),
+       ('https://si-image-s3.s3.ap-northeast-2.amazonaws.com/', 'Thumbnail', 'no13.png', 'no13.png', 13),
+       ('https://si-image-s3.s3.ap-northeast-2.amazonaws.com/', 'Thumbnail', 'no14.png', 'no14.png', 14);
 
