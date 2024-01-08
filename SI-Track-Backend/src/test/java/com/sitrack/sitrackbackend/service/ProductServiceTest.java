@@ -27,7 +27,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.EntityNotFoundException;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -321,6 +320,7 @@ public class ProductServiceTest {
 
     private ProductResponse createProductResponse(){
         return ProductResponse.of(
+                1L,
                 "A12",
                 "볼펜",
                 100L,

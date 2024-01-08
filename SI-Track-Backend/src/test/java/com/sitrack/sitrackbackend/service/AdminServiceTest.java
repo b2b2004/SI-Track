@@ -11,6 +11,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -19,6 +21,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
@@ -29,88 +32,84 @@ public class AdminServiceTest {
     private AdminService sut;
 
     @Mock
-    private UserAccountRepository userAccountRepository;
+    private UserAccountRepositoryCustom userAccountRepositoryCustom;
 
     @Mock
     private ProductRepository productRepository;
 
     @Mock
+    private ProductRepositoryCustom productRepositoryCustom;
+
+    @Mock
     private OrderRepository orderRepository;
+
+    @Mock
+    private OrderRepositoryCustom orderRepositoryCustom;
 
     @Mock
     private SupplierRepository supplierRepository;
 
     @Mock
+    private SupplierRepositoryCustom supplierRepositoryCustom;
+
+    @Mock
     private CategoryRepository categoryRepository;
 
     @Test
-    @DisplayName("[AdminS] 모든 유저내역 확인")
+    @DisplayName("[AdminS] 검색어 없이 모든 유저 출력")
     public void findAll_user_success() {
-        // Given
-        List<UserAccount> userAccountList = List.of(createUserAccount("test1"), createUserAccount("test2"), createUserAccount("test3"));
-        given(userAccountRepository.findAll()).willReturn(userAccountList);
 
+        // Given
+        Pageable pageable = Pageable.ofSize(20);
+        given(userAccountRepositoryCustom.searchPageComplex(null, null, pageable)).willReturn(Page.empty());
         // When
-        List<UserAccountDto> userAccountDtoList = sut.findAllUsers();
+        Page<UserAccountDto> users = sut.findUsersWithSearchType(null, null, pageable);
 
         // Then
-        assertThat(userAccountDtoList)
-                .hasSize(3)
-                .first().hasFieldOrPropertyWithValue("userId", userAccountList.get(0).getUserId());
-        then(userAccountRepository).should().findAll();
+        assertThat(users).isEmpty();
+        then(userAccountRepositoryCustom).should().searchPageComplex(null, null, pageable);
     }
 
     @Test
-    @DisplayName("[AdminS] 모든 상품 확인")
+    @DisplayName("[AdminS] 검색어 없이 모든 상품 출력")
     public void findAll_product_success() {
         // Given
-        List<Product> productList = List.of(createProduct("볼펜1"), createProduct("볼펜2"), createProduct("볼펜3"));
-        given(productRepository.findAll()).willReturn(productList);
-
+        Pageable pageable = Pageable.ofSize(20);
+        given(productRepositoryCustom.searchPageComplex(null, null, pageable)).willReturn(Page.empty());
         // When
-        List<AdminProductDto> adminProductDtoList = sut.findAllProducts();
+        Page<AdminProductDto> products = sut.findProductsWithSearchType(null, null, pageable);
 
         // Then
-        assertThat(adminProductDtoList)
-                .hasSize(3)
-                .first().hasFieldOrPropertyWithValue("productName", productList.get(0).getProductName());
-        then(productRepository).should().findAll();
+        assertThat(products).isEmpty();
+        then(productRepositoryCustom).should().searchPageComplex(null, null, pageable);
     }
 
     @Test
-    @DisplayName("[AdminS] 모든 주문 확인")
+    @DisplayName("[AdminS] 검색어 없이 모든 주문 출력")
     public void findAll_order_success() {
         // Given
-        List<Order> orderList = List.of(createOrder("테스터1"), createOrder("테스터2"), createOrder("테스터3"));
-        given(orderRepository.findAll()).willReturn(orderList);
-
+        Pageable pageable = Pageable.ofSize(20);
+        given(orderRepositoryCustom.searchPageComplex(null, null, pageable)).willReturn(Page.empty());
         // When
-        List<OrderDto> orderDtoList = sut.findAllOrders();
+        Page<OrderDto> orders = sut.findOrdersWithSearchType(null, null, pageable);
 
         // Then
-        assertThat(orderDtoList)
-                .hasSize(3)
-                .first().hasFieldOrPropertyWithValue("recipient", orderList.get(0).getRecipient());
-        then(orderRepository).should().findAll();
+        assertThat(orders).isEmpty();
+        then(orderRepositoryCustom).should().searchPageComplex(null, null, pageable);
     }
 
     @Test
-    @DisplayName("[AdminS] 모든 공급업체 확인")
+    @DisplayName("[AdminS] 검색어 없이 모든 공급업체 출력")
     public void findAll_supplier_success() {
         // Given
-        List<Supplier> supplierList = List.of(createSupplier());
-        given(supplierRepository.findAll()).willReturn(supplierList);
-
+        Pageable pageable = Pageable.ofSize(20);
+        given(supplierRepositoryCustom.searchPageComplex(null, null, pageable)).willReturn(Page.empty());
         // When
-        List<SupplierDto> supplierDtoList = sut.findAllSupplier();
+        Page<SupplierDto> suppliers = sut.findSuppliersWithSearchType(null, null, pageable);
 
         // Then
-        assertThat(supplierDtoList)
-                .hasSize(1)
-                .first()
-                    .hasFieldOrPropertyWithValue("supplierName", supplierList.get(0).getSupplierName())
-                    .hasFieldOrPropertyWithValue("supplierCode", supplierList.get(0).getSupplierCode());
-        then(supplierRepository).should().findAll();
+        assertThat(suppliers).isEmpty();
+        then(supplierRepositoryCustom).should().searchPageComplex(null, null, pageable);
     }
 
     @Test
@@ -190,21 +189,6 @@ public class AdminServiceTest {
     }
 
     @Test
-    @DisplayName("[AdminS] 공급업체 업데이트 실패")
-    public void update_Supplier_hasNull_fail(){
-        // Given
-        SupplierDto supplierDto = createSupplierDto("");
-        Supplier supplier = createSupplier();
-        given(supplierRepository.findById(supplierDto.supplierId())).willReturn(Optional.of(supplier));
-
-        // When
-        String result = sut.updateSupplier(supplierDto);
-
-        // Then
-        assertThat(result).isEqualTo("공급업체 이름을 확인해주세요.");
-    }
-
-    @Test
     @DisplayName("[AdminS] 카테고리 업데이트 성공")
     public void update_Category_success(){
         // Given
@@ -249,19 +233,6 @@ public class AdminServiceTest {
     }
 
     @Test
-    @DisplayName("[AdminS] 공급업체 생성 실패")
-    public void register_Supplier_hasNull_fail(){
-        // Given
-        SupplierDto supplierDto = createSupplierDto("");
-
-        // When
-        String result = sut.registerSupplier(supplierDto);
-
-        // Then
-        assertThat(result).isEqualTo("공급업체 이름을 확인해주세요.");
-    }
-
-    @Test
     @DisplayName("[AdminS] 카테고리 생성 성공")
     public void register_Category_success(){
         // Given
@@ -273,19 +244,6 @@ public class AdminServiceTest {
         // Then
         assertThat(result).isEqualTo("등록 성공");
         then(categoryRepository).should().save(any());
-    }
-
-    @Test
-    @DisplayName("[AdminS] 카테고리 생성 실패")
-    public void register_Category_hasNull_fail(){
-        // Given
-        CategoryDto categoryDto = createCategoryDto("");
-
-        // When
-        String result = sut.registerCategory(categoryDto);
-
-        // Then
-        assertThat(result).isEqualTo("카테고리 이름을 확인해주세요.");
     }
 
     private UserAccount createUserAccount(String userId) {

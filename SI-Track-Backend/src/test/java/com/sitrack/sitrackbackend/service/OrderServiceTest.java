@@ -1,5 +1,6 @@
 package com.sitrack.sitrackbackend.service;
 
+import com.sitrack.sitrackbackend.Exception.CustomException;
 import com.sitrack.sitrackbackend.domain.*;
 import com.sitrack.sitrackbackend.domain.account.UserAccount;
 import com.sitrack.sitrackbackend.dto.OrderItemDto;
@@ -58,8 +59,9 @@ public class OrderServiceTest {
         // When
         Throwable t = catchThrowable(() -> sut.save(orderRequest, userAccount));
 
+        System.out.println(t.toString());
         // Then
-        assertThat(t).isInstanceOf(IndexOutOfBoundsException.class);
+        assertThat(t).isInstanceOf(CustomException.class);
     }
 
     @DisplayName("[OrderS] 장바구니에 상품이 없을때 주문 성공")

@@ -57,7 +57,7 @@ public class ProductService {
             Category category = categoryRepository.findByCategoryName(productRequest.categoryName()).orElseThrow();
             Supplier supplier = supplierRepository.findBySupplierCode(productRequest.supplierCode()).orElseThrow();
             Product product = productRequest.toEntity(user, category, supplier);
-            List<ProductImageDto> productImageDtos = imageService.parseImageFile(images);
+            List<ProductImageDto> productImageDtos = imageService.awsS3ImageSave(images);
             List<ProductImage> productImages = new ArrayList<>();
 
             for(ProductImageDto image : productImageDtos){
@@ -68,7 +68,7 @@ public class ProductService {
             product.addproductImages(productImages);
 
             productRepository.save(product);
-            imageService.save(product, productImageDtos);
+//            imageService.save(product, productImageDtos);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -76,7 +76,7 @@ public class ProductService {
     }
 
     //
-    public String update_product(Long productId, ProductUpdateRequest dto, UserAccount userAccount, List<MultipartFile> productImages){
+    public String update_product(Long productId, ProductUpdateRequest dto, UserAccount userAccount, List<MultipartFile> images){
         try {
             Product product = productRepository.getReferenceById(productId);
             UserAccount user = userAccountRepository.findByUserId(userAccount.getUserId())
@@ -99,11 +99,20 @@ public class ProductService {
                     product.setProductDetail(dto.productDetail());
                 }
 
-                imageService.delete_By_product_id(productId);
+                imageService.delete_By_product_id_awsS3(productId);
+
+                List<ProductImageDto> productImageDtos = imageService.parseImageFile(images);
+                List<ProductImage> productImages = new ArrayList<>();
+
+                for(ProductImageDto image : productImageDtos){
+                    ProductImage productImage = image.toEntity(product, image);
+                    productImages.add(productImage);
+                }
+
+                product.addproductImages(productImages);
                 productRepository.save(product);
 
-                List<ProductImageDto> productImageDtos = imageService.parseImageFile(productImages);
-                imageService.save(product, productImageDtos);
+                // imageService.save(product, productImageDtos);
             }else{
                 return "권한이 없습니다.";
             }
