@@ -13,6 +13,10 @@ import Register from "./page/Register";
 import Pay from "./page/Pay";
 import Paycomplete from "./page/Paycomplete";
 import Cart from "./page/Cart";
+import Userlist from "./page/Userlist";
+import Orderlist from "./page/Orderlist";
+import Supplierlist from "./page/Supplierlist";
+import Categorylist from "./page/Categorylist";
 
 export default function Main(){
     return(
@@ -32,6 +36,10 @@ export default function Main(){
             <Route path="/pay" element={<Pay />} />
             <Route path="/Paycomplete" element={<Paycomplete />} />
             <Route path="/cart" element={<Cart />} />
+            <Route path="/userlist" element={<Userlist />} />
+            <Route path="/orderlist" element={<Orderlist/>} />
+            <Route path="/supplierlist" element={<Supplierlist/>} />
+            <Route path="/categorylist" element={<Categorylist/>} />
             </Routes>
         </App>
         </BrowserRouter>
