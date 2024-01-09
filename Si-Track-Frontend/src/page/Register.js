@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import './Register.css';
-import axios from "axios";
 export default function Register(){
     const Authorization = localStorage.getItem("Authorization");
     const [productRequest, setProductRequest] = useState({
@@ -56,13 +55,13 @@ export default function Register(){
 
          formData.append("productRequest", new Blob([JSON.stringify(productRequest)], { type: "application/json" }));
 
-        for (let productImages of formData.keys()) {
-            console.log(productImages, ":", formData.get(productImages));
-        }
-
-        for (let productRequest of formData.keys()) {
-            console.log(productRequest, ":", formData.get(productRequest));
-        }
+        // for (let productImages of formData.keys()) {
+        //     console.log(productImages, ":", formData.get(productImages));
+        // }
+        //
+        // for (let productRequest of formData.keys()) {
+        //     console.log(productRequest, ":", formData.get(productRequest));
+        // }
 
         fetch('http://localhost:8080/product/admin/register', {
             method: 'POST',
@@ -71,7 +70,12 @@ export default function Register(){
                 // 'Content-Type': 'multipart/form-data',
                 'Authorization': Authorization,
             }}).then((res)=>{
+                return res.text();
         }).then((res)=>{
+            if(res == "상품 등록 완료"){
+                alert("등록 완료");
+                window.location.href = "/";
+            }
         })
 
     }
@@ -79,7 +83,6 @@ export default function Register(){
         const nowImageList = [...productImages];
         const file = e.target.files[0];
         nowImageList.push(file);
-        console.log(file);
         setProductImages(nowImageList);
     }
 
@@ -97,6 +100,14 @@ export default function Register(){
                     <ul>
                         <li><label htmlFor="productName">상품명</label>
                             <input type="text" name="productName" id="productName" onChange={changeValue} placeholder='상품명을 입력해주세요.'/></li>
+                        {
+                            /**
+                             * TODO
+                             * supplier
+                             * category
+                             * 셀렉으로 변경
+                             * **/
+                        }
                         <li><label htmlFor="categoryName">카테고리명</label>
                             <input type="text" name="categoryName" id="categoryName" onChange={changeValue} placeholder='카테고리명을 입력해주세요.'/></li>
                         <li><label htmlFor="supplierCode">코드번호</label>
@@ -113,6 +124,14 @@ export default function Register(){
                             <textarea name="productDetail" id="productDetail" onChange={changeValue} cols="30" rows="10" placeholder='상품설명을 입력해주세요.'></textarea></li>
                         <li><label htmlFor='p_img'>상품이미지
                             <input accept='image/*' id='productImages' multiple="multiple" type='file' onChange={saveImg} /></label>
+
+                            {
+                                /**
+                                 * TODO:
+                                 * 이미지 처리
+                                 * **/
+                            }
+                            
                             {/*<ul className='imgcont'>*/}
                             {/*    {productImages.map((image, id) => (*/}
                             {/*        <li>*/}

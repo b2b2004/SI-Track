@@ -6,6 +6,7 @@ import Login from "./page/Login";
 import Signup from "./page/Signup";
 import FindId from "./page/FindId";
 import Detail from "./page/Detail";
+import ProductUpdate from "./page/ProductUpdate";
 import Success from "./page/Success";
 import Mypage from "./page/Mypage";
 import Change from "./page/Change";
@@ -29,6 +30,7 @@ export default function Main(){
             <Route path='/signup' element={<Signup />} />
             <Route path='/findid' element={<FindId />} />
             <Route path="/product/:id" element={<Detail />} />
+            <Route path="/product/update/:id" element={<ProductUpdate />} />
             <Route path="/success" element={<Success />} />
             <Route path="/mypage" element={<Mypage />} />
             <Route path="/change" element={<Change />} />
