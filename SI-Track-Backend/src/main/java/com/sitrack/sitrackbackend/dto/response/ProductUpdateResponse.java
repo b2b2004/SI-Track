@@ -1,29 +1,25 @@
 package com.sitrack.sitrackbackend.dto.response;
 
-import com.sitrack.sitrackbackend.dto.CategoryDto;
 import com.sitrack.sitrackbackend.dto.ProductDto;
 import com.sitrack.sitrackbackend.dto.ProductImageDto;
-import com.sitrack.sitrackbackend.dto.SupplierDto;
-
 import java.util.List;
+import java.util.stream.Collectors;
 
 public record ProductUpdateResponse(
-        SupplierDto supplierDto,
-        CategoryDto categoryDto,
+        String supplierCode,
+        String categoryName,
         String productName,
-        Long productCost,
         String productDetail,
-        List<ProductImageDto> productImageDtos
+        List<String> productImageUrl
 ) {
 
     public static ProductUpdateResponse from(ProductDto dto) {
         return new ProductUpdateResponse(
-                dto.supplierDto(),
-                dto.categoryDto(),
+                dto.supplierDto().supplierCode(),
+                dto.categoryDto().categoryName(),
                 dto.productName(),
-                dto.productCost(),
                 dto.productDetail(),
-                dto.productImageDtos()
+                dto.productImageDtos().stream().map(ProductImageDto::getSaveName).collect(Collectors.toList())
         );
     }
 

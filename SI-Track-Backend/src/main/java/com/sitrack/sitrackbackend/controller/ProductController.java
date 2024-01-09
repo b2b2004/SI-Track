@@ -45,8 +45,6 @@ public class ProductController {
     public ResponseEntity<?> register_product(@Valid @RequestPart(value = "productRequest") ProductRequest productRequest,
                                               @RequestPart(value = "productImages") List<MultipartFile> productImages,
                                               @AuthenticationPrincipal PrincipalDetails principalDetails){
-                                                System.out.println("개빡치게하내 쉬발?");
-                                                System.out.println(productRequest);
         UserAccount user = principalDetails.getUser();
         String msg = productService.register_product(productRequest, user, productImages);
         return new ResponseEntity<>(msg, HttpStatus.OK);
@@ -61,8 +59,8 @@ public class ProductController {
 
     @ApiOperation(value = "상품 수정", notes = "상품정보 및 다중 이미지 수정")
     @PostMapping("/admin/update/{productId}")
-    public ResponseEntity<?> update_product(@Valid @RequestPart(value = "productRequest") ProductUpdateRequest productUpdateRequest,
-                                            @RequestPart(value = "productRequest") List<MultipartFile> productImages,
+    public ResponseEntity<?> update_product(@Valid @RequestPart(value = "productUpdateRequest") ProductUpdateRequest productUpdateRequest,
+                                            @RequestPart(value = "productImages") List<MultipartFile> productImages,
                                             @PathVariable Long productId,
                                             @AuthenticationPrincipal PrincipalDetails principalDetails){
         UserAccount user = principalDetails.getUser();

@@ -113,13 +113,12 @@ public class ImageService {
 //    }
 
     public void delete_By_product_id_awsS3(Long productId){
-        List<ProductImageDto> productImageDtos = productImageRepository.findById(productId)
+        List<ProductImageDto> productImageDtos = productImageRepository.findByProductId(productId)
                 .stream().map(ProductImageDto::from)
                 .collect(Collectors.toList());
 
         for(ProductImageDto image : productImageDtos){
-            String originalFilename = image.imagePath() + image.saveName();
-            amazonS3.deleteObject(bucket, originalFilename);
+            amazonS3.deleteObject(bucket, image.saveName());
         }
         productImageRepository.deleteByProductId(productId);
     }
