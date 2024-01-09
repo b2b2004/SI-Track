@@ -17,7 +17,7 @@ public enum ErrorCode {
     OUT_OF_STOCK(HttpStatus.BAD_REQUEST, "상품 재고가 부족합니다. 관리자에게 문의해주세요."),
 
     /* 401 UNAUTHORIZED : 유효한 인증 자격 증명이 없음 */
-    UNKNOWN_ERROR(HttpStatus.UNAUTHORIZED, "관리자엑 문의 해주세요."),
+    UNKNOWN_ERROR(HttpStatus.UNAUTHORIZED, "관리자에게 문의 해주세요."),
     WRONG_TYPE_TOKEN(HttpStatus.UNAUTHORIZED, "잘못된 타입의 토큰 입니다."),
     EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "만료된 토큰입니다."),
     UNSUPPORTED_TOKEN(HttpStatus.UNAUTHORIZED, "지원하지 않는 토큰 입니다."),
