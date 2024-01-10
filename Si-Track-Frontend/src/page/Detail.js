@@ -10,10 +10,14 @@ export default function Detail(){
         productId: '',
         supplierCode: '',
         productName: '',
-        productCost: '',
+        productPrice: '',
         productDetail: '',
     });
     const [productImages,setProductImages] = useState([]);
+    const [cart, setCart] = useState({
+        productId: id,
+        quantity: '',
+    });
 
     useEffect(() => {
         fetch(`http://localhost:8080/product/${id}`,{
@@ -52,6 +56,32 @@ export default function Detail(){
                     }
                 })
     }
+
+    function saveCart(e){
+        e.preventDefault();
+        fetch("http://localhost:8080/cart/addCart",{
+            method: "POST",
+            headers:{
+                "content-Type":"application/json; charset=utf-8", Authorization
+            },
+            body: JSON.stringify(cart)
+        })
+            .then((res) =>{
+                // 성공 시
+                if(res.status == 200) {
+                    // 장바구니로 이동
+                    window.location = "/cart"
+                }
+            })
+    }
+
+    const changeValue = (e) => {
+        setCart({
+            ...cart,
+            [e.target.name]: e.target.value,
+        });
+    };
+
     return(
         <div className="detailcontainer">
 
@@ -70,19 +100,16 @@ export default function Detail(){
                     <dd>{products.supplierCode}</dd>
                     <form action="post">
                        <label>구매수량
-                       <input type="text"/></label>
-                       <label>구매단가
-                       <input type="text"disabled  defaultValue={products.productCost}/>
-                       </label>
-                       <label>구매금액
-                       <input type="text" disabled />
+                       <input name="quantity" id="quantity" onChange={changeValue} type="text"/></label>
+                       <label>판매금액
+                       <input type="text" disabled  defaultValue={products.productPrice}/>
                        </label>
                        <label>총금액
-                       <input type="text" disabled/>
+                       <input type="text" disabled value={products.productPrice * cart.quantity} />
                        </label>
                     </form>
                     <button type="submit"><Link to='/pay'>결제하기</Link></button>
-                    <button type="submit"><Link to='/cart'>장바구니</Link></button>
+                    <button onClick={saveCart} type="submit">장바구니</button>
                     <button>견적서출력</button>
                 </dl>
             </figure>
