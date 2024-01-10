@@ -10,13 +10,13 @@ public record ProductResponse(
         Long productId,
         String supplierCode,
         String productName,
-        Long productCost,
+        Long productPrice,
         String productDetail,
         List<String> productImagesUrl
 ) {
 
-    public static ProductResponse of(Long productId, String supplierCode, String productName, Long productCost, String productDetail){
-        return new ProductResponse(productId, supplierCode, productName, productCost, productDetail, null);
+    public static ProductResponse of(Long productId, String supplierCode, String productName, Long productPrice, String productDetail){
+        return new ProductResponse(productId, supplierCode, productName, productPrice, productDetail, null);
     }
 
     public static ProductResponse from(ProductDto dto) {
@@ -24,7 +24,7 @@ public record ProductResponse(
                 dto.productId(),
                 dto.supplierDto().supplierCode(),
                 dto.productName(),
-                dto.productCost(),
+                dto.productPrice(),
                 dto.productDetail(),
                 dto.productImageDtos().stream().map(ProductImageDto::getSaveName).collect(Collectors.toList())
         );

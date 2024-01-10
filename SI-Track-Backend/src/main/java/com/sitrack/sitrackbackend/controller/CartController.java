@@ -46,7 +46,7 @@ public class CartController {
 
     // 장바구니 상품 삭제
     @ApiOperation(value = "해당 유저의 장바구니 상품 삭제", notes = "해당 유저의 장바구니 상품 삭제")
-    @PostMapping("/{cartItemId}")
+    @DeleteMapping("/{cartItemId}")
     public ResponseEntity<?> deleteProduct(@PathVariable Long cartItemId,
                                            @AuthenticationPrincipal PrincipalDetails principalDetails){
         cartService.deleteOneCart(cartItemId);

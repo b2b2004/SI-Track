@@ -15,7 +15,7 @@ public record OrderItemListDto(
                 product.getProductName(),
                 product.getProductDetail(),
                 product.getProductPrice(),
-                product.getSubNailImage(),
+                product.getThumbnailImage(),
                 amount
         );
     }
