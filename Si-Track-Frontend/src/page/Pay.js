@@ -3,12 +3,33 @@ import { useState } from 'react';
 import Post from './Post';
 import { Link } from 'react-router-dom';
 import img from '../assets/no01.png';
+import { useRecoilValue } from 'recoil';
+import { cartItemsState } from '../recoil/cartItemsState';
+
 export default function Pay(){
     const [addressObj,setAddressObj] = useState('');
     const [locationObj,setLocationObj] = useState('');
     const address = addressObj.townAddress;
     const postcode = addressObj.postcode;
+
+    // recoil 활용 값 받아옴
+    const selectedProducts = useRecoilValue(cartItemsState);
+
+    /**
+     *         배열
+     *         Long productId, // 상품 아이디
+     *         Long quantity, // 수량
+     *         Long price // 가격
+     *
+     *         Long totalAmount,       // 총 가격
+     *         String orderAddress,    // 주소
+     *         String orderRequest,    // 요구 사항
+     *         String recipient,       // 수령인
+     *         String phoneNumber,     // 수령인 핸드폰 번호
+     *
+     */
     return(
+
 
         <div className='paycontainer'>
     <form>
