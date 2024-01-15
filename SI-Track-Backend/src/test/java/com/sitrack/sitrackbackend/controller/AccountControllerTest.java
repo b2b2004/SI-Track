@@ -6,6 +6,7 @@ import com.sitrack.sitrackbackend.dto.SearchIdDto;
 import com.sitrack.sitrackbackend.dto.SearchPwdDto;
 import com.sitrack.sitrackbackend.dto.UserAccountDto;
 import com.sitrack.sitrackbackend.service.AccountService;
+import com.sitrack.sitrackbackend.service.TokenService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,9 @@ public class AccountControllerTest {
 
     @MockBean
     private AccountService accountService;
+
+    @MockBean
+    private TokenService tokenService;
 
     public AccountControllerTest(@Autowired MockMvc mvc,
                                  @Autowired ObjectMapper objectMapper) {

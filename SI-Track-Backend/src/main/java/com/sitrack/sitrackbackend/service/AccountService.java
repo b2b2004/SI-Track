@@ -1,18 +1,12 @@
 package com.sitrack.sitrackbackend.service;
 
 import com.sitrack.sitrackbackend.Exception.CustomException;
-import com.sitrack.sitrackbackend.config.security.JwtProvider;
-import com.sitrack.sitrackbackend.config.security.auth.PrincipalDetails;
 import com.sitrack.sitrackbackend.domain.account.UserAccount;
 import com.sitrack.sitrackbackend.domain.constant.RoleType;
 import com.sitrack.sitrackbackend.dto.*;
 import com.sitrack.sitrackbackend.dto.response.SearchIdResponse;
 import com.sitrack.sitrackbackend.repository.UserAccountRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,11 +18,9 @@ import static com.sitrack.sitrackbackend.Exception.ErrorCode.USER_NOT_FOUND;
 @Service
 public class AccountService {
 
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final UserAccountRepository userAccountRepository;
     private final EmailService emailService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final JwtProvider jwtProvider;
 
     public String signup(UserAccountDto userAccountDto) {
         String rawPassword = userAccountDto.userPassword();
@@ -40,29 +32,6 @@ public class AccountService {
         userAccountRepository.save(userAccount);
         return "회원 가입 완료";
     }
-
-//    public String login(LoginDto loginDto) {
-//        UserAccount user = userAccountRepository.findByUserId(loginDto.userId())
-//                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-//        String rawPassword = loginDto.userPassword();
-//
-//        String userId = user.getUserId();
-//        String userPassword = user.getUserPassword();
-//
-//        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userId, userPassword);
-//        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-//
-//        // 인증이 완료된 객체이면,
-//        if (authentication.isAuthenticated()) {
-//            PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-//
-//            String authenticatedUserID = principalDetails.getUser().getUserId();
-//            String authenticateduserPassword = principalDetails.getUser().getUserPassword();
-//            return "로그인 성공 " + jwtProvider.generateJwtToken(authenticatedUserID, authenticateduserPassword);
-//        }
-//
-//        return "로그인 실패";
-//    }
 
     public SearchIdResponse searchId(SearchIdDto searchIdDto) {
         UserAccount user = userAccountRepository.findByUserNameAndUserEmail(searchIdDto.userName(), searchIdDto.userEmail())

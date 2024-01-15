@@ -48,7 +48,7 @@ font-family: 'Nanum Gothic', sans-serif;
     border: none;
     border-radius: 5px;
 }
-input:nth-of-type(8n){
+#signupfinish{
     width: 60%;
     background-color: #3D65F1;
     color: #fff;

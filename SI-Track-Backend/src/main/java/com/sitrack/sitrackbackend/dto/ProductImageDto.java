@@ -24,6 +24,10 @@ public record ProductImageDto(
         );
     }
 
+    public static String getSaveName(ProductImageDto entity){
+        return entity.imagePath + entity.saveName;
+    }
+
     public ProductImage toEntity(Product product, ProductImageDto productImageDto){
         return ProductImage.of(
                 product,

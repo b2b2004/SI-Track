@@ -20,8 +20,10 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.sitrack.sitrackbackend.Exception.ErrorCode.CART_NOT_FOUND;
+import static com.sitrack.sitrackbackend.Exception.ErrorCode.PRODUCT_NOT_FOUND;
 
 @RequiredArgsConstructor
 @Transactional
@@ -36,7 +38,8 @@ public class CartService {
     public void createCart(CartItemRequest cartItemRequest, UserAccount user){
 
         // 상품 id로 상품 가져오고
-        Product product = productRepository.findById(cartItemRequest.productId()).orElseThrow();
+        Product product = productRepository.findById(cartItemRequest.productId())
+                .orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
 
         // 장바구니 없으면 만들어주고
         if (!cartRepository.findCartByUserAccount(user).isPresent()) {
@@ -65,17 +68,8 @@ public class CartService {
     }
 
     // 장바구니 상품 삭제
-    public void deleteOneCart(Long id, UserAccount user){
-
-        CartItem cartItem = cartItemRepository.findById(id)
-                .orElseThrow(()-> new CustomException(CART_NOT_FOUND));
-        Cart cart = cartItem.getCart();
-
-        if(!cart.getUserAccount().equals(user)){
-            System.out.println("아이디가 달라서 삭제 실패");
-            return;
-        }
-
+    public void deleteOneCart(Long id){
+        CartItem cartItem = cartItemRepository.findById(id).orElseThrow(()-> new CustomException(CART_NOT_FOUND));
         cartItemRepository.delete(cartItem);
     }
 
@@ -84,15 +78,11 @@ public class CartService {
 
         Cart cart = cartRepository.findCartByUserAccount(user)
                 .orElseThrow(()-> new CustomException(CART_NOT_FOUND));
-        List<CartItem> items = cartItemRepository.findByCartId(cart.getId());
-        List<CartItemResponse> result = new ArrayList<>();
 
-        for(CartItem item : items){
-            CartItemResponse cartItemResponse = CartItemResponse.toDto(item, item.getQuantity());
-            result.add(cartItemResponse);
-        }
+        List<CartItemResponse> items = cartItemRepository.findByCartId(cart.getId())
+                .stream().map(CartItemResponse::from).collect(Collectors.toList());
 
-        return result;
+        return items;
     }
 
 }

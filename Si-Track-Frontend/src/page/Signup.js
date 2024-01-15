@@ -70,7 +70,7 @@ export default function Signup(){
             <p>Sign up</p>
         </h1>
         <form id='indimember'>
-        <div className='member'>
+        {/* <div className='member'>
             <button type='button' className='indi' >개인회원</button>
             <button type='button' className='business' onClick={()=>{
                 setModal(!false);
@@ -79,17 +79,17 @@ export default function Signup(){
                     document.querySelector('.business-container').style.display='block'
                 }
             }}>기업회원</button>
-        </div>
+        </div> */}
         <input type="text" onChange={(e)=>setId(e.target.value)} placeholder="아이디"></input>
         <input type="email" id='email' onChange={(e)=>setEmail(e.target.value)} placeholder="이메일"></input>
         <input type="password" id='pw' onChange={(e)=>setPw(e.target.value)} placeholder="비밀번호"></input>
         <input type="password" id='pwcheck' onChange={(e)=>setPwCheck(e.target.value)} placeholder="비밀번호확인"></input>
         <input type="text" id='name' onChange={(e)=>setName(e.target.value)} placeholder="이름"></input>
         <input type="text" id='phonenum' onChange={(e)=>setPhonenum(e.target.value)} placeholder="휴대폰번호" className='phone'></input>
-        <button className='verify'>인증번호 전송</button>
-        <input type="text" placeholder="인증번호확인" className='phone' disabled></input>
-        <button className='verify'>인증완료</button>
-        <input type="submit" onClick={handlesignup} value="회원가입 완료"></input>              
+        {/* <button className='verify'>인증번호 전송</button> */}
+        {/* <input type="text" placeholder="인증번호확인" className='phone' disabled></input> */}
+        {/* <button className='verify'>인증완료</button> */}
+        <input type="submit" id='signupfinish' onClick={handlesignup} value="회원가입 완료"></input>              
         </form>
        
        

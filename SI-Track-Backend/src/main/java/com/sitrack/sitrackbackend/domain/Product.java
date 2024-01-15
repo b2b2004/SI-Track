@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.sitrack.sitrackbackend.domain.constant.ProductImageType.Subnail;
+import static com.sitrack.sitrackbackend.domain.constant.ProductImageType.Thumbnail;
 
 @Getter
 @ToString(callSuper = true)
@@ -90,10 +91,10 @@ public class Product extends AuditingFields{
         this.setProductStockQuantity(this.getProductStockQuantity() - amount);
     }
 
-    public String getSubNailImage(){
+    public String getThumbnailImage(){
         for(ProductImage productImage : this.productImages){
-            if(productImage.getImageType() == Subnail){
-                return productImage.getSaveName();
+            if(productImage.getImageType() == Thumbnail){
+                return productImage.getImagePath() + productImage.getSaveName();
             }
         }
         return null;

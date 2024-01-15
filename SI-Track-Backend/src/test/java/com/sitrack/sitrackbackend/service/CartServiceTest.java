@@ -84,12 +84,11 @@ public class CartServiceTest {
     @DisplayName("[CartS] 장바구니 상품 삭제")
     public void delete_one_Cart(){
         // Given
-        UserAccount user = createUserAccount("test1");
         CartItem cartItem = createCartItem();
 
         given(cartItemRepository.findById(any())).willReturn(Optional.of(cartItem));
         // When
-        sut.deleteOneCart(1L, user);
+        sut.deleteOneCart(1L);
 
         // Then
         then(cartItemRepository).should().delete(any());

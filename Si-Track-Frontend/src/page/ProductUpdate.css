@@ -1,0 +1,103 @@
+.register-container{
+
+    width: 1000px;
+    padding: 30px;
+    margin: 50px auto;
+    border: 1px solid #717171;
+    border-radius: 5px;
+}
+
+
+.register-container>form{
+    width: 800px;
+    margin: 0 auto;
+}
+.register-container>form ul{
+    width: 100%;
+}
+.register-container>form ul>li>label{
+    font-size: 17px;
+    color: #717171;
+    font-weight: bold;
+}
+.register-container>form ul>li>input{
+    background-color: #eae4e4;
+    width: 100%;
+    height: 45px;
+    border: none;
+    border-radius: 10px;
+    margin-top: 13px;
+    margin-bottom: 22px;
+}
+.register-container>form ul>li>textarea{
+    background-color: #eae4e4;
+    width: 100%;
+    border: none;
+    border-radius: 10px;
+    margin-top: 13px;
+    margin-bottom: 22px;
+}
+.register-container>form>fieldset{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.register-container>form p{
+    width: 40%;
+    margin-right: 50px;
+}
+.register-container>form p>input{
+    background-color: black;
+    width: 100%;
+    border: none;
+    border-radius: 10px;
+    margin-top: 50px;
+    margin-bottom: 22px;
+    height: 45px;
+    font-weight: bold;
+    color: #fff;
+}
+.register-container>form p:nth-of-type(2)>input{
+    background-color: #eae4e4;
+    color: #857f7f;
+}
+.imgcont{
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    margin-top: 13px;
+    background-color: #eae4e4;
+    padding: 30px;
+    padding-bottom: 50px;
+    border-radius: 10px;
+}
+.imgcont>li{
+    width: 150px;
+    height: 150px;
+    margin-right: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.imgcont>li label{
+    margin-bottom: 30px;
+}
+.imgcont>li>img{
+    width: 100%;
+    height: 100%;
+    margin-bottom: 10px;
+}
+.imgcont>li>button{
+    margin-bottom: 10px;
+    background-color: black;
+    color: #fff;
+    border-radius: 5px;
+}
+.imgcont>li:last-of-type{
+    margin: 0;
+}
+.imgcont>li:first-of-type{
+    width: 180px;
+    height: 180px;
+
+}

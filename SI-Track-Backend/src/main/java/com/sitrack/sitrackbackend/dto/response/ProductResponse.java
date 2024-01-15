@@ -4,26 +4,29 @@ import com.sitrack.sitrackbackend.dto.ProductDto;
 import com.sitrack.sitrackbackend.dto.ProductImageDto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public record ProductResponse(
+        Long productId,
         String supplierCode,
         String productName,
-        Long productCost,
+        Long productPrice,
         String productDetail,
-        List<ProductImageDto> productImageDtos
+        List<String> productImagesUrl
 ) {
 
-    public static ProductResponse of(String supplierCode, String productName, Long productCost, String productDetail, List<ProductImageDto> productImageDtos){
-        return new ProductResponse(supplierCode, productName, productCost, productDetail, productImageDtos);
+    public static ProductResponse of(Long productId, String supplierCode, String productName, Long productPrice, String productDetail){
+        return new ProductResponse(productId, supplierCode, productName, productPrice, productDetail, null);
     }
 
     public static ProductResponse from(ProductDto dto) {
         return new ProductResponse(
+                dto.productId(),
                 dto.supplierDto().supplierCode(),
                 dto.productName(),
-                dto.productCost(),
+                dto.productPrice(),
                 dto.productDetail(),
-                dto.productImageDtos()
+                dto.productImageDtos().stream().map(ProductImageDto::getSaveName).collect(Collectors.toList())
         );
     }
 }

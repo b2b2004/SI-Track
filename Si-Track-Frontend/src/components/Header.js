@@ -24,14 +24,14 @@ export default function Header(){
                     <nav>
                         <ul>
                             <li onClick={handlelogout}><Link to="/">로그아웃</Link></li>
-                            <li><Link to="/signup">회원가입</Link></li>
                             <li><Link to="/mypage">내정보</Link></li>
                         </ul>
                         <ul>
-                        <li><Link to="/category1">Category1</Link></li>
-                        <li><Link to="/category1">Category2</Link></li>
-                        <li><Link to="/category1">Category3</Link></li>
-                        <li><Link to="/category1">Category4</Link></li>
+                        <li><Link to="/userlist">유저관리</Link></li>
+                        {/* <li><Link to="/productmanage">상품관리</Link></li> */}
+                        <li><Link to="/orderlist">주문관리</Link></li>
+                        <li><Link to="/supplierlist">공급업체관리</Link></li>
+                        <li><Link to="/categorylist">카테고리관리</Link></li>
                         </ul>
                     </nav>
                 </div>
@@ -57,6 +57,7 @@ export default function Header(){
                         <li><Link to="/category1">Category2</Link></li>
                         <li><Link to="/category1">Category3</Link></li>
                         <li><Link to="/category1">Category4</Link></li>
+                        
                         </ul>
                     </nav>
                 </div>

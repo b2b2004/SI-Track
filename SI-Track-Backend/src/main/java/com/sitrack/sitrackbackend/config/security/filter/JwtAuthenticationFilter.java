@@ -5,9 +5,12 @@ import com.sitrack.sitrackbackend.config.security.JwtProvider;
 import com.sitrack.sitrackbackend.config.security.auth.PrincipalDetails;
 import com.sitrack.sitrackbackend.domain.account.UserAccount;
 import lombok.RequiredArgsConstructor;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -15,11 +18,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -61,22 +63,45 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             return  authentication;
         } catch (Exception e) {
             e.printStackTrace();
+            throw new BadCredentialsException("로그인 실패 - 아이디와 비밀번호를 확인해주세요.");
         }
-
-        return null;
     }
 
-    // attemptAuthentication 메소드가 호출 된 후 동작
-    // response에 JWT 토큰을 담아서 보내준다.
+
+    /*
+
+     */
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-
         PrincipalDetails principalDetails = (PrincipalDetails) authResult.getPrincipal();
         String userId = principalDetails.getUser().getUserId();
         String userPassword = principalDetails.getUser().getUserPassword();
 
         String jwtToken = jwtProvider.generateJwtToken(userId, userPassword);
+        String refreshToken = jwtProvider.createRefreshToken(userId, userPassword);
+
+        // 쿠키에 Refresh Token 추가
+        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
+        refreshTokenCookie.setHttpOnly(true);
+
+        response.getWriter().write("로그인 성공");
+        response.addCookie(refreshTokenCookie);
         response.addHeader("Authorization", "Bearer " + jwtToken);
+    }
+
+    @Override
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+
+        JSONObject responseJson = new JSONObject();
+        try {
+            responseJson.put("status", HttpStatus.UNAUTHORIZED);
+            responseJson.put("message", failed.getMessage());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        response.getWriter().print(responseJson);
     }
 
 
