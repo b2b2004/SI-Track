@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import './Userlist.css';
 export default function Userlist(){
     const Authorization = localStorage.getItem('Authorization');
     const [user,setUser] = useState([]);
@@ -22,7 +23,7 @@ export default function Userlist(){
 
 
     return(
-        <div>
+        <div className='user-list'>
             { user && user.map((user)=>(
                 <div key={user.userId}>
                     <div>{user.userId}</div>

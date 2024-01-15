@@ -1,8 +1,10 @@
 import './Detail.css';
 import img from '../assets/no01.png';
-import { Link, useParams } from "react-router-dom";
-import { useEffect, useState } from 'react';
-
+import detailimg1 from '../assets/no10.png';
+import detailimg2 from '../assets/no11.png';
+import detailimg3 from '../assets/no12.png';
+import { Link } from "react-router-dom";
+import { useEffect, useState, useParams } from "react";
 export default function Detail(){
     const Authorization = localStorage.getItem("Authorization");
     const {id} = useParams();
@@ -10,14 +12,10 @@ export default function Detail(){
         productId: '',
         supplierCode: '',
         productName: '',
-        productPrice: '',
+        productCost: '',
         productDetail: '',
     });
     const [productImages,setProductImages] = useState([]);
-    const [cart, setCart] = useState({
-        productId: id,
-        quantity: '',
-    });
 
     useEffect(() => {
         fetch(`http://localhost:8080/product/${id}`,{
@@ -56,60 +54,28 @@ export default function Detail(){
                     }
                 })
     }
-
-    function saveCart(e){
-        e.preventDefault();
-        fetch("http://localhost:8080/cart/addCart",{
-            method: "POST",
-            headers:{
-                "content-Type":"application/json; charset=utf-8", Authorization
-            },
-            body: JSON.stringify(cart)
-        })
-            .then((res) =>{
-                // 성공 시
-                if(res.status == 200) {
-                    // 장바구니로 이동
-                    window.location = "/cart"
-                }
-            })
-    }
-
-    const changeValue = (e) => {
-        setCart({
-            ...cart,
-            [e.target.name]: e.target.value,
-        });
-    };
-
     return(
         <div className="detailcontainer">
-
-            {/**
-             TODO:
-             수정 / 삭제는 권한이 있을때만 보이게 해야함.
-             **/}
-            <Link to={`/product/update/${products.productId}`}>
-            <button>수정</button>
-            </Link>
-            <button onClick={submitDelete}>삭제</button>
             <figure>
-                <img src={productImages[0]} alt="상품이미지"></img>
+                <img src={img} alt="상품이미지"></img>
                 <dl>
-                    <dt>{products.productName}</dt>
-                    <dd>{products.supplierCode}</dd>
+                    <dt>상품명</dt>
+                    <dd>코드번호</dd>
                     <form action="post">
                        <label>구매수량
-                       <input name="quantity" id="quantity" onChange={changeValue} type="text"/></label>
-                       <label>판매금액
-                       <input type="text" disabled  defaultValue={products.productPrice}/>
+                       <input type="text"/></label>
+                       <label>구매단가
+                       <input type="text"disabled  defaultValue={products.productCost}/>
+                       </label>
+                       <label>구매금액
+                       <input type="text" disabled />
                        </label>
                        <label>총금액
-                       <input type="text" disabled value={products.productPrice * cart.quantity} />
+                       <input type="text" disabled/>
                        </label>
                     </form>
                     <button type="submit"><Link to='/pay'>결제하기</Link></button>
-                    <button onClick={saveCart} type="submit">장바구니</button>
+                    <button type="submit"><Link to='/cart'>장바구니</Link></button>
                     <button>견적서출력</button>
                 </dl>
             </figure>
@@ -119,24 +85,14 @@ export default function Detail(){
                 <button className="btn3"><a href='#buyinfo'>결제안내</a></button>
                 <button className="btn4"><a href='#deliveryinfo'>배송 및 교환환불</a></button>
                 <section>
-                    {
-                        /**
-                         * TODO:
-                         * 이미지 처리
-                         * **/
-                    }
                 <figure id='detailimg'>
-
-                    <ul>
-                        {productImages.map(image => (
-                            <li key={image.id}><img src={image} alt="" /></li>
-                        ))}
-                    </ul>
-
+                    <img src={detailimg1} alt="상세이미지1"></img>
+                    <img src={detailimg2} alt="상세이미지2"></img>
+                    <img src={detailimg3} alt="상세이미지3"></img>
                 </figure>
-                <p id='productinfo'>제품안내<br></br> {products.productDetail}</p>
-                <p id='buyinfo'>결제안내<br></br> Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.</p>
-                <p id='deliveryinfo'>배송 및 교환환불 설명<br></br> It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).</p>
+                <p id='productinfo'>제품안내</p>
+                <p id='buyinfo'>결제안내</p>
+                <p id='deliveryinfo'>배송 및 교환환불 설명</p>
                 </section>
             </div>
         </div>
