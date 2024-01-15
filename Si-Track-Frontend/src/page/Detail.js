@@ -6,6 +6,54 @@ import detailimg3 from '../assets/no12.png';
 import { Link } from "react-router-dom";
 
 export default function Detail(){
+    const Authorization = localStorage.getItem("Authorization");
+    const {id} = useParams();
+    const [products, setProducts] = useState({
+        productId: '',
+        supplierCode: '',
+        productName: '',
+        productCost: '',
+        productDetail: '',
+    });
+    const [productImages,setProductImages] = useState([]);
+
+    useEffect(() => {
+        fetch(`http://localhost:8080/product/${id}`,{
+            method:"GET",
+            headers:{
+                "content-Type":"application/json; charset=utf-8"
+            },
+        })
+        .then(data=> {
+            return data.json();
+        })
+        .then((data) => {
+            setProducts(data);
+            setProductImages(data.productImagesUrl);
+        });
+    }, []);
+
+    function submitDelete(e){
+        e.preventDefault();
+        if(!window.confirm("정말 삭제할까요?")){
+            return;
+        }
+            fetch(`http://localhost:8080/product/admin/${id}`,{
+                method: "DELETE",
+                headers:{
+                    "content-Type":"application/json; charset=utf-8", Authorization
+                }
+            })
+                .then((res) =>{
+                    return res.text();
+                })
+                .then((res) =>{
+                    if(res == "상품 삭제 완료"){
+                        alert("삭제 완료");
+                        window.location.href = "/";
+                    }
+                })
+    }
     return(
         <div className="detailcontainer">
             <figure>
@@ -17,7 +65,7 @@ export default function Detail(){
                        <label>구매수량
                        <input type="text"/></label>
                        <label>구매단가
-                       <input type="text"disabled />
+                       <input type="text"disabled  defaultValue={products.productCost}/>
                        </label>
                        <label>구매금액
                        <input type="text" disabled />
