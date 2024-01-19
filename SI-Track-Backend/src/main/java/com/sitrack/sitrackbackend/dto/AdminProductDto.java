@@ -1,21 +1,31 @@
 package com.sitrack.sitrackbackend.dto;
 
-import com.sitrack.sitrackbackend.domain.Product;
 import org.hibernate.validator.constraints.Range;
 
-
 import javax.validation.constraints.NotBlank;
-import java.time.LocalDateTime;
 
 public record AdminProductDto(
 
+        @NotBlank(message = "productId is Null")
         Long productId,
 
-        UserAccountDto userAccountdto,
+        @NotBlank(message = "userId is Null")
+        String userId,
 
-        CategoryDto category,
+        @NotBlank(message = "categoryId is Null")
+        Long categoryId,
 
-        SupplierDto supplier,
+        @NotBlank(message = "categoryName is Null")
+        String categoryName,
+
+        @NotBlank(message = "supplierId is Null")
+        Long supplierId,
+
+        @NotBlank(message = "supplierName is Null")
+        String supplierName,
+
+        @NotBlank(message = "supplierCode is Null")
+        String supplierCode,
 
         @NotBlank(message = "productName is Null")
         String productName,
@@ -30,33 +40,13 @@ public record AdminProductDto(
         Long productStockQuantity,
 
         @Range(max = 10000000, message = "productSalesQuantity is over Range")
-        Long productSalesQuantity,
-
-        LocalDateTime createdAt,
-        String createdBy,
-        LocalDateTime modifiedAt,
-        String modifiedBy) {
+        Long productSalesQuantity
+) {
 
 
-    public static AdminProductDto from(Product entity) {
-        return new AdminProductDto(
-                entity.getId(),
-                UserAccountDto.from(entity.getUserAccount()),
-                CategoryDto.from(entity.getCategory()),
-                SupplierDto.from(entity.getSupplier()),
-                entity.getProductName(),
-                entity.getProductCost(),
-                entity.getProductPrice(),
-                entity.getProductStockQuantity(),
-                entity.getProductSalesQuantity(),
-                entity.getCreatedAt(),
-                entity.getCreatedBy(),
-                entity.getModifiedAt(),
-                entity.getModifiedBy()
-        );
-    }
+        public static AdminProductDto of(Long productId, String userId, Long categoryId, String categoryName, Long supplierId, String supplierName, String supplierCode, String productName, Long productCost, Long productPrice, Long productStockQuantity, Long productSalesQuantity) {
+                return new AdminProductDto(productId, userId, categoryId, categoryName, supplierId, supplierName, supplierCode, productName, productCost, productPrice, productStockQuantity, productSalesQuantity);
+        }
 
-    public static AdminProductDto of(Long productId, UserAccountDto userAccountdto, CategoryDto categoryDto, SupplierDto supplierDto, String productName, Long productCost, Long productPrice, Long productStockQuantity, Long productSalesQuantity) {
-        return new AdminProductDto(productId, userAccountdto, categoryDto, supplierDto, productName, productCost, productPrice, productStockQuantity, productSalesQuantity, null, null, null, null);
-    }
+
 }
