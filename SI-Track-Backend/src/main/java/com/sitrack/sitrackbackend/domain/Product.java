@@ -17,6 +17,9 @@ import static com.sitrack.sitrackbackend.domain.constant.ProductImageType.Thumbn
 @Getter
 @ToString(callSuper = true)
 @Entity
+@Table(
+        indexes = @Index(name = "idx_product_name", columnList = "productName")
+)
 public class Product extends AuditingFields{
 
     @Id

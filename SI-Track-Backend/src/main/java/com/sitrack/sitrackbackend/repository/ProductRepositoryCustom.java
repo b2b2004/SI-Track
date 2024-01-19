@@ -1,8 +1,14 @@
 package com.sitrack.sitrackbackend.repository;
 
+import com.querydsl.core.QueryResults;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.sitrack.sitrackbackend.domain.constant.ProductImageType;
 import com.sitrack.sitrackbackend.dto.AdminProductDto;
+import com.sitrack.sitrackbackend.dto.response.ProductResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -13,7 +19,11 @@ import org.springframework.util.StringUtils;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.sitrack.sitrackbackend.domain.QCategory.category;
 import static com.sitrack.sitrackbackend.domain.QProduct.product;
+import static com.sitrack.sitrackbackend.domain.QProductImage.productImage;
+import static com.sitrack.sitrackbackend.domain.QSupplier.supplier;
+import static com.sitrack.sitrackbackend.domain.account.QUserAccount.userAccount;
 
 @Repository
 @RequiredArgsConstructor
@@ -21,9 +31,14 @@ public class ProductRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     public Page<AdminProductDto> searchPageComplex(String searchType, String searchValue, Pageable pageable){
-        List<AdminProductDto> content = getAdminProductDtoDto(searchType, searchValue, pageable);
+        List<AdminProductDto> content = getAdminProductDto(searchType, searchValue, pageable);
         Long count = getCount(searchType, searchValue);
+        return new PageImpl<>(content, pageable, count);
+    }
 
+    public Page<ProductResponse> searchMainPageComplex(String searchType, String searchValue, Pageable pageable){
+        List<ProductResponse> content = getProductResponse(searchType, searchValue, pageable);
+        Long count = getCount(searchType, searchValue);
         return new PageImpl<>(content, pageable, count);
     }
 
@@ -36,17 +51,69 @@ public class ProductRepositoryCustom {
         return count;
     }
 
-    public List<AdminProductDto> getAdminProductDtoDto(String searchType, String searchValue, Pageable pageable){
-
-        List<AdminProductDto> products = queryFactory
-                .select(product)
+    public List<ProductResponse> getProductResponse(String searchType, String searchValue, Pageable pageable){
+        /**
+         * 필요한 컬럼만 받아서 성능 최적화
+         * productName 인덱스 설정
+         * Jmeter 데이터 1000, 동시 접근 2000
+         * - 페이징 시 성능 avg 0.406
+         * - 필요한 컬럼만 받을때 avg 0.204
+         * 약 2배 성능 개선
+         */
+        List<ProductResponse> products = queryFactory
+                .select(Projections.constructor(ProductResponse.class,
+                        product.id,
+                        supplier.supplierCode,
+                        product.productName,
+                        product.productPrice,
+                        product.productDetail,
+                        productImage.imagePath.concat(productImage.saveName)
+                        ))
                 .from(product)
+                .leftJoin(product.category, category)
+                .leftJoin(product.supplier, supplier)
+                .leftJoin(product.productImages, productImage).on(productImage.imageType.eq(ProductImageType.valueOf("Thumbnail")))
                 .where(typeCheck(searchType, searchValue))
                 .offset(pageable.getOffset()) // 페이지 번호
                 .limit(pageable.getPageSize()) // 페이지 사이즈
-                .fetch()
-                .stream().map(AdminProductDto::from)
-                .collect(Collectors.toList());
+                .stream().collect(Collectors.toList());
+
+        System.out.println(products);
+        return products;
+    }
+
+    public List<AdminProductDto> getAdminProductDto(String searchType, String searchValue, Pageable pageable){
+
+        /**
+         * 필요한 컬럼만 받아서 성능 최적화
+         * productName 인덱스 설정
+         * Jmeter 데이터 1000, 동시 접근 2000
+         * - 페이징 시 성능 avg 0.575
+         * - 필요한 컬럼만 받을때 avg 0.24
+         * 약 2.5배 성능 개선
+         */
+         List<AdminProductDto> products = queryFactory
+                .select(Projections.constructor(AdminProductDto.class,
+                        product.id,
+                        userAccount.userId,
+                        category.id,
+                        category.categoryName,
+                        supplier.id,
+                        supplier.supplierName,
+                        supplier.supplierCode,
+                        product.productName,
+                        product.productCost,
+                        product.productPrice,
+                        product.productStockQuantity,
+                        product.productSalesQuantity))
+                .from(product)
+                .leftJoin(product.category, category)
+                .leftJoin(product.supplier, supplier)
+                .leftJoin(product.userAccount, userAccount)
+                .where(typeCheck(searchType, searchValue))
+                .offset(pageable.getOffset()) // 페이지 번호
+                .limit(pageable.getPageSize()) // 페이지 사이즈
+                .stream().collect(Collectors.toList());
         return products;
     }
 

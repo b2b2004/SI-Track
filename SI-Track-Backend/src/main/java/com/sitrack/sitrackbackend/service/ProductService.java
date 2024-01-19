@@ -11,12 +11,10 @@ import com.sitrack.sitrackbackend.dto.ProductDto;
 import com.sitrack.sitrackbackend.dto.ProductImageDto;
 import com.sitrack.sitrackbackend.dto.request.ProductRequest;
 import com.sitrack.sitrackbackend.dto.request.ProductUpdateRequest;
+import com.sitrack.sitrackbackend.dto.response.ProductOne;
 import com.sitrack.sitrackbackend.dto.response.ProductResponse;
 import com.sitrack.sitrackbackend.dto.response.ProductUpdateResponse;
-import com.sitrack.sitrackbackend.repository.CategoryRepository;
-import com.sitrack.sitrackbackend.repository.ProductRepository;
-import com.sitrack.sitrackbackend.repository.SupplierRepository;
-import com.sitrack.sitrackbackend.repository.UserAccountRepository;
+import com.sitrack.sitrackbackend.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -29,6 +27,7 @@ import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.sitrack.sitrackbackend.Exception.ErrorCode.*;
 
@@ -39,6 +38,7 @@ import static com.sitrack.sitrackbackend.Exception.ErrorCode.*;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final ProductRepositoryCustom productRepositoryCustom;
     private final UserAccountRepository userAccountRepository;
     private final CategoryRepository categoryRepository;
     private final SupplierRepository supplierRepository;
@@ -140,11 +140,11 @@ public class ProductService {
         }
     }
 
-    public ProductResponse findbyId_product_one(Long productId){
+    public ProductOne findbyId_product_one(Long productId){
         ProductDto productDto = productRepository.findById(productId)
                                             .map(ProductDto::from)
                                             .orElseThrow(()-> new CustomException(PRODUCT_NOT_FOUND));
-        return ProductResponse.from(productDto);
+        return ProductOne.from(productDto);
     }
 
     public ProductUpdateResponse findbyId_UpdateProduct_one(Long productId){
@@ -154,14 +154,8 @@ public class ProductService {
         return ProductUpdateResponse.from(productDto);
     }
 
-    public Page<ProductDto> findbyId_product_all_and_search(Pageable pageable, String searchValue){
-
-        // 검색어가 없을때 처리
-        if(searchValue == null || searchValue.isBlank()){
-            return productRepository.findAll(pageable).map(ProductDto::from);
-        }
-
-        // 검색어가 있을 경우
-        return productRepository.findByproductNameContaining(searchValue, pageable).map(ProductDto::from);
+    public Page<ProductResponse> findbyId_product_all_and_search(Pageable pageable,String searchType, String searchValue){
+        return productRepositoryCustom.searchMainPageComplex(searchType, searchValue, pageable);
     }
+
 }

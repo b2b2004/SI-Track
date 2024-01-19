@@ -6,6 +6,7 @@ import com.sitrack.sitrackbackend.domain.constant.RoleType;
 import com.sitrack.sitrackbackend.dto.*;
 import com.sitrack.sitrackbackend.dto.response.SearchIdResponse;
 import com.sitrack.sitrackbackend.repository.UserAccountRepository;
+import com.sitrack.sitrackbackend.repository.UserAccountRepositoryCustom;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import static com.sitrack.sitrackbackend.Exception.ErrorCode.USER_NOT_FOUND;
 public class AccountService {
 
     private final UserAccountRepository userAccountRepository;
+    private final UserAccountRepositoryCustom userAccountRepositoryCustom;
     private final EmailService emailService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -34,9 +36,14 @@ public class AccountService {
     }
 
     public SearchIdResponse searchId(SearchIdDto searchIdDto) {
-        UserAccount user = userAccountRepository.findByUserNameAndUserEmail(searchIdDto.userName(), searchIdDto.userEmail())
+        // 0.420 2000번 / 500개의 데이터
+        // 0.163 개선
+//        UserAccount user = userAccountRepository.findByUserNameAndUserEmail(searchIdDto.userName(), searchIdDto.userEmail())
+//                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+//        SearchIdResponse searchIdResponse = SearchIdResponse.of(user.getUserId(), user.getCreatedAt());
+
+        SearchIdResponse searchIdResponse = userAccountRepositoryCustom.findByUserNameAndUserEmail(searchIdDto.userName(), searchIdDto.userEmail())
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-        SearchIdResponse searchIdResponse = SearchIdResponse.of(user.getUserId(), user.getCreatedAt());
         return searchIdResponse;
     }
 

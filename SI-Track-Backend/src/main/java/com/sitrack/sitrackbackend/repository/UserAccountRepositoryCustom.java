@@ -1,18 +1,26 @@
 package com.sitrack.sitrackbackend.repository;
 
+import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.sitrack.sitrackbackend.domain.account.UserAccount;
 import com.sitrack.sitrackbackend.dto.UserAccountDto;
+import com.sitrack.sitrackbackend.dto.response.SearchIdResponse;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
+import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.sitrack.sitrackbackend.domain.QCart.cart;
 import static com.sitrack.sitrackbackend.domain.account.QUserAccount.userAccount;
 
 @Repository
@@ -77,5 +85,25 @@ public class UserAccountRepositoryCustom {
         }else{
             return null;
         }
+    }
+
+
+    public Optional<UserAccount> findByUserId(String userId){
+        Optional<UserAccount> user = Optional.ofNullable((UserAccount) queryFactory
+                .select(userAccount)
+                .from(userAccount)
+                .leftJoin(userAccount.cart, cart).fetchJoin()
+                .where(userAccount.userId.eq(userId))
+                .fetchOne());
+        return user;
+    }
+
+    public Optional<SearchIdResponse> findByUserNameAndUserEmail(String userName, String email){
+        Optional<SearchIdResponse> user = Optional.ofNullable(queryFactory
+                .select(Projections.constructor(SearchIdResponse.class, userAccount.userId, userAccount.createdAt))
+                .from(userAccount)
+                .where(userAccount.userName.eq(userName).and(userAccount.userEmail.eq(email)))
+                .fetchOne());
+        return user;
     }
 }
