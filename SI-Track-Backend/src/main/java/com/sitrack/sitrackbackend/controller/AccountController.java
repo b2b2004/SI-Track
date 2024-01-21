@@ -80,9 +80,8 @@ public class AccountController {
     @ApiOperation(value = "유저 개인정보 조회", notes = "유저 개인 정보 조회")
     @GetMapping("/login/info")
     public ResponseEntity<?> findInfo(@AuthenticationPrincipal PrincipalDetails principalDetails){
-        UserAccount user = principalDetails.getUser();
-        UserAccountDto user1 = accountService.findUser(user);
-        return new ResponseEntity<>(user1, HttpStatus.OK);
+        UserAccountDto user = accountService.findUser(principalDetails.getUser());
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @ApiOperation(value = "RefreshToken 재발급", notes = "AccessToken 만료 시 RefreshToken 재발급")

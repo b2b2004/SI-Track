@@ -68,8 +68,8 @@ public class AdminService {
          product.setProductName(productDto.productName());
          product.setProductPrice(productDto.productPrice());
          product.setProductCost(productDto.productCost());
-//         product.setSupplier(productDto.supplier().toEntity());
-//         product.setCategory(productDto.category().toEntity());
+         product.setSupplier(Supplier.of(productDto.supplierId(), productDto.supplierName(), productDto.supplierCode()));
+         product.setCategory(Category.of(productDto.categoryId(), productDto.categoryName()));
          product.setProductStockQuantity(productDto.productStockQuantity());
          product.setProductSalesQuantity(productDto.productSalesQuantity());
 

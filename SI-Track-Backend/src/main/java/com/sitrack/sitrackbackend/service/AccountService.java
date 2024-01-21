@@ -19,8 +19,8 @@ import static com.sitrack.sitrackbackend.Exception.ErrorCode.USER_NOT_FOUND;
 @Service
 public class AccountService {
 
-    private final UserAccountRepository userAccountRepository;
     private final UserAccountRepositoryCustom userAccountRepositoryCustom;
+    private final UserAccountRepository userAccountRepository;
     private final EmailService emailService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -38,26 +38,20 @@ public class AccountService {
     public SearchIdResponse searchId(SearchIdDto searchIdDto) {
         // 0.420 2000번 / 500개의 데이터
         // 0.163 개선
-//        UserAccount user = userAccountRepository.findByUserNameAndUserEmail(searchIdDto.userName(), searchIdDto.userEmail())
-//                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-//        SearchIdResponse searchIdResponse = SearchIdResponse.of(user.getUserId(), user.getCreatedAt());
-
         SearchIdResponse searchIdResponse = userAccountRepositoryCustom.findByUserNameAndUserEmail(searchIdDto.userName(), searchIdDto.userEmail())
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         return searchIdResponse;
     }
 
     public String searchPwd(SearchPwdDto searchPwdDto) {
-        UserAccount user = userAccountRepository.findByUserIdAndUserEmail(searchPwdDto.userId(), searchPwdDto.userEmail())
+        UserAccount user = userAccountRepositoryCustom.findByUserIdAndUserEmail(searchPwdDto.userId(), searchPwdDto.userEmail())
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         String newPWD = emailService.createMailAndcreatePWD(user.getUserName(), user.getUserEmail());
         user.setUserPassword(bCryptPasswordEncoder.encode(newPWD));
         return "이메일로 임시 비밀 번호가 발송 되었습니다.";
     }
 
-    public String chagePwd(UserAccountPwdDto userAccountPwdDto, UserAccount user1) {
-        UserAccount user = userAccountRepository.findByUserId(user1.getUserId())
-                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+    public String chagePwd(UserAccountPwdDto userAccountPwdDto, UserAccount user) {
         if(!userAccountPwdDto.nowPwd().equals(user.getUserPassword())){
             return "현재 비밀번호와 일치하지 않습니다.";
         }
@@ -66,7 +60,7 @@ public class AccountService {
     }
 
     public String chageInformaition(UserAccountInfoDto userAccountInfoDto, UserAccount user1) {
-        UserAccount user = userAccountRepository.findByUserId(user1.getUserId())
+        UserAccount user = userAccountRepositoryCustom.findByUserId(user1.getUserId())
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         user.setUserEmail(userAccountInfoDto.userEmail());
         user.setUserPhoneNumber(userAccountInfoDto.userPhoneNumber());
@@ -76,10 +70,9 @@ public class AccountService {
 
     @Transactional(readOnly = true)
     public UserAccountDto findUser(UserAccount user) {
-        UserAccountDto user1 = userAccountRepository.findByUserId(user.getUserId())
-                .map(UserAccountDto::from)
-                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-        return user1;
+//        UserAccountDto user1 = userAccountRepositoryCustom.findByUserId(user.getUserId())
+//                .map(UserAccountDto::from)
+//                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        return UserAccountDto.from(user);
     }
 }
-

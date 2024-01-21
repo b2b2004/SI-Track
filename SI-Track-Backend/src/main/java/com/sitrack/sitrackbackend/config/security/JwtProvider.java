@@ -5,6 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.sitrack.sitrackbackend.Exception.ErrorCode;
 import com.sitrack.sitrackbackend.domain.account.UserAccount;
 import com.sitrack.sitrackbackend.repository.UserAccountRepository;
+import com.sitrack.sitrackbackend.repository.UserAccountRepositoryCustom;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,7 +18,7 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class JwtProvider {
 
-    private final UserAccountRepository userAccountRepository;
+    private final UserAccountRepositoryCustom userAccountRepositoryCustom;
 
     static Long ACCESS_TOKEN_EXPIRE_TIME = 60L * 60L * 1000L; // 만료 시간 1시간
 
@@ -104,7 +105,7 @@ public class JwtProvider {
             if (userId == null){
                 return null;
             }
-            UserAccount tokenUser = userAccountRepository.findByUserId(userId)
+            UserAccount tokenUser = userAccountRepositoryCustom.findByUserId(userId)
                     .orElseThrow(()-> new UsernameNotFoundException("해당 사용자를 찾을 수 없습니다. : " + userId));
             return tokenUser;
 
