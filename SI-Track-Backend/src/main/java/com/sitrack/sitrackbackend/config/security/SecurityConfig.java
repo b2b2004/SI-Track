@@ -6,6 +6,7 @@ import com.sitrack.sitrackbackend.config.security.filter.JwtAuthenticationFilter
 import com.sitrack.sitrackbackend.config.security.filter.JwtAuthorizationFilter;
 import com.sitrack.sitrackbackend.config.security.filter.JwtExceptionFilter;
 import com.sitrack.sitrackbackend.repository.UserAccountRepository;
+import com.sitrack.sitrackbackend.repository.UserAccountRepositoryCustom;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,7 +27,7 @@ public class SecurityConfig {
 
     private final AuthenticationConfiguration authenticationConfiguration;
     private final PrincipalDetailsService principalDetailsService;
-    private final UserAccountRepository userAccountRepository;
+    private final UserAccountRepositoryCustom userAccountRepositoryCustom;
     private final JwtExceptionFilter jwtExceptionFilter;
 
     private final CorsConfig corsConfig;
@@ -57,7 +58,7 @@ public class SecurityConfig {
 
     @Bean
     public JwtProvider jwtTokenProvider() {
-        return new JwtProvider(userAccountRepository);
+        return new JwtProvider(userAccountRepositoryCustom);
     }
 
     @Bean
