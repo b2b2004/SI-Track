@@ -25,13 +25,14 @@ import static com.sitrack.sitrackbackend.domain.account.QUserAccount.userAccount
 
 @Repository
 @RequiredArgsConstructor
-public class UserAccountRepositoryCustom {
+public class UserAccountRepositoryCustom{
 
     private final JPAQueryFactory queryFactory;
 
     public Page<UserAccountDto> searchPageComplex(String searchType, String searchValue, Pageable pageable){
         List<UserAccountDto> content = getUserAccountDto(searchType, searchValue, pageable);
         Long count = getCount(searchType, searchValue);
+
 
         return new PageImpl<>(content, pageable, count);
     }
@@ -89,7 +90,7 @@ public class UserAccountRepositoryCustom {
 
 
     public Optional<UserAccount> findByUserId(String userId){
-        Optional<UserAccount> user = Optional.ofNullable((UserAccount) queryFactory
+        Optional<UserAccount> user = Optional.ofNullable(queryFactory
                 .select(userAccount)
                 .from(userAccount)
                 .leftJoin(userAccount.cart, cart).fetchJoin()
@@ -106,4 +107,15 @@ public class UserAccountRepositoryCustom {
                 .fetchOne());
         return user;
     }
+
+    public Optional<UserAccount> findByUserIdAndUserEmail(String userId, String email){
+        Optional<UserAccount> user = Optional.ofNullable(queryFactory
+                .select(userAccount)
+                .from(userAccount)
+                .where(userAccount.userId.eq(userId).and(userAccount.userEmail.eq(email)))
+                .fetchOne());
+        return user;
+    }
+
+
 }

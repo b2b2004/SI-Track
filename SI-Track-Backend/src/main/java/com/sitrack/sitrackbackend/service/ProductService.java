@@ -27,6 +27,7 @@ import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.sitrack.sitrackbackend.Exception.ErrorCode.*;
@@ -39,6 +40,7 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final ProductRepositoryCustom productRepositoryCustom;
+    private final UserAccountRepositoryCustom userAccountRepositoryCustom;
     private final UserAccountRepository userAccountRepository;
     private final CategoryRepository categoryRepository;
     private final SupplierRepository supplierRepository;
@@ -46,7 +48,7 @@ public class ProductService {
 
     public String register_product(ProductRequest productRequest, UserAccount userAccount, List<MultipartFile> images){
         try {
-            UserAccount user = userAccountRepository.findByUserId(userAccount.getUserId())
+            UserAccount user = userAccountRepositoryCustom.findByUserId(userAccount.getUserId())
                     .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
             if(user.getRoleType() != RoleType.ADMIN && user.getRoleType() != RoleType.MANAGER) {
@@ -79,8 +81,10 @@ public class ProductService {
     //
     public String update_product(Long productId, ProductUpdateRequest dto, UserAccount userAccount, List<MultipartFile> images){
         try {
-            Product product = productRepository.getReferenceById(productId);
-            UserAccount user = userAccountRepository.findByUserId(userAccount.getUserId())
+            Product product = productRepositoryCustom.findById(productId)
+                    .orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
+
+            UserAccount user = userAccountRepositoryCustom.findByUserId(userAccount.getUserId())
                     .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
             // ADMIN, MANAGER은 상품 수정 가능
@@ -127,7 +131,7 @@ public class ProductService {
     }
 
     public String delete_product(long prouductId, UserAccount userAccount){
-        UserAccount user = userAccountRepository.findByUserId(userAccount.getUserId())
+        UserAccount user = userAccountRepositoryCustom.findByUserId(userAccount.getUserId())
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
         if(user.getRoleType() == RoleType.ADMIN || user.getRoleType() == RoleType.MANAGER){
@@ -141,14 +145,14 @@ public class ProductService {
     }
 
     public ProductOne findbyId_product_one(Long productId){
-        ProductDto productDto = productRepository.findById(productId)
+        ProductDto productDto = productRepositoryCustom.findById(productId)
                                             .map(ProductDto::from)
                                             .orElseThrow(()-> new CustomException(PRODUCT_NOT_FOUND));
         return ProductOne.from(productDto);
     }
 
     public ProductUpdateResponse findbyId_UpdateProduct_one(Long productId){
-        ProductDto productDto = productRepository.findById(productId)
+        ProductDto productDto = productRepositoryCustom.findById(productId)
                 .map(ProductDto::from)
                 .orElseThrow(()-> new CustomException(PRODUCT_NOT_FOUND));
         return ProductUpdateResponse.from(productDto);

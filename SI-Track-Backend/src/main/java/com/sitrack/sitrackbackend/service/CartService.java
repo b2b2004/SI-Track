@@ -9,10 +9,7 @@ import com.sitrack.sitrackbackend.domain.constant.ProductImageType;
 import com.sitrack.sitrackbackend.dto.ProductDto;
 import com.sitrack.sitrackbackend.dto.request.CartItemRequest;
 import com.sitrack.sitrackbackend.dto.response.CartItemResponse;
-import com.sitrack.sitrackbackend.repository.CartItemRepository;
-import com.sitrack.sitrackbackend.repository.CartRepository;
-import com.sitrack.sitrackbackend.repository.ProductRepository;
-import com.sitrack.sitrackbackend.repository.UserAccountRepository;
+import com.sitrack.sitrackbackend.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,13 +29,13 @@ public class CartService {
 
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
-    private final ProductRepository productRepository;
+    private final ProductRepositoryCustom productRepositoryCustom;
 
     // 장바구니 생성
     public void createCart(CartItemRequest cartItemRequest, UserAccount user){
 
         // 상품 id로 상품 가져오고
-        Product product = productRepository.findById(cartItemRequest.productId())
+        Product product = productRepositoryCustom.findById(cartItemRequest.productId())
                 .orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
 
         // 장바구니 없으면 만들어주고

@@ -6,6 +6,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.sitrack.sitrackbackend.domain.Product;
 import com.sitrack.sitrackbackend.domain.constant.ProductImageType;
 import com.sitrack.sitrackbackend.dto.AdminProductDto;
 import com.sitrack.sitrackbackend.dto.response.ProductResponse;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.sitrack.sitrackbackend.domain.QCategory.category;
@@ -115,6 +117,19 @@ public class ProductRepositoryCustom {
                 .limit(pageable.getPageSize()) // 페이지 사이즈
                 .stream().collect(Collectors.toList());
         return products;
+    }
+
+    public Optional<Product> findById(Long productId){
+        Optional<Product> pd = Optional.ofNullable(queryFactory
+                .select(product)
+                .from(product)
+                .leftJoin(product.category, category).fetchJoin()
+                .leftJoin(product.supplier, supplier).fetchJoin()
+                .leftJoin(product.userAccount, userAccount).fetchJoin()
+                .where(product.id.eq(productId))
+                .fetchOne());
+
+        return pd;
     }
 
     private BooleanExpression productNameLike(String searchValue) {

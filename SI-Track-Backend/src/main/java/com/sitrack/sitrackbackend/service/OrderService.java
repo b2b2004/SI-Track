@@ -26,10 +26,10 @@ import static com.sitrack.sitrackbackend.Exception.ErrorCode.USER_NOT_FOUND;
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final ProductRepository productRepository;
+    private final ProductRepositoryCustom productRepositoryCustom;
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
-    private final UserAccountRepository userAccountRepository;
+    private final UserAccountRepositoryCustom userAccountRepositoryCustom;
 
     public void save(OrderRequest orderRequest, UserAccount userAccount) {
 
@@ -38,7 +38,7 @@ public class OrderService {
         List<OrderItem> orderItems = new ArrayList<>();
 
         for(OrderItemDto dto : orderItemDto){
-           Product product = productRepository.findById(dto.productId())
+           Product product = productRepositoryCustom.findById(dto.productId())
                    .orElseThrow(()-> new CustomException(PRODUCT_NOT_FOUND));
            OrderItem orderItem = OrderItem.of(product, dto.quantity(), product.getProductPrice());
            products.add(product);
@@ -80,7 +80,7 @@ public class OrderService {
 
     public List<OrderResponse> findByUserOrders(UserAccount userAccount) {
 
-        UserAccount user = userAccountRepository.findByUserId(userAccount.getUserId())
+        UserAccount user = userAccountRepositoryCustom.findByUserId(userAccount.getUserId())
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         List<Order> orders = user.getOrders();
         List<OrderResponse> orderResponses = new ArrayList<>();
