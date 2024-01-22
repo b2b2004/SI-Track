@@ -12,7 +12,7 @@ public record OrderRequest(
         String orderAddress,    // 주소
 
         @NotBlank(message = "orderRequest is Null")
-        String orderRequest,    // 요구 사항
+        String orderRq,    // 요구 사항
 
         @NotBlank(message = "recipient is Null")
         String recipient,       // 수령인
