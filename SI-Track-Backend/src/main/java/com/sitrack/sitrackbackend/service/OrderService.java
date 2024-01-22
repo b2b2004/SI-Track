@@ -16,9 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import static com.sitrack.sitrackbackend.Exception.ErrorCode.PRODUCT_NOT_FOUND;
-import static com.sitrack.sitrackbackend.Exception.ErrorCode.USER_NOT_FOUND;
+import static com.sitrack.sitrackbackend.Exception.ErrorCode.*;
 
 @RequiredArgsConstructor
 @Transactional
@@ -27,59 +27,55 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final ProductRepositoryCustom productRepositoryCustom;
-    private final CartRepository cartRepository;
-    private final CartItemRepository cartItemRepository;
+    private final CartItemRepositoryCustom cartItemRepositoryCustom;
     private final UserAccountRepositoryCustom userAccountRepositoryCustom;
 
+    @Transactional
     public void save(OrderRequest orderRequest, UserAccount userAccount) {
 
-        List<OrderItemDto> orderItemDto =  orderRequest.orderItemDtos();
-        List<Product> products = new ArrayList<>();
+        List<OrderItemDto> orderItemDto = orderRequest.orderItemDtos();
         List<OrderItem> orderItems = new ArrayList<>();
+        List<Long> ids = new ArrayList<>();
+        try {
 
-        for(OrderItemDto dto : orderItemDto){
-           Product product = productRepositoryCustom.findById(dto.productId())
-                   .orElseThrow(()-> new CustomException(PRODUCT_NOT_FOUND));
-           OrderItem orderItem = OrderItem.of(product, dto.quantity(), product.getProductPrice());
-           products.add(product);
-           orderItems.add(orderItem);
-        }
+            for(OrderItemDto dto : orderItemDto){
+                Product product = productRepositoryCustom.findById(dto.productId())
+                        .orElseThrow(()-> new CustomException(PRODUCT_NOT_FOUND));
+                OrderItem orderItem = OrderItem.of(product, dto.quantity(), product.getProductPrice());
+                orderItems.add(orderItem);
+                ids.add(dto.productId());
+            }
 
-        // 수량 확인 및 수량 조절
-        for(Product product : products){
+            /**
+             * 재고 확인 및
+             * 주문 수 만큼 재고 마이너스
+             */
             for(OrderItem orderItem : orderItems){
-                if(product.getId().equals(orderItem.getProduct().getId())){
-                    if(product.getProductStockQuantity() < orderItem.getOrderItemQuantity()){
-                        throw new CustomException(ErrorCode.OUT_OF_STOCK);
-                    }else{
-                        product.minusproductStockQuantity(orderItem.getOrderItemQuantity());
-                    }
+                if(orderItem.getProduct().getProductStockQuantity() < orderItem.getOrderItemQuantity()){
+                    throw new CustomException(OUT_OF_STOCK);
                 }else{
-                    throw new CustomException(PRODUCT_NOT_FOUND);
-                }
-            }
-        }
-
-        Order order = Order.of(userAccount, orderRequest, orderItems);
-        orderRepository.save(order);
-
-        // 장바구니 확인 및 장바구니 아이템 삭제
-        if(cartRepository.findCartByUserAccount(userAccount).isPresent()){
-            List<CartItem> cartItems = cartItemRepository.findByCartId(userAccount.getCart().getId());
-
-            for(CartItem cartItem : cartItems){
-                for(OrderItem orderItem : orderItems){
-                    if (cartItem.getProduct().getId().equals(orderItem.getProduct().getId())){
-                        cartItemRepository.delete(cartItem);
-                    }
+                    orderItem.getProduct().minusproductStockQuantity(orderItem.getOrderItemQuantity());
                 }
             }
 
+            Order order = Order.of(userAccount, orderRequest, orderItems);
+            orderRepository.save(order);
+
+            /**
+             * 장바구니에 있는 주문 상품 제거
+             */
+            if(!ids.isEmpty()){
+                cartItemRepositoryCustom.deleteAllByIds(ids);
+            }
+
+        }catch (CustomException e){
+            e.printStackTrace();
+            throw new CustomException(e.getErrorCode());
         }
+
     }
 
     public List<OrderResponse> findByUserOrders(UserAccount userAccount) {
-
         UserAccount user = userAccountRepositoryCustom.findByUserId(userAccount.getUserId())
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         List<Order> orders = user.getOrders();
