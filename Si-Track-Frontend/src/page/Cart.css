@@ -44,7 +44,7 @@
     position: absolute;
     right: 0;
 }
-.cart>ul>li>figure>p>button{
+.cart>ul>li>figure>input{
     width: 150px;
     height: 30px;
     background-color: #fff;

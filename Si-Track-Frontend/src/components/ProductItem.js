@@ -1,12 +1,12 @@
 import { Link, useParams } from 'react-router-dom';
 import './ProductItem.css';
 export default function ProductItem({post}){
-    const {productCost, productDetail, productName, supplierCode, productImagesUrl, productId} = post;
+    const {productCost, productDetail, productName, supplierCode, productImageUrl, productId} = post;
 
     return(
         <figure className='product'>
             <Link to={`/product/${post.productId}`}>
-            <img src={productImagesUrl[0]} alt={post.productName} />
+            <img src={productImageUrl} alt={post.productName} />
                 <figcaption>
                     <dl>
                         <dt>{productName}</dt>

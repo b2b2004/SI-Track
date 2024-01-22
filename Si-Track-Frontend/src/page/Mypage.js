@@ -21,6 +21,19 @@ export default function Mypage(){
             console.log(res)
         })
 
+        fetch("http://localhost:8080/order/all",{
+            method: "GET",
+            headers:{
+                "content-Type":"application/json; charset=utf-8", Authorization
+            }
+        })
+            .then((res) =>{
+                return res.json();
+            })
+            .then((res)=>{
+                console.log(res);
+            })
+
 
     },[])
     return(
