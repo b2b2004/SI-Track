@@ -35,10 +35,24 @@ function modifycategory(e){
           console.log(res);
         })
 }
+function deletecategory(){
+  fetch(`http://localhost:8080/admin/delete/category/${categoryItem.categoryId}`,{
+    method:'DELETE',
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8',
+      Authorization,
+    },
+    body: JSON.stringify(categoryItem.categoryId),
+  })
+  .then((res)=>res.text())
+  .then((res)=>{
+    console.log(res);
+  })
+}
     return(
         <div className="category-item">
                 <div key={category.categoryId}>
-                    <div>카테고리명 
+                    <div><h2 className="subtitle">카테고리명</h2> 
                     <input type='text' name="categoryName" onChange= {(e) => {
                         setCategoryItem({...categoryItem,[e.target.name]:e.target.value,}
                         )}} disabled={
@@ -52,6 +66,7 @@ function modifycategory(e){
         }}>카테고리 수정</button>
      : 
         <button onClick={modifycategory}>수정완료</button>}
+        <button className="delete-button" onClick={deletecategory} >삭제</button>
         </div>
                     </div>
                     </div>
