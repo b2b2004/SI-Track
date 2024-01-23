@@ -49,6 +49,7 @@
     border: 1px solid #e5e5e5;
     padding: 10px;
     background-color: #fff;
+    color: #ddd;
 }
 .changecontainer>form>table>tbody>tr>td>button:hover{
     border: 1px solid black;

@@ -48,6 +48,9 @@
     text-align: center;
     color: #333;
   }
+  .subtitle{
+    margin-bottom: 10px;
+  }
   
   ul {
     list-style-type: none;

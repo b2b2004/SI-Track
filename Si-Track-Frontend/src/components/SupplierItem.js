@@ -38,7 +38,7 @@ export default function SupplierItem(props){
 }
 
 function deletesupplier(){
-  fetch('http://localhost:8080/admin/delete/supplier/{supplierId}',{
+  fetch(`http://localhost:8080/admin/delete/supplier/${supplierItem.supplierId}`,{
     method:'DELETE',
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
@@ -61,7 +61,7 @@ function deletesupplier(){
 
     return (
               <div className="admin-panel">
-                <h2>공급업체 정보</h2>
+                <h2 className="subtitle">공급업체 정보</h2>
                 <ul>
                   <li>
                     <label htmlFor='supplierCode'>공급업체 코드</label>
