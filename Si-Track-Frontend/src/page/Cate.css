@@ -30,7 +30,7 @@
     margin-top: 20px;
   }
   
-  input {
+  .category-item>div>div>input {
     width: 100%;
     padding: 8px;
     box-sizing: border-box;
@@ -59,13 +59,6 @@
     display: block;
     margin-bottom: 5px;
     color: #333;
-  }
-  
-  input {
-    width: 100%;
-    padding: 8px;
-    box-sizing: border-box;
-    margin-bottom: 10px;
   }
   
   .button-container {

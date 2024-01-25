@@ -14,6 +14,7 @@ export default function Signup(){
     const [pwcheck,setPwCheck] = useState('');
     const [name,setName] = useState('');
     const [phonenum,setPhonenum] = useState('');
+
     function handlesignup(e){
         if(id===''){
             alert('아이디를 입력해주세요.');
@@ -28,7 +29,7 @@ export default function Signup(){
             return false;
         }
         else if(pw!==pwcheck){
-            alert('비밀번호확인란을 다시 입력해주세요');
+            alert('비밀번호가 일치하지 않습니다.');
             return false;
         }
         else if(email===''){
@@ -70,52 +71,37 @@ export default function Signup(){
             <p>Sign up</p>
         </h1>
         <form id='indimember'>
-        {/* <div className='member'>
-            <button type='button' className='indi' >개인회원</button>
-            <button type='button' className='business' onClick={()=>{
-                setModal(!false);
-                if(modal !==false ){
-                    document.querySelector('#indimember').style.display='none'
-                    document.querySelector('.business-container').style.display='block'
-                }
-            }}>기업회원</button>
-        </div> */}
         <input type="text" onChange={(e)=>setId(e.target.value)} placeholder="아이디"></input>
-        <input type="email" id='email' onChange={(e)=>setEmail(e.target.value)} placeholder="이메일"></input>
+        <div className='idreg'></div>
+        <input type="email" id='email' onChange={(e)=>{
+            const regemail = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
+            if(regemail.test(e.target.value)){
+                document.querySelector('.emailreg').style.display='none';
+                setEmail(e.target.value)
+            }
+            else{
+                document.querySelector('.emailreg').style.display='block';
+            }
+            }} placeholder="이메일"></input>
+        <div className='emailreg'>형식에 맞게 입력해주세요.</div>
         <input type="password" id='pw' onChange={(e)=>setPw(e.target.value)} placeholder="비밀번호"></input>
+        <div className='passreg'></div>
         <input type="password" id='pwcheck' onChange={(e)=>setPwCheck(e.target.value)} placeholder="비밀번호확인"></input>
+        <div className='pwcheckreg'></div>
         <input type="text" id='name' onChange={(e)=>setName(e.target.value)} placeholder="이름"></input>
-        <input type="text" id='phonenum' onChange={(e)=>setPhonenum(e.target.value)} placeholder="휴대폰번호" className='phone'></input>
-        {/* <button className='verify'>인증번호 전송</button> */}
-        {/* <input type="text" placeholder="인증번호확인" className='phone' disabled></input> */}
-        {/* <button className='verify'>인증완료</button> */}
+        <input type="text" id='phonenum' onChange={(e)=>{
+            const regex = /^01(?:0|1|[6-9])(?:\d{3}|\d{4})\d{4}$/
+            if(regex.test(e.target.value)){
+                document.querySelector('#numreg').style.display='none';
+                setPhonenum(e.target.value)}
+                else{
+                    document.querySelector('#numreg').style.display='block';
+                }
+            }
+           } placeholder="-를 제외하고 입력해주세요." className='phone'></input>
+        <div id='numreg'>형식에 맞게 입력해주세요.</div>
         <input type="submit" id='signupfinish' onClick={handlesignup} value="회원가입 완료"></input>              
         </form>
-       
-       
-        <div className='business-container'>
-            <form method='post' id='businessmember'>
-        <div className='member'>
-            <button type='button' onClick={()=>{
-                setModal(false);
-                if(modal ===false ){
-                    document.querySelector('.business-container').style.display='none'
-                    document.querySelector('#indimember').style.display='flex'
-                }
-            }} >개인회원</button>
-            <button type='button' className='business' >기업회원</button>
-        </div>
-            <input type='text' placeholder='회사/단체명'></input>
-            <input type='text' placeholder='담당자 이름'></input>
-            <input type='text' placeholder='사업자번호'></input>
-            <input type='text'defaultValue={address} placeholder='사업자주소'></input>
-            <Post setAddressObj={setAddressObj} setLocationObj={setLocationObj} />  
-            <input type='text' placeholder='상세주소'></input>
-            <input type='text' placeholder='대표자이름'></input>
-            <input type='text' placeholder='연락처'></input>
-            <input type="submit" value="회원가입 완료"></input>
-            </form>
-        </div>
         </div>
     )
 }

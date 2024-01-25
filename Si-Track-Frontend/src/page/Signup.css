@@ -32,8 +32,15 @@ font-family: 'Nanum Gothic', sans-serif;
     border: none;
     border-bottom: 1px solid;
 }
-.signup-container>form>input:nth-child(-n+6){
+.signup-container>form>input:nth-child(-n+10){
     width: 60%;
+}
+.signup-container>form>div{
+    color: red;
+    width: 100%;
+    display: none;
+    text-align: center;
+    margin-bottom: 20px;
 }
 .phone{
     width: 40%;
